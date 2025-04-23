@@ -1,14 +1,18 @@
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
 } from "react-native-responsive-dimensions";
 import PlusDark from "../../assets/svg/plus-dark.svg";
 export default function AddFrBttn() {
+  let num = 1;
+  const openModal = () => {};
   return (
     <>
-      <View style={style.box}>
-        <PlusDark style={style.plus}></PlusDark>
+      <View style={style.box} onTouchStart={openModal}>
+        <TouchableOpacity>
+          <PlusDark style={style.plus}></PlusDark>
+        </TouchableOpacity>
       </View>
     </>
   );

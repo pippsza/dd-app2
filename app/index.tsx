@@ -6,14 +6,14 @@ import {
   responsiveWidth as rw,
 } from "react-native-responsive-dimensions";
 import AddFrBttn from "./components/addFriendBttn";
+import ModalWindow from "./components/modalWindow";
 export default function Main() {
   return (
     <View style={style.box}>
       <View style={style.container}>
-        <View style={style.container}>
-          <Header></Header>
-          <Text>PENssIS</Text>
-        </View>
+        <Header></Header>
+        <Text>test</Text>
+        <ModalWindow></ModalWindow>
         <AddFrBttn></AddFrBttn>
       </View>
     </View>

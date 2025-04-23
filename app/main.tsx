@@ -1,38 +1,32 @@
-import { View, Text, Image } from "react-native";
-import { Link } from "expo-router";
+import { View, Text } from "react-native";
 import { StyleSheet } from "react-native";
+import Header from "./components/header";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
 } from "react-native-responsive-dimensions";
-
+import AddFrBttn from "./components/addFriendBttn";
 export default function Main() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <View style={styles.header}>
-        <Image
-          style={styles.burger}
-          source={require("../assets/svg/burger.svg")}
-        ></Image>
+    <View style={style.box}>
+      <View style={style.container}>
+        <View style={style.container}>
+          <Header></Header>
+          <Text>PENIS</Text>
+        </View>
+        <AddFrBttn></AddFrBttn>
       </View>
-      <Text>Edit app/index.tsx to dasdasedit this screen.</Text>
-      <Link href="/authors"> Tap to me</Link>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  header: {
-    padding: 20,
-    width: rw(100),
-    height: rh(10),
-    backgroundColor: "black",
+const style = StyleSheet.create({
+  box: { flex: 1 },
+  container: {
+    position: "relative",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: rw(2),
   },
-  burger: { color: "white" },
 });

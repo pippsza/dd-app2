@@ -18,11 +18,10 @@ export default function Header() {
         <SunLight onPress={changeTheme} style={styles.svgDark}></SunLight>
         <Link href="/authors" asChild>
           <TouchableOpacity>
-            <BurgeDark style={styles.svgDark}> </BurgeDark>
+            <BurgeDark style={styles.svgDark}></BurgeDark>
           </TouchableOpacity>
         </Link>
       </View>
-      ;
     </>
   );
 }
@@ -33,7 +32,6 @@ const styles = StyleSheet.create({
     height: rh(10),
     position: "absolute",
     top: 0,
-
     flexDirection: "row",
     justifyContent: "space-between",
   },

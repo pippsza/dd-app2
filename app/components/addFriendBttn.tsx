@@ -16,6 +16,7 @@ export default function AddFrBttn() {
 import { StyleSheet } from "react-native";
 const style = StyleSheet.create({
   box: {
+    backgroundColor: "white",
     position: "absolute",
     justifyContent: "center",
     alignItems: "center",

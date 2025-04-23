@@ -1,4 +1,5 @@
-import { View, Text } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
+import { Link } from "expo-router";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
@@ -8,17 +9,83 @@ export default function AuthorsInfo() {
     <>
       <View style={style.box}>
         <Text style={style.head}>Authors</Text>
+        <View style={style.bigContainer}>
+          <View style={style.container}>
+            <View>
+              <Text style={style.name}>Developer</Text>
+              <Image
+                style={style.img}
+                source={require("../../assets/images/pippsza.png")}
+              ></Image>
+              <Text style={style.name}>pippsza</Text>
+              <Link
+                href="https://github.com/pippsza/"
+                style={style.text}
+                asChild
+              >
+                <TouchableOpacity>
+                  <Text style={style.text}>GitHub</Text>
+                </TouchableOpacity>
+              </Link>
+              <Link
+                href="https://t.me/ddnet_russ_ukr"
+                style={style.text}
+                asChild
+              >
+                <TouchableOpacity>
+                  <Text style={style.text}>Telegram</Text>
+                </TouchableOpacity>
+              </Link>
+            </View>
+            <View>
+              <Text style={style.name}>Designer</Text>
+              <Image
+                style={style.img}
+                source={require("../../assets/images/monik.png")}
+              ></Image>
+              <Text style={style.name}>MonikFox</Text>
+              <Link
+                href="https://youtube.com/@monikddnet?si=rKhHM9AF8fJ1dfdS"
+                style={style.text}
+                asChild
+              >
+                <TouchableOpacity>
+                  <Text style={style.text}>YouTube</Text>
+                </TouchableOpacity>
+              </Link>
+              <Link href="https://t.me/SilverPaww" style={style.text} asChild>
+                <TouchableOpacity>
+                  <Text style={style.text}>Telegram</Text>
+                </TouchableOpacity>
+              </Link>
+            </View>
+          </View>
+        </View>
       </View>
     </>
   );
 }
 import { StyleSheet } from "react-native";
 const style = StyleSheet.create({
-  box: {
-    position: "relative",
+  name: { textAlign: "center", fontSize: rw(6) },
+  text: {
+    textAlign: "center",
+    fontSize: rw(5),
+    textDecorationLine: "underline",
+  },
+  container: { flexDirection: "row", gap: rw(5) },
+  img: {
+    width: rw(34),
+    height: rw(34),
+  },
+  bigContainer: {
     flex: 1,
-    zIndex: -1,
-    backgroundColor: "blue",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  box: {
+    flex: 1,
+
     width: rw(100),
   },
   head: { fontSize: rw(8), textAlign: "center" },

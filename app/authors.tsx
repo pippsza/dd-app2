@@ -12,7 +12,7 @@ export default function Authors() {
     <>
       <View style={style.box}>
         <View style={style.container}>
-          <Link href="/main" asChild>
+          <Link href="/" asChild style={style.svgContainer}>
             <TouchableOpacity>
               <CrossDark style={style.svg}></CrossDark>
             </TouchableOpacity>
@@ -28,6 +28,10 @@ export default function Authors() {
 import { StyleSheet } from "react-native";
 const style = StyleSheet.create({
   container: { flex: 1, padding: rw(2) },
+  svgContainer: {
+    position: "relative",
+    zIndex: 99,
+  },
   box: {
     flex: 1,
     position: "relative",

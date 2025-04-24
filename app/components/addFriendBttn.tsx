@@ -4,9 +4,9 @@ import {
   responsiveWidth as rw,
 } from "react-native-responsive-dimensions";
 import PlusDark from "../../assets/svg/plus-dark.svg";
-export default function AddFrBttn() {
-  let num = 1;
-  const openModal = () => {};
+type Props = { openModal: () => void };
+
+export default function AddFrBttn({ openModal }: Props) {
   return (
     <>
       <View style={style.box} onTouchStart={openModal}>

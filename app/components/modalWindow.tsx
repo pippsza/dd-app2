@@ -1,35 +1,60 @@
-import { Button, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Button,
+  Pressable,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
 } from "react-native-responsive-dimensions";
-export default function ModalWindow() {
+
+type Props = { closeModal: () => void };
+
+export default function ModalWindow({ closeModal }: Props) {
   const [value, setValue] = useState("");
   const addFriend = () => {
     console.log(value);
+    if (value.trim().length > 16) {
+      Toast.show({
+        type: "info",
+        text1: "Name must be shorter then 16 symbols!",
+      });
+      return;
+    } else if (value.trim().length === 0) {
+      Toast.show({
+        type: "info",
+        text1: "Name field can't be empty!",
+      });
+    }
+
+    closeModal();
   };
+
   return (
-    <>
-      <View style={style.modal}>
-        <View style={style.modalWin}>
-          <Text style={style.text}>Enter friend name</Text>
-          <TextInput
-            value={value}
-            onChangeText={setValue}
-            style={style.input}
-            placeholder="   nameless tee"
-          ></TextInput>
-          <TouchableOpacity onPress={addFriend} style={style.button}>
-            <Text style={style.text}>Add</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </>
+    <Pressable onPress={closeModal} style={style.modal}>
+      <Toast></Toast>
+      <Pressable onPress={(e) => e.stopPropagation()} style={style.modalWin}>
+        <Text style={style.text}>Enter friend name</Text>
+        <TextInput
+          value={value}
+          onChangeText={setValue}
+          style={style.input}
+          placeholder="nameless tee"
+        />
+        <TouchableOpacity onPress={addFriend} style={style.button}>
+          <Text style={style.text}>Add</Text>
+        </TouchableOpacity>
+      </Pressable>
+    </Pressable>
   );
 }
 
 import { StyleSheet } from "react-native";
 import { useState } from "react";
+import Toast from "react-native-toast-message";
 const style = StyleSheet.create({
   modal: {
     flex: 1,
@@ -67,8 +92,7 @@ const style = StyleSheet.create({
   input: {
     borderColor: "black",
     borderWidth: 3,
-    // paddingHorizontal: 10,
-    color: "gray",
+    paddingHorizontal: rw(10),
     backgroundColor: "white",
     borderRadius: 10,
     height: rh(8),

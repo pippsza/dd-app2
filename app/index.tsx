@@ -7,14 +7,24 @@ import {
 } from "react-native-responsive-dimensions";
 import AddFrBttn from "./components/addFriendBttn";
 import ModalWindow from "./components/modalWindow";
+import { useState } from "react";
+import PlayerList from "./components/playersList";
 export default function Main() {
+  const [modal, setModal] = useState<Boolean>(false);
+
+  const openModal = (): void => {
+    setModal(true);
+  };
+  const closeModal = (): void => {
+    setModal(false);
+  };
   return (
     <View style={style.box}>
       <View style={style.container}>
         <Header></Header>
-        <Text>test</Text>
-        <ModalWindow></ModalWindow>
-        <AddFrBttn></AddFrBttn>
+        {modal && <ModalWindow closeModal={closeModal}></ModalWindow>}
+        <PlayerList></PlayerList>
+        <AddFrBttn openModal={openModal}></AddFrBttn>
       </View>
     </View>
   );

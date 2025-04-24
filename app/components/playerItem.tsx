@@ -10,7 +10,6 @@ export default function PlayerItem({ item }: Props) {
   return (
     <>
       <View style={style.box}>
-        <Text>card</Text>
         <Text>{item.name}</Text>
       </View>
     </>

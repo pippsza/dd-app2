@@ -40,3 +40,5 @@ const style = StyleSheet.create({
     padding: rw(2),
   },
 });
+
+// https://ddnet.org/players/?query=Cor -МОЖНО ДЕЛАТЬ ЗАПРОС НА СЕРВЕР И ПОЛУЧАТЬ ПОДХОДЯЩИЕ НИКИ

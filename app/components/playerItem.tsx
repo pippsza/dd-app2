@@ -5,12 +5,14 @@ import {
 } from "react-native-responsive-dimensions";
 type Props = {
   item: any;
+  cardStyle: any;
 };
-export default function PlayerItem({ item }: Props) {
+export default function PlayerItem({ item, cardStyle }: Props) {
   return (
     <>
-      <View style={style.box}>
-        <Text>{item.name}</Text>
+      <View style={cardStyle}>
+        <Text>{item.status}</Text>
+        <Text style={style.nick}>{item.name}</Text>
       </View>
     </>
   );
@@ -18,6 +20,6 @@ export default function PlayerItem({ item }: Props) {
 
 import { StyleSheet } from "react-native";
 const style = StyleSheet.create({
-  box: { flex: 1, width: rw(5), height: rh(1) },
-  firstCard: {},
+  nick: { color: "blue", fontSize: 15 },
+  // firstCard: {},
 });

@@ -10,7 +10,10 @@ import Slider from "./slider";
 
 export default function PlayerList() {
   return (
-    <Slider></Slider>
+    <View style={style.container}>
+      <Slider></Slider>
+    </View>
+
     //   <View style={style.container}>
     //     <Swiper
     //       ref={swiperRef}
@@ -38,7 +41,8 @@ export default function PlayerList() {
     //
   );
 }
-
+import { StyleSheet } from "react-native";
+const style = StyleSheet.create({ container: { flex: 1 } });
 const data = [
   {
     status: "online",

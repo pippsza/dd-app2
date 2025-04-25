@@ -12,19 +12,24 @@ const LOOPED_DATA = [...ORIGINAL_ITEMS, ...ORIGINAL_ITEMS, ...ORIGINAL_ITEMS];
 const MIDDLE_INDEX = ORIGINAL_ITEMS.length;
 
 export default function Slider() {
-  const listRef = useRef<FlatList>(null);
+  const listRef = useRef(null);
   const [topIndex, setTopIndex] = useState(MIDDLE_INDEX);
 
+  // При монтировании сразу ставим скролл в середину
   useEffect(() => {
-    // стартуем в центре
     listRef.current?.scrollToOffset({
       offset: MIDDLE_INDEX * ITEM_HEIGHT,
       animated: false,
     });
   }, []);
 
-  const handlePress = (idx: number) => {
-    // скроллим нажатую карточку наверх
+  // Обработка нажатия на карточку
+  const handlePress = (idx) => {
+    if (idx === topIndex) {
+      console.log("🛑 Эта карточка уже первая!");
+      return;
+    }
+    // Иначе скроллим нажатую карточку наверх
     listRef.current?.scrollToOffset({
       offset: idx * ITEM_HEIGHT,
       animated: true,
@@ -32,14 +37,14 @@ export default function Slider() {
     setTopIndex(idx);
   };
 
+  // Обработчик завершения скролла для бесконечного листания
   const onMomentumScrollEnd = (e) => {
     const offsetY = e.nativeEvent.contentOffset.y;
     let idx = Math.round(offsetY / ITEM_HEIGHT);
 
-    // обновляем "верхнюю" карточку
     setTopIndex(idx);
 
-    // зацикливание
+    // Зацикливание — перепрыгиваем в середину при выходе за границы
     if (idx < ORIGINAL_ITEMS.length) {
       idx += ORIGINAL_ITEMS.length;
       listRef.current?.scrollToOffset({
@@ -101,7 +106,7 @@ export default function Slider() {
 
 const styles = StyleSheet.create({
   listContainer: {
-    alignItems: "center",
+    alignItems: "center", // Центровка элементов по горизонтали
   },
   box: {
     height: ITEM_HEIGHT,

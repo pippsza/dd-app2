@@ -2,13 +2,14 @@ import { Text, View } from "react-native";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
+  responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
 type Props = {
   item: any;
-  isFirst: any;
+  isActive: any;
 };
 
-export default function PlayerItem({ item, isFirst }: Props) {
+export default function PlayerItem({ item, isActive }: Props) {
   const FirstCard = (
     <>
       <View style={style.firstCard}>
@@ -26,29 +27,40 @@ export default function PlayerItem({ item, isFirst }: Props) {
     </>
   );
 
-  return <> {isFirst ? FirstCard : RegularCard}</>;
+  return <> {isActive ? FirstCard : RegularCard}</>;
 }
 
 import { StyleSheet } from "react-native";
 const style = StyleSheet.create({
   box: {
-    flex: 0,
-    width: rw(80),
-    height: rh(13),
-    borderColor: "black",
-    marginVertical: rh(4),
+    height: rh(15), // 15% высоты экрана
+    width: rw(90), // 90% ширины экрана
+    marginHorizontal: rw(5),
+    marginVertical: rh(1),
+    borderRadius: rh(1),
     borderWidth: 3,
-    borderRadius: 20,
+    borderColor: "black",
+    padding: rw(4),
+
     backgroundColor: "white",
-    // alignItems: "center",
-    // justifyContent: "center",
+    justifyContent: "center",
   },
   firstCard: {
-    backgroundColor: "red",
-    width: rw(80),
-    height: rh(13),
+    backgroundColor: "green",
+    width: rw(100),
+    marginHorizontal: 0,
+    borderWidth: 3,
     borderColor: "black",
+    height: rh(20), // 20% высоты для первой карточки
+    elevation: 5, // Тень для Android
+    shadowColor: "#000", // Тень для iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
   },
-  nick: { color: "blue", fontSize: 15 },
+  nick: {
+    fontSize: rf(2.3), // 2.3% ширины экрана
+    fontWeight: "700",
+    textAlign: "center",
+  },
   // firstCard: {},
 });

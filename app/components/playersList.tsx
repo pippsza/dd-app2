@@ -1,85 +1,62 @@
-import { Text, View, FlatList, FlatListProps } from "react-native";
+import { Text, View } from "react-native";
 import PlayerItem from "./playerItem";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
+  responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
+import Swiper from "react-native-swiper";
 export default function PlayerList() {
-  const CARD_HEIGHT = rh(25);
-  const VISIBLE_CARDS = 4;
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const flatListRef = useRef<FlatList<any>>(null);
-
-  const data =
-    originalData.length > 4 ? [...originalData, ...originalData] : originalData;
-  const scrollEnabled = originalData.length > 4;
-
-  const onViewableItemsChanged = ({ viewableItems }: any) => {
-    if (viewableItems.length > 0) {
-      const index = viewableItems[0].index % originalData.length;
-      setCurrentIndex(index);
-    }
-  };
-
-  const handleScrollEnd = (e: any) => {
-    const offsetY = e.nativeEvent.contentOffset.y;
-    const maxOffset = originalData.length * rh(25);
-
-    if (originalData.length <= 4) return;
-
-    if (offsetY >= maxOffset) {
-      flatListRef.current?.scrollToOffset({
-        offset: offsetY % maxOffset,
-        animated: false,
-      });
-    }
-  };
+  const [index, setIndex] = useState(0);
+  const swiperRef = useRef<Swiper>(null);
+  const pages = [];
+  for (let i = 0; i < data.length; i += 4) {
+    pages.push(data.slice(i, i + 4));
+  }
 
   return (
-    <View style={{ flex: 1 }}>
-      <FlatList
-        ref={flatListRef}
-        data={data}
-        scrollEnabled={originalData.length > 4}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item, index }) => (
-          <PlayerItem
-            item={item}
-            isFirst={index % originalData.length === currentIndex}
-          />
-        )}
-        snapToInterval={CARD_HEIGHT}
-        decelerationRate="fast"
-        showsVerticalScrollIndicator={false}
-        onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
-        contentContainerStyle={{
-          paddingTop: (rh(100) - CARD_HEIGHT * VISIBLE_CARDS) / 2,
-        }}
-        onMomentumScrollEnd={handleScrollEnd}
-      />
+    <View style={style.container}>
+      <Swiper
+        ref={swiperRef}
+        index={0}
+        showsPagination={false}
+        loop={true}
+        onIndexChanged={(i) => setIndex(i)}
+        horizontal={false}
+        height={SCREEN_HEIGHT}
+        containerStyle={style.swiper}
+      >
+        {pages.map((page, pageIndex) => (
+          <View key={pageIndex} style={style.page}>
+            {page.map((player, i) => (
+              <PlayerItem
+                key={player.profile.name}
+                item={player}
+                isActive={i === 0}
+              />
+            ))}
+          </View>
+        ))}
+      </Swiper>
     </View>
   );
 }
 
 import { StyleSheet } from "react-native";
 import { useRef, useState } from "react";
+const SCREEN_HEIGHT = rh(100);
+const CARD_HEIGHT = SCREEN_HEIGHT / 4;
 const style = StyleSheet.create({
-  box: {
-    flex: 1,
-
-    width: rw(100),
-    height: rh(100),
-    position: "absolute",
+  container: { flex: 1 },
+  swiper: { height: SCREEN_HEIGHT },
+  page: {
+    height: SCREEN_HEIGHT,
+    justifyContent: "space-between",
     alignItems: "center",
-    paddingBottom: rh(20),
-
-    justifyContent: "space-around",
-    paddingVertical: rh(4),
   },
 });
 
-const originalData = [
+const data = [
   {
     status: "online",
     playing_map: "Linear",

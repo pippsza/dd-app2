@@ -7,12 +7,14 @@ import {
 } from "react-native-responsive-dimensions";
 
 interface CardProps {
-  name: string;
+  item: any;
 }
 
-export const BigCard: React.FC<CardProps> = ({ name }) => (
+export const BigCard: React.FC<CardProps> = ({ item }) => (
   <View style={[styles.card, styles.bigCard]}>
-    <Text style={styles.text}>{name}</Text>
+    <Text style={styles.text}>{item.profile.name}</Text>
+    <Text>Points: {item.profile.points}</Text>
+    <Text>Clan: {item.profile.clan}</Text>
   </View>
 );
 
@@ -25,12 +27,11 @@ const styles = StyleSheet.create({
     borderColor: "#aaa",
   },
   bigCard: {
-    backgroundColor: "#4a90e2",
     width: rw(100),
   },
   text: {
     fontSize: rf(3),
-    color: "#fff",
+    color: "black",
     fontWeight: "600",
   },
 });

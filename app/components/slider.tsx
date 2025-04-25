@@ -4,22 +4,6 @@ import { BigCard } from "./BigCard";
 import { RegularCard } from "./RegularCard";
 import { SmallCard } from "./SmallCard";
 
-const ORIGINAL_ITEMS = Array.from({ length: 20 }, (_, i) => `Player ${i + 1}`);
-const ITEM_HEIGHT = 200; // Высота карточки
-
-let LOOPED_DATA = [...ORIGINAL_ITEMS, ...ORIGINAL_ITEMS, ...ORIGINAL_ITEMS];
-if (ORIGINAL_ITEMS.length < 4) {
-  LOOPED_DATA = [
-    ...ORIGINAL_ITEMS,
-    ...ORIGINAL_ITEMS,
-    ...ORIGINAL_ITEMS,
-    ...ORIGINAL_ITEMS,
-    ...ORIGINAL_ITEMS,
-    ...ORIGINAL_ITEMS,
-  ];
-}
-const MIDDLE_INDEX = ORIGINAL_ITEMS.length;
-
 export default function Slider() {
   const listRef = useRef<FlatList>(null);
   const [topIndex, setTopIndex] = useState(MIDDLE_INDEX);
@@ -71,11 +55,11 @@ export default function Slider() {
     const rel = index - topIndex;
     const card =
       rel === 0 ? (
-        <BigCard name={item} />
+        <BigCard item={item} />
       ) : rel === 1 || rel === 2 ? (
-        <RegularCard name={item} />
+        <RegularCard item={item} />
       ) : (
-        <SmallCard name={item} />
+        <SmallCard item={item} />
       );
 
     return <Pressable onPress={() => handlePress(index)}>{card}</Pressable>;
@@ -107,3 +91,369 @@ const styles = StyleSheet.create({
     alignItems: "center", // Центрируем все элементы по горизонтали
   },
 });
+
+const ORIGINAL_ITEMS = [
+  {
+    status: "online",
+    playing_map: "Linear",
+    playing_server: "Ger1 - ddrace",
+
+    profile: {
+      name: "good santa",
+      points: 124453,
+      clan: "NEMO",
+      skin_name: "Kirby_[4]",
+      skin_color_body: "",
+      skin_color_feet: "",
+    },
+    general_activity: {
+      total_seconds_played: 8416710,
+      start_of_playtime: "2022-05-03",
+    },
+    most_played_locations: [
+      {
+        key: "eu",
+        seconds_played: 5674195,
+      },
+      {
+        key: "eu:it",
+        seconds_played: 1583535,
+      },
+    ],
+    most_played_categories: [
+      {
+        key: "Brutal",
+        seconds_played: 3926725,
+      },
+      {
+        key: "Moderate",
+        seconds_played: 854790,
+      },
+      {
+        key: "Novice",
+        seconds_played: 467800,
+      },
+    ],
+    most_played_gametypes: [
+      {
+        key: "DDraceNetwork",
+        seconds_played: 6167075,
+      },
+      {
+        key: "Gores",
+        seconds_played: 2190105,
+      },
+      {
+        key: "TestDDraceNetwork",
+        seconds_played: 17185,
+      },
+      {
+        key: "fng2",
+        seconds_played: 14055,
+      },
+    ],
+    most_played_maps: [
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+    ],
+  },
+  {
+    status: "online",
+    playing_map: "Linear",
+    playing_server: "Ger1 - ddrace",
+    profile: {
+      name: "joni_2210",
+      points: 124453,
+      clan: "Furry",
+      skin_name: "Kirby_[4]",
+      skin_color_body: "",
+      skin_color_feet: "",
+    },
+    general_activity: {
+      total_seconds_played: 8416710,
+      start_of_playtime: "2022-05-03",
+    },
+    most_played_locations: [
+      {
+        key: "eu",
+        seconds_played: 5674195,
+      },
+      {
+        key: "eu:it",
+        seconds_played: 1583535,
+      },
+    ],
+    most_played_categories: [
+      {
+        key: "Brutal",
+        seconds_played: 3926725,
+      },
+      {
+        key: "Moderate",
+        seconds_played: 854790,
+      },
+      {
+        key: "Novice",
+        seconds_played: 467800,
+      },
+    ],
+    most_played_gametypes: [
+      {
+        key: "DDraceNetwork",
+        seconds_played: 6167075,
+      },
+      {
+        key: "Gores",
+        seconds_played: 2190105,
+      },
+      {
+        key: "TestDDraceNetwork",
+        seconds_played: 17185,
+      },
+      {
+        key: "fng2",
+        seconds_played: 14055,
+      },
+    ],
+    most_played_maps: [
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+    ],
+  },
+  {
+    status: "online",
+    playing_map: "Linear",
+    playing_server: "Ger1 - ddrace",
+    profile: {
+      name: "Monik",
+      points: 124453,
+      clan: "NEMO",
+      skin_name: "Kirby_[4]",
+      skin_color_body: "",
+      skin_color_feet: "",
+    },
+    general_activity: {
+      total_seconds_played: 8416710,
+      start_of_playtime: "2022-05-03",
+    },
+    most_played_locations: [
+      {
+        key: "eu",
+        seconds_played: 5674195,
+      },
+      {
+        key: "eu:it",
+        seconds_played: 1583535,
+      },
+    ],
+    most_played_categories: [
+      {
+        key: "Brutal",
+        seconds_played: 3926725,
+      },
+      {
+        key: "Moderate",
+        seconds_played: 854790,
+      },
+      {
+        key: "Novice",
+        seconds_played: 467800,
+      },
+    ],
+    most_played_gametypes: [
+      {
+        key: "DDraceNetwork",
+        seconds_played: 6167075,
+      },
+      {
+        key: "Gores",
+        seconds_played: 2190105,
+      },
+      {
+        key: "TestDDraceNetwork",
+        seconds_played: 17185,
+      },
+      {
+        key: "fng2",
+        seconds_played: 14055,
+      },
+    ],
+    most_played_maps: [
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+    ],
+  },
+  {
+    status: "online",
+    playing_map: "Linear",
+    playing_server: "Ger1 - ddrace",
+    start_of_playtime: "2022-05-03",
+    profile: {
+      name: "pippsza",
+      points: 124453,
+      clan: "NEMO",
+      skin_name: "Kirby_[4]",
+      skin_color_body: "",
+      skin_color_feet: "",
+    },
+    general_activity: {
+      total_seconds_played: 8416710,
+      start_of_playtime: "2022-05-03",
+    },
+    most_played_locations: [
+      {
+        key: "eu",
+        seconds_played: 5674195,
+      },
+      {
+        key: "eu:it",
+        seconds_played: 1583535,
+      },
+    ],
+    most_played_categories: [
+      {
+        key: "Brutal",
+        seconds_played: 3926725,
+      },
+      {
+        key: "Moderate",
+        seconds_played: 854790,
+      },
+      {
+        key: "Novice",
+        seconds_played: 467800,
+      },
+    ],
+    most_played_gametypes: [
+      {
+        key: "DDraceNetwork",
+        seconds_played: 6167075,
+      },
+      {
+        key: "Gores",
+        seconds_played: 2190105,
+      },
+      {
+        key: "TestDDraceNetwork",
+        seconds_played: 17185,
+      },
+      {
+        key: "fng2",
+        seconds_played: 14055,
+      },
+    ],
+    most_played_maps: [
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+    ],
+  },
+  {
+    status: "online",
+    playing_map: "Linear",
+    playing_server: "Ger1 - ddrace",
+    start_of_playtime: "2022-05-03",
+    profile: {
+      name: "pippsza",
+      points: 124453,
+      clan: "NEMO",
+      skin_name: "Kirby_[4]",
+      skin_color_body: "",
+      skin_color_feet: "",
+    },
+    general_activity: {
+      total_seconds_played: 8416710,
+      start_of_playtime: "2022-05-03",
+    },
+    most_played_locations: [
+      {
+        key: "eu",
+        seconds_played: 5674195,
+      },
+      {
+        key: "eu:it",
+        seconds_played: 1583535,
+      },
+    ],
+    most_played_categories: [
+      {
+        key: "Brutal",
+        seconds_played: 3926725,
+      },
+      {
+        key: "Moderate",
+        seconds_played: 854790,
+      },
+      {
+        key: "Novice",
+        seconds_played: 467800,
+      },
+    ],
+    most_played_gametypes: [
+      {
+        key: "DDraceNetwork",
+        seconds_played: 6167075,
+      },
+      {
+        key: "Gores",
+        seconds_played: 2190105,
+      },
+      {
+        key: "TestDDraceNetwork",
+        seconds_played: 17185,
+      },
+      {
+        key: "fng2",
+        seconds_played: 14055,
+      },
+    ],
+    most_played_maps: [
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+    ],
+  },
+];
+
+const ITEM_HEIGHT = 200; // Высота карточки
+
+let LOOPED_DATA = [...ORIGINAL_ITEMS, ...ORIGINAL_ITEMS, ...ORIGINAL_ITEMS];
+if (ORIGINAL_ITEMS.length < 4) {
+  LOOPED_DATA = [
+    ...ORIGINAL_ITEMS,
+    ...ORIGINAL_ITEMS,
+    ...ORIGINAL_ITEMS,
+    ...ORIGINAL_ITEMS,
+    ...ORIGINAL_ITEMS,
+    ...ORIGINAL_ITEMS,
+  ];
+}
+const MIDDLE_INDEX = ORIGINAL_ITEMS.length;

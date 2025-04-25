@@ -7,12 +7,14 @@ import {
 } from "react-native-responsive-dimensions";
 
 interface CardProps {
-  name: string;
+  item: any;
 }
 
-export const SmallCard: React.FC<CardProps> = ({ name }) => (
+export const SmallCard: React.FC<CardProps> = ({ item }) => (
   <View style={[stylesSmall.card, stylesSmall.smallCard]}>
-    <Text style={stylesSmall.text}>{name}</Text>
+    <View style={stylesSmall.contentBox}>
+      <Text style={stylesSmall.text}>{item.profile.name}</Text>
+    </View>
   </View>
 );
 
@@ -25,12 +27,24 @@ const stylesSmall = StyleSheet.create({
     borderColor: "#aaa",
   },
   smallCard: {
-    backgroundColor: "#e94e77",
+    paddingVertical: 20,
     width: rw(70),
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  contentBox: {
+    backgroundColor: "white",
+    borderWidth: 3,
+    borderColor: "black",
+    borderRadius: 15,
+    height: "60%",
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   text: {
     fontSize: rf(2),
-    color: "#fff",
+    color: "black",
     fontWeight: "400",
   },
 });

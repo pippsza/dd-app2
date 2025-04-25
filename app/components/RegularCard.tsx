@@ -3,31 +3,30 @@ import { View, Text, StyleSheet } from "react-native";
 import {
   responsiveWidth as rw,
   responsiveFontSize as rf,
+  responsiveHeight as rh,
 } from "react-native-responsive-dimensions";
 
 interface CardProps {
   name: string;
 }
 
-export const RegularCard: React.FC<CardProps> = ({ name }) => {
-  return (
-    <View style={[styles.card, styles.regularCard]}>
-      <Text style={styles.text}>{name}</Text>
-    </View>
-  );
-};
+export const RegularCard: React.FC<CardProps> = ({ name }) => (
+  <View style={[stylesReg.card, stylesReg.regularCard]}>
+    <Text style={stylesReg.text}>{name}</Text>
+  </View>
+);
 
-const styles = StyleSheet.create({
+const stylesReg = StyleSheet.create({
   card: {
-    height: 200, // Установка фиксированной высоты для карточек
+    height: 200,
     justifyContent: "center",
     alignItems: "center",
     borderBottomWidth: 1,
     borderColor: "#aaa",
   },
   regularCard: {
-    backgroundColor: "#50e3c2", // Цвет для средней карточки
-    width: rw(90), // 90% ширины
+    backgroundColor: "#50e3c2",
+    width: rw(90),
   },
   text: {
     fontSize: rf(2.5),

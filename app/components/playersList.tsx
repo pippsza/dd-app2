@@ -40,7 +40,9 @@ export default function PlayerList() {
   );
 }
 import { StyleSheet } from "react-native";
-const style = StyleSheet.create({ container: { flex: 1 } });
+const style = StyleSheet.create({
+  container: { flex: 1, paddingBottom: rh(8) },
+});
 const data = [
   {
     status: "online",

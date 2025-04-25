@@ -1,14 +1,13 @@
 import React, { useRef, useEffect, useState } from "react";
-import { FlatList, View, StyleSheet } from "react-native";
+import { FlatList, Pressable, StyleSheet } from "react-native";
 import { BigCard } from "./BigCard";
 import { RegularCard } from "./RegularCard";
 import { SmallCard } from "./SmallCard";
 
-const ORIGINAL_ITEMS = Array.from({ length: 1 }, (_, i) => `Player ${i + 1}`);
+const ORIGINAL_ITEMS = Array.from({ length: 20 }, (_, i) => `Player ${i + 1}`);
 const ITEM_HEIGHT = 200; // Высота карточки
 
 let LOOPED_DATA = [...ORIGINAL_ITEMS, ...ORIGINAL_ITEMS, ...ORIGINAL_ITEMS];
-
 if (ORIGINAL_ITEMS.length < 4) {
   LOOPED_DATA = [
     ...ORIGINAL_ITEMS,
@@ -32,7 +31,20 @@ export default function Slider() {
     });
   }, []);
 
-  const onMomentumScrollEnd = (e) => {
+  // Функция обработки нажатия на карточку
+  const handlePress = (idx: number) => {
+    if (idx === topIndex) {
+      console.log("🛑 Эта карточка уже первая!");
+      return;
+    }
+    listRef.current?.scrollToOffset({
+      offset: idx * ITEM_HEIGHT,
+      animated: true,
+    });
+    setTopIndex(idx);
+  };
+
+  const onMomentumScrollEnd = (e: any) => {
     const offsetY = e.nativeEvent.contentOffset.y;
     let idx = Math.round(offsetY / ITEM_HEIGHT);
 
@@ -55,17 +67,18 @@ export default function Slider() {
     }
   };
 
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({ item, index }: { item: string; index: number }) => {
     const rel = index - topIndex;
-    const isTop = rel === 0;
+    const card =
+      rel === 0 ? (
+        <BigCard name={item} />
+      ) : rel === 1 || rel === 2 ? (
+        <RegularCard name={item} />
+      ) : (
+        <SmallCard name={item} />
+      );
 
-    if (rel === 0) {
-      return <BigCard name={item} />;
-    } else if (rel === 1 || rel === 2) {
-      return <RegularCard name={item} />;
-    } else {
-      return <SmallCard name={item} />;
-    }
+    return <Pressable onPress={() => handlePress(index)}>{card}</Pressable>;
   };
 
   return (

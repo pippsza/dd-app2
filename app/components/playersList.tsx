@@ -6,14 +6,9 @@ import {
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
 import Swiper from "react-native-swiper";
-export default function PlayerList() {
-  const [index, setIndex] = useState(0);
-  const swiperRef = useRef<Swiper>(null);
-  const pages = [];
-  for (let i = 0; i < data.length; i += 4) {
-    pages.push(data.slice(i, i + 4));
-  }
+import Slider from "./slider";
 
+export default function PlayerList() {
   return (
     <Slider></Slider>
     //   <View style={style.container}>
@@ -43,21 +38,6 @@ export default function PlayerList() {
     //
   );
 }
-
-import { StyleSheet } from "react-native";
-import { useRef, useState } from "react";
-import Slider from "./slider";
-const SCREEN_HEIGHT = rh(100);
-const CARD_HEIGHT = SCREEN_HEIGHT / 4;
-const style = StyleSheet.create({
-  container: { flex: 1 },
-  swiper: { height: SCREEN_HEIGHT },
-  page: {
-    height: SCREEN_HEIGHT,
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-});
 
 const data = [
   {

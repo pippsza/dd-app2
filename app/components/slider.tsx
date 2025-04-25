@@ -6,24 +6,103 @@ import {
   responsiveWidth as rw,
 } from "react-native-responsive-dimensions";
 
-const ORIGINAL_ITEMS = Array.from({ length: 5 }, (_, i) => `Box ${i + 1}`);
+// Массив игроков
+const PLAYERS = [
+  { id: "1", name: "Alice" },
+  { id: "2", name: "Bob" },
+  { id: "3", name: "Carol" },
+  { id: "4", name: "Dave" },
+  { id: "5", name: "Eve" },
+];
 const ITEM_HEIGHT = rh(25); // 4 элемента на экране
-const LOOPED_DATA = [...ORIGINAL_ITEMS, ...ORIGINAL_ITEMS, ...ORIGINAL_ITEMS];
-const MIDDLE_INDEX = ORIGINAL_ITEMS.length;
+
+// Бесконечный массив из трех копий
+const loopData = (data) => [...data, ...data, ...data];
+
+// Конфигурация стилей и ширин для каждой позиции
+const STYLE_CONFIG = {
+  0: {
+    width: 100,
+    container: {
+      backgroundColor: "#4a90e2",
+      borderColor: "#357ab8",
+      borderWidth: 2,
+      shadowColor: "#000",
+      shadowOpacity: 0.2,
+      shadowOffset: { width: 0, height: 2 },
+      shadowRadius: 4,
+      elevation: 3,
+    },
+    text: { fontSize: rf(3), color: "#fff", fontWeight: "600" },
+  },
+  1: {
+    width: 90,
+    container: {
+      backgroundColor: "#50e3c2",
+      borderColor: "#41735e",
+      borderWidth: 2,
+      color: "red",
+      shadowColor: "#000",
+      shadowOpacity: 0.15,
+      shadowOffset: { width: 0, height: 1 },
+      shadowRadius: 3,
+      elevation: 2,
+    },
+    text: { fontSize: rf(2.8), color: "red", fontWeight: "600" },
+  },
+  2: {
+    // совпадает со стилем позиции 1
+    width: 90,
+    container: {},
+    text: {},
+  },
+  3: {
+    width: 70,
+    container: {
+      backgroundColor: "#9013fe",
+      borderColor: "#6d0ea5",
+      borderWidth: 2,
+      shadowColor: "#000",
+      shadowOpacity: 0.15,
+      shadowOffset: { width: 0, height: 1 },
+      shadowRadius: 3,
+      elevation: 2,
+    },
+    text: { fontSize: rf(2.8), color: "#fff", fontWeight: "600" },
+  },
+};
+// Базовый конфиг для остальных позиций (использует стиль позиции 3)
+const DEFAULT_CONFIG = {
+  width: STYLE_CONFIG[3].width,
+  container: STYLE_CONFIG[3].container,
+  text: STYLE_CONFIG[3].text,
+};
+
+// Компонент карточки игрока
+function PlayerCard({ player, styleConfig, onPress }) {
+  const { width, container, text } = styleConfig;
+  return (
+    <Pressable onPress={onPress}>
+      <View style={[styles.box, container, { width: rw(width) }]}>
+        <Text style={[styles.text, text]}>{player.name}</Text>
+      </View>
+    </Pressable>
+  );
+}
 
 export default function Slider() {
   const listRef = useRef(null);
-  const [topIndex, setTopIndex] = useState(MIDDLE_INDEX);
+  const [topIndex, setTopIndex] = useState(PLAYERS.length);
+  const data = loopData(PLAYERS);
 
-  // При монтировании сразу ставим прокрутку в середину
+  // Стартуем в центре
   useEffect(() => {
     listRef.current?.scrollToOffset({
-      offset: MIDDLE_INDEX * ITEM_HEIGHT,
+      offset: PLAYERS.length * ITEM_HEIGHT,
       animated: false,
     });
   }, []);
 
-  // Обработка нажатия на карточку
   const handlePress = (idx) => {
     if (idx === topIndex) {
       console.log("🛑 Эта карточка уже первая!");
@@ -36,22 +115,16 @@ export default function Slider() {
     setTopIndex(idx);
   };
 
-  // Бесконечное перелистывание и обновление topIndex
   const onMomentumScrollEnd = (e) => {
     const offsetY = e.nativeEvent.contentOffset.y;
     let idx = Math.round(offsetY / ITEM_HEIGHT);
-
     setTopIndex(idx);
 
-    if (idx < ORIGINAL_ITEMS.length) {
-      idx += ORIGINAL_ITEMS.length;
-      listRef.current?.scrollToOffset({
-        offset: idx * ITEM_HEIGHT,
-        animated: false,
-      });
-      setTopIndex(idx);
-    } else if (idx >= ORIGINAL_ITEMS.length * 2) {
-      idx -= ORIGINAL_ITEMS.length;
+    // Зацикливание
+    if (idx < PLAYERS.length) idx += PLAYERS.length;
+    else if (idx >= PLAYERS.length * 2) idx -= PLAYERS.length;
+
+    if (idx !== topIndex) {
       listRef.current?.scrollToOffset({
         offset: idx * ITEM_HEIGHT,
         animated: false,
@@ -63,52 +136,29 @@ export default function Slider() {
   return (
     <FlatList
       ref={listRef}
-      data={LOOPED_DATA}
+      data={data}
       keyExtractor={(_, i) => i.toString()}
       renderItem={({ item, index }) => {
         const rel = index - topIndex;
-        let widthPercent = 100;
-        let variantStyle = {};
-        let textVariantStyle = {};
-
-        switch (rel) {
-          case 0:
-            widthPercent = 100;
-            variantStyle = styles.variant0;
-            textVariantStyle = styles.variant0Text;
-            break;
-          case 1:
-            widthPercent = 90;
-            variantStyle = styles.variant1;
-            textVariantStyle = styles.variant1Text;
-            break;
-          case 2:
-            widthPercent = 90;
-            variantStyle = styles.variant2;
-            textVariantStyle = styles.variant2Text;
-            break;
-          case 3:
-            widthPercent = 70;
-            variantStyle = styles.variant3;
-            textVariantStyle = styles.variant3Text;
-            break;
-          default:
-            widthPercent = 100;
+        // Получаем конфиг: если нет, используем DEFAULT_CONFIG
+        const rawConfig = STYLE_CONFIG[rel] || DEFAULT_CONFIG;
+        // Для pos 2 без явных стилей читаем из pos 1
+        const styleConfig = { ...rawConfig };
+        if (rel === 2 && Object.keys(rawConfig.container).length === 0) {
+          styleConfig.container = STYLE_CONFIG[1].container;
+          styleConfig.text = STYLE_CONFIG[1].text;
         }
-
         return (
-          <Pressable onPress={() => handlePress(index)}>
-            <View
-              style={[styles.box, { width: rw(widthPercent) }, variantStyle]}
-            >
-              <Text style={[styles.text, textVariantStyle]}> {item} </Text>
-            </View>
-          </Pressable>
+          <PlayerCard
+            player={item}
+            styleConfig={styleConfig}
+            onPress={() => handlePress(index)}
+          />
         );
       }}
       getItemLayout={(_, index) => ({
         length: ITEM_HEIGHT,
-        offset: ITEM_HEIGHT * index,
+        offset: index * ITEM_HEIGHT,
         index,
       })}
       showsVerticalScrollIndicator={false}
@@ -122,9 +172,7 @@ export default function Slider() {
 }
 
 const styles = StyleSheet.create({
-  listContainer: {
-    alignItems: "center",
-  },
+  listContainer: { alignItems: "center" },
   box: {
     height: ITEM_HEIGHT,
     justifyContent: "center",
@@ -132,68 +180,5 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: "#aaa",
   },
-  text: {
-    fontSize: rf(2.5),
-    color: "#333",
-  },
-  variant0: {
-    backgroundColor: "#4a90e2",
-    borderColor: "#357ab8",
-    borderWidth: 2,
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  variant0Text: {
-    fontSize: rf(3),
-    color: "#fff",
-    fontWeight: "600",
-  },
-  variant1: {
-    backgroundColor: "#50e3c2",
-    borderColor: "#41735e",
-    borderWidth: 2,
-    shadowColor: "#000",
-    shadowOpacity: 0.15,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  variant1Text: {
-    fontSize: rf(2.8),
-    color: "#fff",
-    fontWeight: "600",
-  },
-  variant2: {
-    backgroundColor: "#f5a623",
-    borderColor: "#aa7b17",
-    borderWidth: 2,
-    shadowColor: "#000",
-    shadowOpacity: 0.15,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  variant2Text: {
-    fontSize: rf(2.8),
-    color: "#fff",
-    fontWeight: "600",
-  },
-  variant3: {
-    backgroundColor: "#9013fe",
-    borderColor: "#6d0ea5",
-    borderWidth: 2,
-    shadowColor: "#000",
-    shadowOpacity: 0.15,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  variant3Text: {
-    fontSize: rf(2.8),
-    color: "#fff",
-    fontWeight: "600",
-  },
+  text: { fontSize: rf(2.5), color: "#333" },
 });

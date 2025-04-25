@@ -11,38 +11,52 @@ interface CardProps {
 }
 
 export const RegularCard: React.FC<CardProps> = ({ item }) => (
-  <View style={[stylesReg.card, stylesReg.regularCard]}>
-    <View style={stylesReg.contentBox}>
-      <Text style={stylesReg.text}>{item.profile.name}</Text>
-      <Text style={stylesReg.text}>Regular card</Text>
+  <View style={[styles.card, styles.regularCard]}>
+    <View style={styles.contentBox}>
+      <Text style={styles.text}>{item.profile.name}</Text>
+      <Text style={styles.subText}>Points: {item.profile.points}</Text>
+      <Text style={styles.subText}>Clan: {item.profile.clan}</Text>
     </View>
   </View>
 );
 
-const stylesReg = StyleSheet.create({
+const styles = StyleSheet.create({
   card: {
-    height: 200,
+    height: '90%',
     justifyContent: "center",
     alignItems: "center",
-    borderBottomWidth: 1,
-    borderColor: "#aaa",
   },
   regularCard: {
     width: rw(90),
   },
-  text: {
-    fontSize: rf(2.5),
-    color: "black",
-    fontWeight: "500",
-  },
   contentBox: {
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white",
-    borderWidth: 3,
-    borderColor: "black",
+    backgroundColor: 'white',
     borderRadius: 15,
-    height: "60%",
-    width: "100%",
+    padding: 15,
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#ddd',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  text: {
+    fontSize: rf(3),
+    color: "black",
+    fontWeight: "600",
+    marginBottom: 5,
+  },
+  subText: {
+    fontSize: rf(2),
+    color: "#666",
+    marginTop: 2,
   },
 });

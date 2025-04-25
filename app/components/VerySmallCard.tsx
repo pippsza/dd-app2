@@ -10,8 +10,8 @@ interface CardProps {
   item: any;
 }
 
-export const SmallCard: React.FC<CardProps> = ({ item }) => (
-  <View style={[styles.card, styles.smallCard]}>
+export const VerySmallCard: React.FC<CardProps> = ({ item }) => (
+  <View style={[styles.card, styles.verySmallCard]}>
     <View style={styles.contentBox}>
       <Text style={styles.text}>{item.profile.name}</Text>
       <Text style={styles.subText}>Points: {item.profile.points}</Text>
@@ -26,13 +26,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  smallCard: {
-    width: rw(85),
+  verySmallCard: {
+    width: rw(80),
   },
   contentBox: {
     backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 12,
+    borderRadius: 10,
+    padding: 10,
     width: '100%',
     height: '100%',
     justifyContent: 'center',
@@ -49,14 +49,14 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   text: {
-    fontSize: rf(2.5),
+    fontSize: rf(2),
     color: "black",
     fontWeight: "600",
     marginBottom: 5,
   },
   subText: {
-    fontSize: rf(1.8),
+    fontSize: rf(1.5),
     color: "#666",
     marginTop: 2,
   },
-});
+}); 

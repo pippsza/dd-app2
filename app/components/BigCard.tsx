@@ -8,30 +8,39 @@ import {
 
 interface CardProps {
   item: any;
+  containerHeight: number;
 }
 
-export const BigCard: React.FC<CardProps> = ({ item }) => (
-  <View style={[styles.card, styles.bigCard]}>
+export const BigCard: React.FC<CardProps> = ({ item, containerHeight }) => (
+  <View style={[styles.card, styles.bigCard, { height: containerHeight * 0.35 }]}>
     <Text style={styles.text}>{item.profile.name}</Text>
-    <Text>Points: {item.profile.points}</Text>
-    <Text>Clan: {item.profile.clan}</Text>
+    <Text style={styles.subText}>Points: {item.profile.points}</Text>
+    <Text style={styles.subText}>Clan: {item.profile.clan}</Text>
   </View>
 );
 
 const styles = StyleSheet.create({
   card: {
-    height: 200,
+    width: rw(100),
     justifyContent: "center",
     alignItems: "center",
-    borderBottomWidth: 1,
-    borderColor: "#aaa",
   },
   bigCard: {
-    width: rw(100),
+    backgroundColor: 'white',
+    borderWidth: 3,
+    borderColor: 'black',
+    borderRadius: rh(1),
+    padding: rw(4),
   },
   text: {
-    fontSize: rf(3),
+    fontSize: rf(4),
     color: "black",
     fontWeight: "600",
+    marginBottom: rh(1),
+  },
+  subText: {
+    fontSize: rf(2.5),
+    color: "#666",
+    marginTop: rh(0.5),
   },
 });

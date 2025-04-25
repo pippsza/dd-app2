@@ -1,6 +1,7 @@
 // app/_layout.tsx
 import { ImageBackground } from "react-native";
 import { Slot } from "expo-router";
+import { enableLayoutAnimations } from "react-native-reanimated";
 
 export default function Layout() {
   return (

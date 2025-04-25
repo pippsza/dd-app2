@@ -7,43 +7,52 @@ import {
 } from "react-native-responsive-dimensions";
 
 const ORIGINAL_ITEMS = Array.from({ length: 10 }, (_, i) => `Box ${i + 1}`);
-const ITEM_HEIGHT = rh(25); // 4 элемента на экран
+const ITEM_HEIGHT = rh(25); // 4 на экран
 const LOOPED_DATA = [...ORIGINAL_ITEMS, ...ORIGINAL_ITEMS, ...ORIGINAL_ITEMS];
 
 export default function App() {
   const listRef = useRef<FlatList>(null);
-  const INITIAL_INDEX = ORIGINAL_ITEMS.length;
-  const [topIndex, setTopIndex] = useState(INITIAL_INDEX);
+  const MIDDLE_INDEX = ORIGINAL_ITEMS.length;
+  const [topIndex, setTopIndex] = useState(MIDDLE_INDEX);
 
-  // При монтировании ставим стартовую позицию в середине
+  // при старте ставимся ровно в середину
   useEffect(() => {
     listRef.current?.scrollToOffset({
-      offset: INITIAL_INDEX * ITEM_HEIGHT,
+      offset: MIDDLE_INDEX * ITEM_HEIGHT,
       animated: false,
     });
   }, []);
 
-  // Обработчик видимых элементов
-  const onViewableItemsChanged = useRef(({ viewableItems }) => {
-    if (viewableItems.length) {
-      // Находим минимальный индекс среди видимых — это и есть «верхний»
-      const minIndex = viewableItems.reduce(
-        (min, v) => (v.index! < min ? v.index! : min),
-        Infinity
-      );
-      setTopIndex(minIndex);
-    }
-  }).current;
+  const onMomentumScrollEnd = (e) => {
+    const offsetY = e.nativeEvent.contentOffset.y;
+    let idx = Math.round(offsetY / ITEM_HEIGHT);
 
-  const viewabilityConfig = {
-    itemVisiblePercentThreshold: 50, // считать видимым, если больше чем на 50%
+    // определяем «верхний» индекс и записываем в стейт
+    setTopIndex(idx);
+
+    // если выходим за левую или правую границу, мгновенно перепрыгиваем в центр
+    if (idx < ORIGINAL_ITEMS.length) {
+      idx += ORIGINAL_ITEMS.length;
+      listRef.current?.scrollToOffset({
+        offset: idx * ITEM_HEIGHT,
+        animated: false,
+      });
+      setTopIndex(idx);
+    } else if (idx >= ORIGINAL_ITEMS.length * 2) {
+      idx -= ORIGINAL_ITEMS.length;
+      listRef.current?.scrollToOffset({
+        offset: idx * ITEM_HEIGHT,
+        animated: false,
+      });
+      setTopIndex(idx);
+    }
   };
 
   return (
     <FlatList
       ref={listRef}
       data={LOOPED_DATA}
-      keyExtractor={(_, idx) => idx.toString()}
+      keyExtractor={(_, i) => i.toString()}
       renderItem={({ item, index }) => {
         const isTop = index === topIndex;
         return (
@@ -61,11 +70,7 @@ export default function App() {
       pagingEnabled
       snapToInterval={ITEM_HEIGHT}
       decelerationRate="fast"
-      onMomentumScrollEnd={() => {
-        /* цикл остаётся тот же */
-      }}
-      onViewableItemsChanged={onViewableItemsChanged}
-      viewabilityConfig={viewabilityConfig}
+      onMomentumScrollEnd={onMomentumScrollEnd}
     />
   );
 }
@@ -81,10 +86,10 @@ const styles = StyleSheet.create({
     borderColor: "#aaa",
   },
   topBox: {
-    backgroundColor: "#4a90e2", // другой фон
-    borderColor: "#357ab8", // другая рамка
+    backgroundColor: "#4a90e2",
+    borderColor: "#357ab8",
     borderWidth: 2,
-    shadowColor: "#000", // лёгкая тень
+    shadowColor: "#000",
     shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
@@ -95,8 +100,8 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   topText: {
-    fontSize: rf(3), // чуть больше шрифт
-    color: "#fff", // светлый текст
+    fontSize: rf(3),
+    color: "#fff",
     fontWeight: "600",
   },
 });

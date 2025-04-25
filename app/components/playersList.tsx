@@ -15,35 +15,38 @@ export default function PlayerList() {
   }
 
   return (
-    <View style={style.container}>
-      <Swiper
-        ref={swiperRef}
-        index={0}
-        showsPagination={false}
-        loop={true}
-        onIndexChanged={(i) => setIndex(i)}
-        horizontal={false}
-        height={SCREEN_HEIGHT}
-        containerStyle={style.swiper}
-      >
-        {pages.map((page, pageIndex) => (
-          <View key={pageIndex} style={style.page}>
-            {page.map((player, i) => (
-              <PlayerItem
-                key={player.profile.name}
-                item={player}
-                isActive={i === 0}
-              />
-            ))}
-          </View>
-        ))}
-      </Swiper>
-    </View>
+    <Slider></Slider>
+    //   <View style={style.container}>
+    //     <Swiper
+    //       ref={swiperRef}
+    //       index={0}
+    //       showsPagination={false}
+    //       loop={true}
+    //       onIndexChanged={(i) => setIndex(i)}
+    //       horizontal={false}
+    //       height={SCREEN_HEIGHT}
+    //       containerStyle={style.swiper}
+    //     >
+    //       {pages.map((page, pageIndex) => (
+    //         <View key={pageIndex} style={style.page}>
+    //           {page.map((player, i) => (
+    //             <PlayerItem
+    //               key={player.profile.name}
+    //               item={player}
+    //               isActive={i === 0}
+    //             />
+    //           ))}
+    //         </View>
+    //       ))}
+    //     </Swiper>
+    //   </View>
+    //
   );
 }
 
 import { StyleSheet } from "react-native";
 import { useRef, useState } from "react";
+import Slider from "./slider";
 const SCREEN_HEIGHT = rh(100);
 const CARD_HEIGHT = SCREEN_HEIGHT / 4;
 const style = StyleSheet.create({

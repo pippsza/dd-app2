@@ -10,7 +10,7 @@ import Slider from "./slider";
 
 export default function PlayerList() {
   return (
-    <View style={style.container}>{/* <Slider></Slider> */}</View>
+    <View style={style.container}>{<Slider></Slider>}</View>
 
     //   <View style={style.container}>
     //     <Swiper

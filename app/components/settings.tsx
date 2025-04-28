@@ -2,6 +2,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
+  responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
 import SunDark from "../../assets/svg/sun-dark.svg";
 export default function Settings() {
@@ -47,9 +48,9 @@ const style = StyleSheet.create({
     alignItems: "center",
     gap: rh(3),
   },
-  head: { fontSize: rw(8), textAlign: "center", marginBottom: rh(4) },
+  head: { fontSize: rf(4), textAlign: "center", marginBottom: rh(4) },
   text: {
-    fontSize: rw(6),
+    fontSize: rf(3),
     textAlign: "left",
   },
   option: {

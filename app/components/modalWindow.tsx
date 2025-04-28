@@ -9,6 +9,7 @@ import {
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
+  responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
 
 type Props = { closeModal: () => void };
@@ -67,7 +68,7 @@ const style = StyleSheet.create({
     zIndex: 9999,
   },
   text: {
-    fontSize: rw(7),
+    fontSize: rf(3),
   },
   button: {
     backgroundColor: "white",

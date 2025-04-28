@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { StyleSheet } from "react-native";
 import Header from "./components/header";
 import {
@@ -9,6 +9,7 @@ import AddFrBttn from "./components/addFriendBttn";
 import ModalWindow from "./components/modalWindow";
 import { useState } from "react";
 import PlayerList from "./components/playersList";
+import { Link } from "expo-router";
 export default function Main() {
   const [modal, setModal] = useState<Boolean>(false);
 
@@ -24,6 +25,7 @@ export default function Main() {
         <Header></Header>
         {modal && <ModalWindow closeModal={closeModal}></ModalWindow>}
         <PlayerList></PlayerList>
+
         <AddFrBttn openModal={openModal}></AddFrBttn>
       </View>
     </View>

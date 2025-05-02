@@ -15,11 +15,13 @@ export default function PlayerList() {
     console.log("penis");
     navigation.navigate("info", { item: JSON.stringify(data) });
   };
-  return ( )
+  const CARD_HEIGHT = rh(20);
+  const VISIBLE_CARDS = 4;
+  return <Text>123</Text>;
 }
-  //   <TouchableOpacity onPress={navigateFunc}>
-  //     <Text>GO TO INFO PAGE</Text>
-  //   </TouchableOpacity>
+//   <TouchableOpacity onPress={navigateFunc}>
+//     <Text>GO TO INFO PAGE</Text>
+//   </TouchableOpacity>
 import { StyleSheet } from "react-native";
 import { Link } from "expo-router";
 const style = StyleSheet.create({ container: { flex: 1 } });

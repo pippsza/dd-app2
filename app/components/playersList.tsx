@@ -15,39 +15,11 @@ export default function PlayerList() {
     console.log("penis");
     navigation.navigate("info", { item: JSON.stringify(data) });
   };
-  return (
-    <TouchableOpacity onPress={navigateFunc}>
-      <Text>GO TO INFO PAGE</Text>
-    </TouchableOpacity>
-  );
-  // <View style={style.container}>{<Slider></Slider>}</View>
-
-  //   <View style={style.container}>
-  //     <Swiper
-  //       ref={swiperRef}
-  //       index={0}
-  //       showsPagination={false}
-  //       loop={true}
-  //       onIndexChanged={(i) => setIndex(i)}
-  //       horizontal={false}
-  //       height={SCREEN_HEIGHT}
-  //       containerStyle={style.swiper}
-  //     >
-  //       {pages.map((page, pageIndex) => (
-  //         <View key={pageIndex} style={style.page}>
-  //           {page.map((player, i) => (
-  //             <PlayerItem
-  //               key={player.profile.name}
-  //               item={player}
-  //               isActive={i === 0}
-  //             />
-  //           ))}
-  //         </View>
-  //       ))}
-  //     </Swiper>
-  //   </View>
-  //
+  return ( )
 }
+  //   <TouchableOpacity onPress={navigateFunc}>
+  //     <Text>GO TO INFO PAGE</Text>
+  //   </TouchableOpacity>
 import { StyleSheet } from "react-native";
 import { Link } from "expo-router";
 const style = StyleSheet.create({ container: { flex: 1 } });

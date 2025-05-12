@@ -20,14 +20,14 @@ export default function PlayerList() {
     //   <PlayerCarousel data={data} itemHeight={40} />
     // </View>
 
-    <VerticalLoopingFlatList
-      data={data}
-      onPressItem={(item, idx) => console.log("Pressed", idx, item)}
-    />
+    // <VerticalLoopingFlatList
+    //   data={data}
+    //   onPressItem={(item, idx) => console.log("Pressed", idx, item)}
+    // />
 
-    // <TouchableOpacity onPress={navigateFunc}>
-    //   <Text>GO TO INFO PAGE</Text>
-    // </TouchableOpacity>
+    <TouchableOpacity onPress={navigateFunc}>
+      <Text>GO TO INFO PAGE</Text>
+    </TouchableOpacity>
   );
 }
 

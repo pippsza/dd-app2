@@ -1,6 +1,5 @@
-import { Image, Text, View } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import { useRoute } from "@react-navigation/native";
-import SingleTeeRenderer from "./components/singleTee";
 import { Link } from "expo-router";
 import {
   responsiveHeight as rh,
@@ -8,13 +7,12 @@ import {
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
 import { StyleSheet } from "react-native";
-import TeeWebView from "./components/singleTee";
-import SingleTeeSkia from "./components/singleTee";
 import { PieChart } from "react-native-chart-kit";
+import CrossDark from "../assets/svg/cross-dark.svg";
 let data: AllTees;
 export default function Info({}) {
   const route = useRoute();
-  const { item } = route.params;
+  const { item }: any = route.params;
   try {
     data = JSON.parse(item);
   } catch (error) {
@@ -54,7 +52,12 @@ export default function Info({}) {
       };
     });
   return (
-    <View>
+    <View style={style.mainContainer}>
+      <Link asChild href="/">
+        <TouchableOpacity>
+          <CrossDark style={style.svg}></CrossDark>
+        </TouchableOpacity>
+      </Link>
       <View style={style.teeContainer}>
         <View>
           <Text style={style.regText}>Best friend:</Text>
@@ -96,7 +99,7 @@ export default function Info({}) {
         </View>
       </View>
       <Text style={style.sectionMargin}>
-        Total played{" "}
+        Total played
         {Math.round(testData.general_activity.total_seconds_played / 60)} hours
         since {testData.general_activity.start_of_playtime}
       </Text>
@@ -138,7 +141,6 @@ export default function Info({}) {
           ></PieChart>
         </View>
       </View>
-      <Link href="/">back</Link>
     </View>
   );
 }
@@ -163,13 +165,16 @@ const style = StyleSheet.create({
   rightSmallText: { fontSize: rf(1.8), textAlign: "center" },
   favContainer: { padding: 0, margin: 0 },
   sectionMargin: { marginBottom: rh(3), textAlign: "center", fontSize: rf(2) },
+  mainContainer: {
+    flex: 1,
+    justifyContent: "space-between",
+    paddingVertical: rh(1),
+  },
+  svg: {
+    width: rw(14),
+    height: rw(14),
+    position: "absolute",
+    right: 0,
+    top: 0,
+  },
 });
-{
-  /* <SingleTeeSkia
-          skinName="ninja" // загрузит ninja.png
-          defaultSkinName="default"
-          bodyColor="#ff0000"
-          feetColor="#0000ff"
-          style={{ width: 200, height: 300 }}
-        /> */
-}

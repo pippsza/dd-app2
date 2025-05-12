@@ -1,111 +1,387 @@
 import React, { useRef, useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet, Pressable } from "react-native";
+import { FlatList, Pressable, StyleSheet, Dimensions, View } from "react-native";
+import { BigCard } from "./BigCard";
+import { RegularCard } from "./RegularCard";
+import { SmallCard } from "./SmallCard";
 import {
   responsiveHeight as rh,
-  responsiveFontSize as rf,
   responsiveWidth as rw,
+  responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
 
-// Массив игроков
-const PLAYERS = [
-  { id: "1", name: "Alice" },
-  { id: "2", name: "Bob" },
-  { id: "3", name: "Carol" },
-  { id: "4", name: "Dave" },
-  { id: "5", name: "Eve" },
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const SWIPER_HEIGHT = SCREEN_HEIGHT * 0.8; // 80% of screen height
+const ITEM_HEIGHT = SWIPER_HEIGHT / 5; // Each item takes 1/5 of the swiper height
+
+const ORIGINAL_ITEMS = [
+  {
+    status: "online",
+    playing_map: "Linear",
+    playing_server: "Ger1 - ddrace",
+
+    profile: {
+      name: "good santa",
+      points: 124453,
+      clan: "NEMO",
+      skin_name: "Kirby_[4]",
+      skin_color_body: "",
+      skin_color_feet: "",
+    },
+    general_activity: {
+      total_seconds_played: 8416710,
+      start_of_playtime: "2022-05-03",
+    },
+    most_played_locations: [
+      {
+        key: "eu",
+        seconds_played: 5674195,
+      },
+      {
+        key: "eu:it",
+        seconds_played: 1583535,
+      },
+    ],
+    most_played_categories: [
+      {
+        key: "Brutal",
+        seconds_played: 3926725,
+      },
+      {
+        key: "Moderate",
+        seconds_played: 854790,
+      },
+      {
+        key: "Novice",
+        seconds_played: 467800,
+      },
+    ],
+    most_played_gametypes: [
+      {
+        key: "DDraceNetwork",
+        seconds_played: 6167075,
+      },
+      {
+        key: "Gores",
+        seconds_played: 2190105,
+      },
+      {
+        key: "TestDDraceNetwork",
+        seconds_played: 17185,
+      },
+      {
+        key: "fng2",
+        seconds_played: 14055,
+      },
+    ],
+    most_played_maps: [
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+    ],
+  },
+  {
+    status: "online",
+    playing_map: "Linear",
+    playing_server: "Ger1 - ddrace",
+    profile: {
+      name: "joni_2210",
+      points: 124453,
+      clan: "Furry",
+      skin_name: "Kirby_[4]",
+      skin_color_body: "",
+      skin_color_feet: "",
+    },
+    general_activity: {
+      total_seconds_played: 8416710,
+      start_of_playtime: "2022-05-03",
+    },
+    most_played_locations: [
+      {
+        key: "eu",
+        seconds_played: 5674195,
+      },
+      {
+        key: "eu:it",
+        seconds_played: 1583535,
+      },
+    ],
+    most_played_categories: [
+      {
+        key: "Brutal",
+        seconds_played: 3926725,
+      },
+      {
+        key: "Moderate",
+        seconds_played: 854790,
+      },
+      {
+        key: "Novice",
+        seconds_played: 467800,
+      },
+    ],
+    most_played_gametypes: [
+      {
+        key: "DDraceNetwork",
+        seconds_played: 6167075,
+      },
+      {
+        key: "Gores",
+        seconds_played: 2190105,
+      },
+      {
+        key: "TestDDraceNetwork",
+        seconds_played: 17185,
+      },
+      {
+        key: "fng2",
+        seconds_played: 14055,
+      },
+    ],
+    most_played_maps: [
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+    ],
+  },
+  {
+    status: "online",
+    playing_map: "Linear",
+    playing_server: "Ger1 - ddrace",
+    profile: {
+      name: "Monik",
+      points: 124453,
+      clan: "NEMO",
+      skin_name: "Kirby_[4]",
+      skin_color_body: "",
+      skin_color_feet: "",
+    },
+    general_activity: {
+      total_seconds_played: 8416710,
+      start_of_playtime: "2022-05-03",
+    },
+    most_played_locations: [
+      {
+        key: "eu",
+        seconds_played: 5674195,
+      },
+      {
+        key: "eu:it",
+        seconds_played: 1583535,
+      },
+    ],
+    most_played_categories: [
+      {
+        key: "Brutal",
+        seconds_played: 3926725,
+      },
+      {
+        key: "Moderate",
+        seconds_played: 854790,
+      },
+      {
+        key: "Novice",
+        seconds_played: 467800,
+      },
+    ],
+    most_played_gametypes: [
+      {
+        key: "DDraceNetwork",
+        seconds_played: 6167075,
+      },
+      {
+        key: "Gores",
+        seconds_played: 2190105,
+      },
+      {
+        key: "TestDDraceNetwork",
+        seconds_played: 17185,
+      },
+      {
+        key: "fng2",
+        seconds_played: 14055,
+      },
+    ],
+    most_played_maps: [
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+    ],
+  },
+  {
+    status: "online",
+    playing_map: "Linear",
+    playing_server: "Ger1 - ddrace",
+    start_of_playtime: "2022-05-03",
+    profile: {
+      name: "pippsza",
+      points: 124453,
+      clan: "NEMO",
+      skin_name: "Kirby_[4]",
+      skin_color_body: "",
+      skin_color_feet: "",
+    },
+    general_activity: {
+      total_seconds_played: 8416710,
+      start_of_playtime: "2022-05-03",
+    },
+    most_played_locations: [
+      {
+        key: "eu",
+        seconds_played: 5674195,
+      },
+      {
+        key: "eu:it",
+        seconds_played: 1583535,
+      },
+    ],
+    most_played_categories: [
+      {
+        key: "Brutal",
+        seconds_played: 3926725,
+      },
+      {
+        key: "Moderate",
+        seconds_played: 854790,
+      },
+      {
+        key: "Novice",
+        seconds_played: 467800,
+      },
+    ],
+    most_played_gametypes: [
+      {
+        key: "DDraceNetwork",
+        seconds_played: 6167075,
+      },
+      {
+        key: "Gores",
+        seconds_played: 2190105,
+      },
+      {
+        key: "TestDDraceNetwork",
+        seconds_played: 17185,
+      },
+      {
+        key: "fng2",
+        seconds_played: 14055,
+      },
+    ],
+    most_played_maps: [
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+    ],
+  },
+  {
+    status: "online",
+    playing_map: "Linear",
+    playing_server: "Ger1 - ddrace",
+    start_of_playtime: "2022-05-03",
+    profile: {
+      name: "pippsza",
+      points: 124453,
+      clan: "NEMO",
+      skin_name: "Kirby_[4]",
+      skin_color_body: "",
+      skin_color_feet: "",
+    },
+    general_activity: {
+      total_seconds_played: 8416710,
+      start_of_playtime: "2022-05-03",
+    },
+    most_played_locations: [
+      {
+        key: "eu",
+        seconds_played: 5674195,
+      },
+      {
+        key: "eu:it",
+        seconds_played: 1583535,
+      },
+    ],
+    most_played_categories: [
+      {
+        key: "Brutal",
+        seconds_played: 3926725,
+      },
+      {
+        key: "Moderate",
+        seconds_played: 854790,
+      },
+      {
+        key: "Novice",
+        seconds_played: 467800,
+      },
+    ],
+    most_played_gametypes: [
+      {
+        key: "DDraceNetwork",
+        seconds_played: 6167075,
+      },
+      {
+        key: "Gores",
+        seconds_played: 2190105,
+      },
+      {
+        key: "TestDDraceNetwork",
+        seconds_played: 17185,
+      },
+      {
+        key: "fng2",
+        seconds_played: 14055,
+      },
+    ],
+    most_played_maps: [
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+      {
+        map_name: "Stronghold",
+        seconds_played: 12313213,
+      },
+    ],
+  },
 ];
-const ITEM_HEIGHT = rh(25); // 4 элемента на экране
 
-// Бесконечный массив из трех копий
-const loopData = (data) => [...data, ...data, ...data];
-
-// Конфигурация стилей и ширин для каждой позиции
-const STYLE_CONFIG = {
-  0: {
-    width: 100,
-    container: {
-      backgroundColor: "#4a90e2",
-      borderColor: "#357ab8",
-      borderWidth: 2,
-      shadowColor: "#000",
-      shadowOpacity: 0.2,
-      shadowOffset: { width: 0, height: 2 },
-      shadowRadius: 4,
-      elevation: 3,
-    },
-    text: { fontSize: rf(3), color: "#fff", fontWeight: "600" },
-  },
-  1: {
-    width: 90,
-    container: {
-      backgroundColor: "#50e3c2",
-      borderColor: "#41735e",
-      borderWidth: 2,
-      color: "red",
-      shadowColor: "#000",
-      shadowOpacity: 0.15,
-      shadowOffset: { width: 0, height: 1 },
-      shadowRadius: 3,
-      elevation: 2,
-    },
-    text: { fontSize: rf(2.8), color: "red", fontWeight: "600" },
-  },
-  2: {
-    // совпадает со стилем позиции 1
-    width: 90,
-    container: {},
-    text: {},
-  },
-  3: {
-    width: 70,
-    container: {
-      backgroundColor: "#9013fe",
-      borderColor: "#6d0ea5",
-      borderWidth: 2,
-      shadowColor: "#000",
-      shadowOpacity: 0.15,
-      shadowOffset: { width: 0, height: 1 },
-      shadowRadius: 3,
-      elevation: 2,
-    },
-    text: { fontSize: rf(2.8), color: "#fff", fontWeight: "600" },
-  },
-};
-// Базовый конфиг для остальных позиций (использует стиль позиции 3)
-const DEFAULT_CONFIG = {
-  width: STYLE_CONFIG[3].width,
-  container: STYLE_CONFIG[3].container,
-  text: STYLE_CONFIG[3].text,
-};
-
-// Компонент карточки игрока
-function PlayerCard({ player, styleConfig, onPress }) {
-  const { width, container, text } = styleConfig;
-  return (
-    <Pressable onPress={onPress}>
-      <View style={[styles.box, container, { width: rw(width) }]}>
-        <Text style={[styles.text, text]}>{player.name}</Text>
-      </View>
-    </Pressable>
-  );
-}
+const LOOPED_DATA = [...ORIGINAL_ITEMS, ...ORIGINAL_ITEMS, ...ORIGINAL_ITEMS];
+const MIDDLE_INDEX = ORIGINAL_ITEMS.length;
 
 export default function Slider() {
-  const listRef = useRef(null);
-  const [topIndex, setTopIndex] = useState(PLAYERS.length);
-  const data = loopData(PLAYERS);
+  const listRef = useRef<FlatList>(null);
+  const [topIndex, setTopIndex] = useState(MIDDLE_INDEX);
+  const [containerHeight, setContainerHeight] = useState(0);
 
-  // Стартуем в центре
   useEffect(() => {
     listRef.current?.scrollToOffset({
-      offset: PLAYERS.length * ITEM_HEIGHT,
+      offset: MIDDLE_INDEX * ITEM_HEIGHT,
       animated: false,
     });
   }, []);
 
-  const handlePress = (idx) => {
+  const handlePress = (idx: number) => {
     if (idx === topIndex) {
-      console.log("🛑 Эта карточка уже первая!");
+      console.log("This card is already at the top!");
       return;
     }
     listRef.current?.scrollToOffset({
@@ -115,16 +391,21 @@ export default function Slider() {
     setTopIndex(idx);
   };
 
-  const onMomentumScrollEnd = (e) => {
+  const onMomentumScrollEnd = (e: any) => {
     const offsetY = e.nativeEvent.contentOffset.y;
     let idx = Math.round(offsetY / ITEM_HEIGHT);
+
     setTopIndex(idx);
 
-    // Зацикливание
-    if (idx < PLAYERS.length) idx += PLAYERS.length;
-    else if (idx >= PLAYERS.length * 2) idx -= PLAYERS.length;
-
-    if (idx !== topIndex) {
+    if (idx < ORIGINAL_ITEMS.length) {
+      idx += ORIGINAL_ITEMS.length;
+      listRef.current?.scrollToOffset({
+        offset: idx * ITEM_HEIGHT,
+        animated: false,
+      });
+      setTopIndex(idx);
+    } else if (idx >= ORIGINAL_ITEMS.length * 2) {
+      idx -= ORIGINAL_ITEMS.length;
       listRef.current?.scrollToOffset({
         offset: idx * ITEM_HEIGHT,
         animated: false,
@@ -133,52 +414,69 @@ export default function Slider() {
     }
   };
 
+  const renderItem = ({ item, index }: { item: any; index: number }) => {
+    const rel = index - topIndex;
+    let card;
+
+    if (rel === 0) {
+      card = <BigCard item={item} containerHeight={containerHeight} />;
+    } else if (rel === 1 || rel === 2) {
+      card = <RegularCard item={item} />;
+    } else if (rel === 3) {
+      card = <SmallCard item={item} />;
+    }
+
+    return (
+      <Pressable 
+        onPress={() => handlePress(index)}
+        style={[
+          styles.itemContainer,
+          { height: rel === 0 ? containerHeight * 0.35 : ITEM_HEIGHT },
+        ]}
+      >
+        {card}
+      </Pressable>
+    );
+  };
+
   return (
-    <FlatList
-      ref={listRef}
-      data={data}
-      keyExtractor={(_, i) => i.toString()}
-      renderItem={({ item, index }) => {
-        const rel = index - topIndex;
-        // Получаем конфиг: если нет, используем DEFAULT_CONFIG
-        const rawConfig = STYLE_CONFIG[rel] || DEFAULT_CONFIG;
-        // Для pos 2 без явных стилей читаем из pos 1
-        const styleConfig = { ...rawConfig };
-        if (rel === 2 && Object.keys(rawConfig.container).length === 0) {
-          styleConfig.container = STYLE_CONFIG[1].container;
-          styleConfig.text = STYLE_CONFIG[1].text;
-        }
-        return (
-          <PlayerCard
-            player={item}
-            styleConfig={styleConfig}
-            onPress={() => handlePress(index)}
-          />
-        );
-      }}
-      getItemLayout={(_, index) => ({
-        length: ITEM_HEIGHT,
-        offset: index * ITEM_HEIGHT,
-        index,
-      })}
-      showsVerticalScrollIndicator={false}
-      pagingEnabled
-      snapToInterval={ITEM_HEIGHT}
-      decelerationRate="fast"
-      onMomentumScrollEnd={onMomentumScrollEnd}
-      contentContainerStyle={styles.listContainer}
-    />
+    <View
+      style={styles.container}
+      onLayout={(event) => setContainerHeight(event.nativeEvent.layout.height)}
+    >
+      <FlatList
+        ref={listRef}
+        data={LOOPED_DATA}
+        keyExtractor={(_, i) => i.toString()}
+        renderItem={renderItem}
+        getItemLayout={(_, index) => ({
+          length: ITEM_HEIGHT,
+          offset: ITEM_HEIGHT * index,
+          index,
+        })}
+        showsVerticalScrollIndicator={false}
+        pagingEnabled
+        snapToInterval={ITEM_HEIGHT}
+        decelerationRate="fast"
+        onMomentumScrollEnd={onMomentumScrollEnd}
+        contentContainerStyle={styles.listContainer}
+        style={styles.container}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  listContainer: { alignItems: "center" },
-  box: {
-    height: ITEM_HEIGHT,
-    justifyContent: "center",
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderColor: "#aaa",
+  container: {
+    flex: 1,
+    overflow: 'hidden',
   },
-  text: { fontSize: rf(2.5), color: "#333" },
+  listContainer: {
+    alignItems: "center",
+  },
+  itemContainer: {
+    width: rw(100),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

@@ -8,8 +8,8 @@ const CanvasImageRN = ({ src }) => {
     if (!canvas) return;
 
     // 3. Настраиваем размеры canvas
-    canvas.width = 256;
-    canvas.height = 128;
+    canvas.width = 100;
+    canvas.height = 100;
 
     const ctx = canvas.getContext("2d");
     const img = new Image(canvas); // 4. Правильное создание изображения
@@ -24,14 +24,17 @@ const CanvasImageRN = ({ src }) => {
 
       // 6. Очистка и отрисовка
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 96, 0, 96, 96, 0, 0, 96, 96);
+      ctx.drawImage(img, 0, 0, 96, 96, -2, -2, 100, 100);
+      //   ctx.drawImage(img, 192, 64, 64, 60, -2, -2, 105, 105);
+      // ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
     } catch (error) {
       console.error("Image loading failed:", error);
     }
   };
 
   return (
-    <View style={{ width: 300, height: 300 }}>
+    <View style={{ width: 500, height: 500 }}>
       <Canvas ref={handleCanvas} />
     </View>
   );

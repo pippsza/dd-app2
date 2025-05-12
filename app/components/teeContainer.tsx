@@ -23,7 +23,7 @@ export default function TeeContainer({ data }: any) {
           </View>
           <Image
             style={style.img}
-            source={require("../assets/images/monik.png")}
+            source={require("../../assets/images/monik.png")}
           ></Image>
           <View>
             <Text style={style.bigText}>{data.profile.name}</Text>
@@ -46,7 +46,6 @@ export default function TeeContainer({ data }: any) {
           </View>
         </View>
       </View>
-      ;
     </>
   );
 }

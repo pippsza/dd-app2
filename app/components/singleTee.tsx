@@ -1,71 +1,49 @@
-// SingleTeeSkia.tsx
-import React, { useEffect, useState } from "react";
-import { View, ActivityIndicator, StyleProp, ViewStyle } from "react-native";
-import {
-  Canvas,
-  Image as SkImage,
-  useCanvas,
-  useImage,
-  Rect,
-  Fill,
-  Image,
-} from "@shopify/react-native-skia";
+import React, { useState, useEffect } from "react";
+import { Image, View } from "react-native";
 
-interface Props {
-  skinName: string; // Имя файла без .png
-  defaultSkinName?: string; // Запасное имя
-  bodyColor?: string; // CSS-цвет туловища, например '#ff0000'
-  feetColor?: string; // CSS-цвет ног, например '#0000ff'
-  style?: StyleProp<ViewStyle>; // Ширина/высота контейнера
-}
-
-export default function SingleTeeSkia({
+export default function TeeImage({
   skinName,
-  defaultSkinName = "default",
-  bodyColor = "#ffffff",
-  feetColor = "#ffffff",
+  bodyColor,
+  feetColor,
   style,
-}: Props) {
-  const [uri, setUri] = useState(
-    `https://ddnet.org/skins/skin/${skinName}.png`
-  );
-  const [triedDefault, setTriedDefault] = useState(false);
-
-  // useImage автоматически кеширует и парсит PNG в SkImage
-  const skImage = useImage(uri);
-
-  // Если png не загрузился, пробуем дефолтный
-  useEffect(() => {
-    if (skImage === null && !triedDefault) {
-      setUri(`https://ddnet.org/skins/skin/${defaultSkinName}.png`);
-      setTriedDefault(true);
-    }
-  }, [skImage]);
-
-  // Пока нет картинки — спиннер
-  if (!skImage) {
-    return (
-      <View style={[{ justifyContent: "center", alignItems: "center" }, style]}>
-        <ActivityIndicator />
-      </View>
-    );
+}: any) {
+  // Конвертация BGR->RGB
+  function bgrToHex(bgrDec: any) {
+    const hex = parseInt(bgrDec, 10).toString(16).padStart(6, "0");
+    const b = hex.slice(0, 2),
+      g = hex.slice(2, 4),
+      r = hex.slice(4, 6);
+    return `#${r}${g}${b}`;
   }
+  const bodyHex = bgrToHex(bodyColor);
+  const feetHex = bgrToHex(feetColor);
 
-  // Canvas займёт весь контейнер
+  // Составляем URL. Сначала пробуем community-скин, потом обычный.
+  const base = "https://skins.ddnet.org/skin";
+  const url = `${base}/community/${skinName}.png`;
+
+  // Используем state, чтобы при ошибке подставить default.png
+  const [imgUri, setImgUri] = useState(url);
+  useEffect(() => {
+    setImgUri(`${base}/community/${skinName}.png`);
+  }, [skinName]);
+
+  // Обработчик ошибки загрузки
+  const onError = () => {
+    setImgUri(`${base}/${skinName}.png`);
+  };
+
   return (
     <View style={style}>
-      <Canvas style={{ flex: 1 }}>
-        {/* 35% от высоты — туловище */}
-        <Fill color={bodyColor} />
-        <Rect x={0} y={0} width="100%" height="35%" />
-
-        {/* 60% — сам скин */}
-        <Image image={skImage} x={0} y="35%" width="100%" height="60%" />
-
-        {/* 15% — ноги */}
-        <Fill color={feetColor} />
-        <Rect x={0} y="95%" width="100%" height="5%" />
-      </Canvas>
+      <Image
+        source={{ uri: imgUri }}
+        style={{ width: 184, height: 184 }} // пример размеров
+        onError={onError}
+        // Пример: применяем один из цветов через tintColor
+        // (в реальном случае потребуются более сложные приёмы для раздельного окрашивания тела/ног)
+        tintColor={bodyHex}
+        resizeMode="contain"
+      />
     </View>
   );
 }

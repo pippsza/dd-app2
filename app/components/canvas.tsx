@@ -1,59 +1,86 @@
 import React from "react";
 import { View } from "react-native";
-import Canvas, { Image } from "react-native-canvas"; // 1. Добавляем импорт Image
+import Canvas, { Image } from "react-native-canvas";
+import { responsiveWidth as rw } from "react-native-responsive-dimensions";
 
-const CanvasImageRN = ({ src }) => {
+/**
+ * CanvasImageRN рендерит изображение (мишку) на Canvas с адаптивными размерами.
+ * @param {object} props
+ * @param {string} props.src - URL изображения
+ * @param {number} props.width - ширина в % экрана
+ */
+const CanvasImageRN = ({ src, width }) => {
   const handleCanvas = async (canvas) => {
-    // 2. Делаем обработчик асинхронным
     if (!canvas) return;
 
-    // 3. Настраиваем размеры canvas
-    canvas.width = 100;
-    canvas.height = 100;
+    // Адаптивная ширина и квадратная высота = ширине
+    const canvasSize = rw(width);
+    canvas.width = canvasSize;
+    canvas.height = canvasSize;
 
     const ctx = canvas.getContext("2d");
-    const img = new Image(canvas); // 4. Правильное создание изображения
 
+    // Единый коэффициент масштабирования по базовым 100x100
+    const scale = canvasSize / 100;
+
+    // Создаем и загружаем изображение
+    const img = new Image(canvas);
     try {
-      // 5. Асинхронная загрузка изображения
       await new Promise((resolve, reject) => {
         img.src = src;
         img.addEventListener("load", resolve);
         img.addEventListener("error", reject);
       });
 
-      // 6. Очистка и отрисовка
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 192, 64, 64, 30, -7, 52, 90, 38);
-      ctx.drawImage(img, 192, 40, 70, 30, -13, 58, 110, 50);
-      ctx.drawImage(img, 96, 0, 96, 96, 0, 0, 96, 96);
-      ctx.drawImage(img, 0, 0, 96, 96, -2, -2, 100, 100);
-      ctx.drawImage(img, 192, 64, 64, 30, 17, 52, 87, 38);
-      ctx.drawImage(img, 192, 40, 70, 30, 11, 58, 108, 50);
-      ctx.drawImage(img, 64, 100, 30, 40, 38, 27, 34, 50);
+      ctx.clearRect(0, 0, canvasSize, canvasSize);
+
+      // Функция рисования с единым scale
+      const draw = (sx, sy, sW, sH, dx, dy, dW, dH) => {
+        ctx.drawImage(
+          img,
+          sx,
+          sy,
+          sW,
+          sH,
+          dx * scale,
+          dy * scale,
+          dW * scale,
+          dH * scale
+        );
+      };
+
+      // Рисуем фрагменты
+      draw(192, 64, 64, 30, -7, 52, 90, 38);
+      draw(192, 40, 70, 30, -13, 58, 110, 50);
+      draw(96, 0, 96, 96, 0, 0, 96, 96);
+      draw(0, 0, 96, 96, -2, -2, 100, 100);
+      draw(192, 64, 64, 30, 17, 52, 87, 38);
+      draw(192, 40, 70, 30, 11, 58, 108, 50);
+      draw(64, 100, 30, 40, 38, 27, 34, 50);
 
       // Зеркальное отражение последнего элемента
       ctx.save();
-      ctx.translate(37 + 34, 30); // x + width, y
+      ctx.translate((38 + 34) * scale, 27 * scale);
       ctx.scale(-1, 1);
-      ctx.drawImage(img, 64, 100, 30, 40, -17, -3, 34, 50);
+      ctx.drawImage(
+        img,
+        64,
+        100,
+        30,
+        40,
+        -17 * scale,
+        0 * scale,
+        34 * scale,
+        50 * scale
+      );
       ctx.restore();
-
-      // ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
     } catch (error) {
       console.error("Image loading failed:", error);
     }
   };
 
   return (
-    <View
-      style={{
-        width: 500,
-        height: 500,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
+    <View style={{ width: rw(width), height: rw(width) }}>
       <Canvas ref={handleCanvas} />
     </View>
   );

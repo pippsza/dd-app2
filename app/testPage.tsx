@@ -1,5 +1,6 @@
 import { Text, View } from "react-native";
 import CanvasImage from "./components/canvas";
+import CanvasImageRN from "./components/canvas";
 
 export default function TestPage() {
   const player = "santa_cool_greyfox";
@@ -13,9 +14,10 @@ export default function TestPage() {
     >
       <Text>Testing</Text>
       <View>
-        <CanvasImage
+        <CanvasImageRN
+          width={30}
           src={`https://skins.ddnet.org/skin/community/${player}.png`}
-        ></CanvasImage>
+        ></CanvasImageRN>
       </View>
     </View>
   );

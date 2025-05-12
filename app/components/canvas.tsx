@@ -46,7 +46,14 @@ const CanvasImageRN = ({ src }) => {
   };
 
   return (
-    <View style={{ width: 500, height: 500 }}>
+    <View
+      style={{
+        width: 500,
+        height: 500,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <Canvas ref={handleCanvas} />
     </View>
   );

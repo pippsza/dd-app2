@@ -1,4 +1,4 @@
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { Link } from "expo-router";
 import {
@@ -11,7 +11,7 @@ import CrossDark from "../assets/svg/cross-dark.svg";
 import GameCategoryPie from "./components/gameCategoriesPie";
 import GameModePie from "./components/gamemodesPie";
 import TotalPlayed from "./components/totalPlayed";
-import TeeContainer from "./components/teeContainer.js";
+import TeeContainer from "./components/teeContainer";
 let data: AllTees;
 export default function Info({}) {
   const route = useRoute();

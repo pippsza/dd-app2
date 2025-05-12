@@ -3,6 +3,7 @@ import { Link } from "expo-router";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
+  responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
 export default function AuthorsInfo() {
   return (
@@ -67,10 +68,10 @@ export default function AuthorsInfo() {
 }
 import { StyleSheet } from "react-native";
 const style = StyleSheet.create({
-  name: { textAlign: "center", fontSize: rw(6) },
+  name: { textAlign: "center", fontSize: rf(3) },
   text: {
     textAlign: "center",
-    fontSize: rw(5),
+    fontSize: rf(2),
     textDecorationLine: "underline",
   },
   container: { flexDirection: "row", gap: rw(5) },
@@ -88,5 +89,5 @@ const style = StyleSheet.create({
 
     width: rw(100),
   },
-  head: { fontSize: rw(8), textAlign: "center" },
+  head: { fontSize: rf(4), textAlign: "center" },
 });

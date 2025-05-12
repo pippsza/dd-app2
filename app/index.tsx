@@ -10,6 +10,7 @@ import ModalWindow from "./components/modalWindow";
 import { useState } from "react";
 import PlayerList from "./components/playersList";
 import { Link } from "expo-router";
+import TestPage from "./testPage";
 export default function Main() {
   const [modal, setModal] = useState<Boolean>(false);
 
@@ -21,13 +22,14 @@ export default function Main() {
   };
   return (
     <View style={style.box}>
-      <View style={style.container}>
+      {/* <View style={style.container}>
         <Header></Header>
         {modal && <ModalWindow closeModal={closeModal}></ModalWindow>}
         <PlayerList></PlayerList>
 
         <AddFrBttn openModal={openModal}></AddFrBttn>
-      </View>
+      </View> */}
+      <TestPage></TestPage>
     </View>
   );
 }

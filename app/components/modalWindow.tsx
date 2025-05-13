@@ -12,19 +12,28 @@ import {
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
 
-type Props = { closeModal: () => void };
+type Props = {
+  closeModal: () => void;
+  inputValue: any;
+  setInputValue: any;
+  addName: any;
+};
 
-export default function ModalWindow({ closeModal }: Props) {
-  const [value, setValue] = useState("");
+export default function ModalWindow({
+  closeModal,
+  inputValue,
+  setInputValue,
+  addName,
+}: Props) {
   const addFriend = () => {
-    console.log(value);
-    if (value.trim().length > 16) {
+    console.log(inputValue);
+    if (inputValue.trim().length > 16) {
       Toast.show({
         type: "info",
         text1: "Name must be shorter then 16 symbols!",
       });
       return;
-    } else if (value.trim().length === 0) {
+    } else if (inputValue.trim().length === 0) {
       Toast.show({
         type: "info",
         text1: "Name field can't be empty!",
@@ -40,12 +49,12 @@ export default function ModalWindow({ closeModal }: Props) {
       <Pressable onPress={(e) => e.stopPropagation()} style={style.modalWin}>
         <Text style={style.text}>Enter friend name</Text>
         <TextInput
-          value={value}
-          onChangeText={setValue}
+          value={inputValue}
+          onChangeText={setInputValue}
           style={style.input}
           placeholder="nameless tee"
         />
-        <TouchableOpacity onPress={addFriend} style={style.button}>
+        <TouchableOpacity onPress={addName} style={style.button}>
           <Text style={style.text}>Add</Text>
         </TouchableOpacity>
       </Pressable>

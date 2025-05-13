@@ -7,10 +7,9 @@ import {
 } from "react-native-responsive-dimensions";
 import AddFrBttn from "./components/addFriendBttn";
 import ModalWindow from "./components/modalWindow";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PlayerList from "./components/playersList";
-import { Link } from "expo-router";
-import TestPage from "./testPage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function Main() {
   const [modal, setModal] = useState<Boolean>(false);
 
@@ -20,11 +19,41 @@ export default function Main() {
   const closeModal = (): void => {
     setModal(false);
   };
+
+  const [names, setNames] = useState<string[]>([]);
+  const [inputValue, setInputValue] = useState("");
+
+  const addName = () => {
+    if (inputValue.trim() === "") return;
+    setNames((prev) => [...prev, inputValue.trim()]);
+    setInputValue("");
+  };
+
+  // Загрузка из AsyncStorage при монтировании
+  useEffect(() => {
+    (async () => {
+      const stored = await AsyncStorage.getItem("friendsNames");
+      if (stored) {
+        setNames(JSON.parse(stored));
+      }
+    })();
+  }, []);
+  useEffect(() => {
+    AsyncStorage.setItem("friendsNames", JSON.stringify(names));
+  }, [names]);
+
   return (
     <View style={style.box}>
       <View style={style.container}>
         <Header></Header>
-        {modal && <ModalWindow closeModal={closeModal}></ModalWindow>}
+        {modal && (
+          <ModalWindow
+            closeModal={closeModal}
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+            addName={addName}
+          ></ModalWindow>
+        )}
         <PlayerList></PlayerList>
 
         <AddFrBttn openModal={openModal}></AddFrBttn>

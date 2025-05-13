@@ -15,7 +15,7 @@ export default function TestPage() {
       <Text>Testing</Text>
       <View>
         <CanvasImageRN
-          width={20}
+          width={50}
           src={`https://skins.ddnet.org/skin/community/${player}.png`}
         ></CanvasImageRN>
       </View>

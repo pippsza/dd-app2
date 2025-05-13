@@ -23,7 +23,7 @@ const COLORS = {
 
 const CANVAS_BASE_SIZE = 100;
 
-const CanvasImageRN = ({ source, width }: Props) => {
+const Tee = ({ source, width }: Props) => {
   const src = `https://skins.ddnet.org/skin/community/${source}.png`;
   // Общая функция для создания и загрузки изображения
   const loadImage = (canvas: any, src: string): Promise<Image> => {
@@ -200,4 +200,4 @@ const style = StyleSheet.create({
   },
 });
 
-export default CanvasImageRN;
+export default Tee;

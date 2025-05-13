@@ -1,9 +1,8 @@
 import { Text, View } from "react-native";
-import CanvasImage from "./components/canvas";
-import CanvasImageRN from "./components/canvas";
+import Tee from "./components/tee";
 
 export default function TestPage() {
-  const player = "nanami";
+  const player = "d";
   return (
     <View
       style={{
@@ -14,7 +13,7 @@ export default function TestPage() {
     >
       <Text>Testing</Text>
       <View>
-        <CanvasImageRN width={50} source={player}></CanvasImageRN>
+        <Tee width={50} source={player}></Tee>
       </View>
     </View>
   );

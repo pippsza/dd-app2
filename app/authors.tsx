@@ -6,6 +6,7 @@ import CrossDark from "../assets/svg/cross-dark.svg";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
+  responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
 export default function Authors() {
   return (
@@ -20,6 +21,11 @@ export default function Authors() {
           <AuthorsInfo></AuthorsInfo>
           <Settings></Settings>
         </View>
+        <Text style={style.text}>
+          Are you a React Native developer? I'd love your support! You can join
+          the project on GitHub — it's open-source. Or just drop me a message on
+          Discord: #pippsza.
+        </Text>
       </View>
     </>
   );
@@ -35,6 +41,11 @@ const style = StyleSheet.create({
   box: {
     flex: 1,
     position: "relative",
+  },
+  text: {
+    textAlign: "center",
+    fontSize: rf(1.5),
+    padding: rh(1),
   },
   svg: {
     width: rw(14),

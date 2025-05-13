@@ -5,6 +5,7 @@ import {
   responsiveWidth as rw,
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
+import Tee from "./tee";
 export default function TeeContainer({ data }: any) {
   return (
     <>
@@ -21,10 +22,7 @@ export default function TeeContainer({ data }: any) {
             <Text style={style.regText}>Playing on: {data.playing_map}</Text>
             <Text style={style.regText}>{data.playing_server}</Text>
           </View>
-          <Image
-            style={style.img}
-            source={require("../../assets/images/monik.png")}
-          ></Image>
+          <Tee width={rh(4)} source={data.profile.skin_name}></Tee>
           <View>
             <Text style={style.bigText}>{data.profile.name}</Text>
             <Text style={style.smallText}>{data.profile.clan}</Text>

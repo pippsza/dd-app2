@@ -22,14 +22,13 @@ export default function Main() {
   };
   return (
     <View style={style.box}>
-      {/* <View style={style.container}>
+      <View style={style.container}>
         <Header></Header>
         {modal && <ModalWindow closeModal={closeModal}></ModalWindow>}
         <PlayerList></PlayerList>
 
         <AddFrBttn openModal={openModal}></AddFrBttn>
-      </View> */}
-      <TestPage></TestPage>
+      </View>
     </View>
   );
 }

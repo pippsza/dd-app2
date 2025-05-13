@@ -10,6 +10,7 @@ import ModalWindow from "./components/modalWindow";
 import { useEffect, useState } from "react";
 import PlayerList from "./components/playersList";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
 export default function Main() {
   const [modal, setModal] = useState<Boolean>(false);
 
@@ -24,9 +25,24 @@ export default function Main() {
   const [inputValue, setInputValue] = useState("");
 
   const addName = () => {
+    console.log(inputValue);
+    if (inputValue.trim().length > 16) {
+      Toast.show({
+        type: "info",
+        text1: "Name must be shorter then 16 symbols!",
+      });
+      return;
+    } else if (inputValue.trim().length === 0) {
+      Toast.show({
+        type: "info",
+        text1: "Name field can't be empty!",
+      });
+    }
+
     if (inputValue.trim() === "") return;
     setNames((prev) => [...prev, inputValue.trim()]);
     setInputValue("");
+    closeModal();
   };
 
   // Загрузка из AsyncStorage при монтировании

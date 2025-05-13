@@ -25,24 +25,6 @@ export default function ModalWindow({
   setInputValue,
   addName,
 }: Props) {
-  const addFriend = () => {
-    console.log(inputValue);
-    if (inputValue.trim().length > 16) {
-      Toast.show({
-        type: "info",
-        text1: "Name must be shorter then 16 symbols!",
-      });
-      return;
-    } else if (inputValue.trim().length === 0) {
-      Toast.show({
-        type: "info",
-        text1: "Name field can't be empty!",
-      });
-    }
-
-    closeModal();
-  };
-
   return (
     <Pressable onPress={closeModal} style={style.modal}>
       <Toast></Toast>
@@ -63,7 +45,6 @@ export default function ModalWindow({
 }
 
 import { StyleSheet } from "react-native";
-import { useState } from "react";
 import Toast from "react-native-toast-message";
 const style = StyleSheet.create({
   modal: {

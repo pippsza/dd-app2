@@ -8,14 +8,14 @@ import {
   responsiveWidth as rw,
 } from "react-native-responsive-dimensions";
 
-export default function Header() {
+export default function Header({ toggleTheme }: any) {
   const changeTheme = () => {
     console.log("PENIS");
   };
   return (
     <>
       <View style={styles.header}>
-        <SunLight onPress={changeTheme} style={styles.svgDark}></SunLight>
+        <SunLight onPress={toggleTheme} style={styles.svgDark}></SunLight>
         <Link href="/authors" asChild>
           <TouchableOpacity>
             <BurgeDark style={styles.svgDark}></BurgeDark>

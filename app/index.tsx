@@ -12,7 +12,18 @@ import PlayerList from "./components/playersList";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 export default function Main() {
-  const [modal, setModal] = useState<Boolean>(false);
+  const [modal, setModal] = useState<boolean>(false);
+  const [theme, setTheme] = useState<boolean>(false);
+  const [names, setNames] = useState<string[]>([]);
+  const [inputValue, setInputValue] = useState("");
+
+  const toggleTheme = (): void => {
+    console.log("theme has toggled");
+    setTheme((prev) => !prev);
+    async () => {
+      const stored = await AsyncStorage.setItem("theme", JSON.stringify(theme));
+    };
+  };
 
   const openModal = (): void => {
     setModal(true);
@@ -20,9 +31,6 @@ export default function Main() {
   const closeModal = (): void => {
     setModal(false);
   };
-
-  const [names, setNames] = useState<string[]>([]);
-  const [inputValue, setInputValue] = useState("");
 
   const addName = () => {
     console.log(inputValue);
@@ -49,6 +57,10 @@ export default function Main() {
   useEffect(() => {
     (async () => {
       const stored = await AsyncStorage.getItem("friendsNames");
+      const themeStored = await AsyncStorage.getItem("theme");
+      if (themeStored !== null) {
+        setTheme(JSON.parse(themeStored));
+      }
       if (stored) {
         setNames(JSON.parse(stored));
       }
@@ -61,7 +73,7 @@ export default function Main() {
   return (
     <View style={style.box}>
       <View style={style.container}>
-        <Header></Header>
+        <Header toggleTheme={toggleTheme}></Header>
         {modal && (
           <ModalWindow
             closeModal={closeModal}
@@ -71,7 +83,10 @@ export default function Main() {
           ></ModalWindow>
         )}
         <PlayerList></PlayerList>
-
+        {theme && <Text>Theme is {theme}</Text>}
+        {names.map((el) => {
+          return <Text>{el}</Text>;
+        })}
         <AddFrBttn openModal={openModal}></AddFrBttn>
       </View>
     </View>

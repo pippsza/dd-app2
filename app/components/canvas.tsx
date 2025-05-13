@@ -16,6 +16,12 @@ type CanvasFunc = (
 ) => void;
 const CanvasImageRN = ({ src, width }: Props) => {
   const handleCanvas = async (canvas) => {
+    function numberToRgba(colorNumber: number, alpha = 1): string {
+      const r = (colorNumber >> 16) & 0xff;
+      const g = (colorNumber >> 8) & 0xff;
+      const b = colorNumber & 0xff;
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
     if (!canvas) return;
 
     // Адаптивная ширина и квадратная высота = ширине
@@ -56,15 +62,27 @@ const CanvasImageRN = ({ src, width }: Props) => {
 
       // Рисуем фрагменты
       draw(192, 64, 64, 30, -7, 52, 90, 38);
+
       draw(192, 40, 70, 30, -13, 58, 110, 50); // нога
       draw(96, 0, 96, 96, 0, 0, 96, 96);
       draw(0, 0, 96, 96, -2, -2, 100, 100); //ТЕЛО
-      draw(192, 64, 64, 30, 17, 52, 87, 38);
+      draw(192, 64, 64, 30, 17, 52, 87, 38); // левая часть тела
+
+      ctx.save();
+
       draw(192, 40, 70, 30, 11, 58, 108, 50); // НОГА
+
+      ctx.globalCompositeOperation = "source-atop";
+      ctx.fillStyle = "blue";
+      ctx.globalAlpha = 0.5;
+      ctx.fillRect(11 * scale, 58 * scale, 108 * scale, 50 * scale);
+
+      ctx.globalCompositeOperation = "source-over";
+      ctx.globalAlpha = 1;
+      ctx.restore();
+
       draw(64, 100, 30, 40, 38, 27, 34, 50); // глаз
 
-      // Зеркальное отражение последнего элемента
-      ctx.save();
       ctx.translate((38 + 34) * scale, 27 * scale);
       ctx.scale(-1, 1);
       ctx.drawImage(

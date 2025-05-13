@@ -17,7 +17,8 @@ type CanvasFunc = (
 
 // Цвета и параметры в одном месте
 const COLORS = {
-  overlayGreen: "rgba(50, 200, 100, 0.6)",
+  overlayBody: "rgba(0, 140, 255, 0.3)", // цвет заливки тела
+  overlayLegs: "rgba(0, 255, 0, 0.3)", // цвет заливки ног
 };
 
 const CANVAS_BASE_SIZE = 100;
@@ -114,7 +115,7 @@ const CanvasImageRN = ({ src, width }: Props) => {
       draw(192, 64, 64, 30, -7, 52, 90, 38);
       draw(96, 0, 96, 96, 0, 0, 96, 96);
       draw(192, 64, 64, 30, 17, 52, 87, 38);
-      // Рисуем зеркальный глаз
+      // Здесь можно добавить зеркальный глаз, если нужно
     } catch (error) {
       console.error("Image loading failed:", error);
     }
@@ -125,7 +126,7 @@ const CanvasImageRN = ({ src, width }: Props) => {
     const drawCommands = [
       [192, 40, 70, 30, -13, 58, 110, 50], // нога
     ];
-    drawLayer(canvas, src, drawCommands, COLORS.overlayGreen);
+    drawLayer(canvas, src, drawCommands, COLORS.overlayLegs);
   };
 
   // Правую ногу рисуем и закрашиваем
@@ -133,7 +134,7 @@ const CanvasImageRN = ({ src, width }: Props) => {
     const drawCommands = [
       [192, 40, 70, 30, 11, 58, 108, 50], // нога
     ];
-    drawLayer(canvas, src, drawCommands, COLORS.overlayGreen);
+    drawLayer(canvas, src, drawCommands, COLORS.overlayLegs);
   };
 
   // Тело с глазами и заливкой
@@ -168,7 +169,7 @@ const CanvasImageRN = ({ src, width }: Props) => {
         ctx.restore();
 
         ctx.globalCompositeOperation = "source-atop";
-        ctx.fillStyle = COLORS.overlayGreen;
+        ctx.fillStyle = COLORS.overlayBody;
         ctx.fillRect(0, 0, size, size);
         ctx.globalCompositeOperation = "source-over";
       })

@@ -2,7 +2,7 @@ import { Text, View } from "react-native";
 import Tee from "./components/tee";
 
 export default function TestPage() {
-  const player = "d";
+  const player = "Kirby_[4]";
   return (
     <View
       style={{

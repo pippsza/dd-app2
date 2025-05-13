@@ -3,7 +3,7 @@ import { View, StyleSheet } from "react-native";
 import Canvas, { Image } from "react-native-canvas";
 import { responsiveWidth as rw } from "react-native-responsive-dimensions";
 
-type Props = { src: string; width: number };
+type Props = { source: string; width: number };
 type CanvasFunc = (
   sx: number,
   sy: number,
@@ -31,7 +31,11 @@ const Tee = ({ source, width }: Props) => {
       const img = new Image(canvas);
       img.src = src;
       img.addEventListener("load", () => resolve(img));
-      img.addEventListener("error", reject);
+      img.addEventListener("error", () => {
+        const defImg = new Image(canvas);
+        defImg.src = `https://skins.ddnet.org/skin/community/default.png`;
+        defImg.addEventListener("load", () => resolve(defImg));
+      });
     });
   };
 

@@ -23,7 +23,8 @@ const COLORS = {
 
 const CANVAS_BASE_SIZE = 100;
 
-const CanvasImageRN = ({ src, width }: Props) => {
+const CanvasImageRN = ({ source, width }: Props) => {
+  const src = `https://skins.ddnet.org/skin/community/${source}.png`;
   // Общая функция для создания и загрузки изображения
   const loadImage = (canvas: any, src: string): Promise<Image> => {
     return new Promise((resolve, reject) => {
@@ -86,13 +87,15 @@ const CanvasImageRN = ({ src, width }: Props) => {
       // Выполняем все команды рисования
       drawCommands.forEach((params) => draw(...params));
 
-      // Если нужно, накладываем цвет с режимом source-atop (только на нарисованное)
+      // Механика цвета "законсервирована" - временно не заливать
+      /*
       if (overlayColor) {
         ctx.globalCompositeOperation = "source-atop";
         ctx.fillStyle = overlayColor;
         ctx.fillRect(0, 0, size, size);
         ctx.globalCompositeOperation = "source-over";
       }
+      */
     } catch (error) {
       console.error("Image loading failed:", error);
     }
@@ -121,23 +124,23 @@ const CanvasImageRN = ({ src, width }: Props) => {
     }
   };
 
-  // Левую ногу рисуем и закрашиваем
+  // Левую ногу рисуем и закрашиваем (заливка отключена)
   const handleLeftLeg = (canvas) => {
     const drawCommands = [
       [192, 40, 70, 30, -13, 58, 110, 50], // нога
     ];
-    drawLayer(canvas, src, drawCommands, COLORS.overlayLegs);
+    drawLayer(canvas, src, drawCommands /*, COLORS.overlayLegs */);
   };
 
-  // Правую ногу рисуем и закрашиваем
+  // Правую ногу рисуем и закрашиваем (заливка отключена)
   const handleRightLeg = (canvas) => {
     const drawCommands = [
       [192, 40, 70, 30, 11, 58, 108, 50], // нога
     ];
-    drawLayer(canvas, src, drawCommands, COLORS.overlayLegs);
+    drawLayer(canvas, src, drawCommands /*, COLORS.overlayLegs */);
   };
 
-  // Тело с глазами и заливкой
+  // Тело с глазами и заливкой (заливка отключена)
   const handleBody = (canvas) => {
     if (!canvas) return;
     const setup = setupCanvas(canvas);
@@ -168,10 +171,13 @@ const CanvasImageRN = ({ src, width }: Props) => {
         );
         ctx.restore();
 
+        // Механика цвета "законсервирована"
+        /*
         ctx.globalCompositeOperation = "source-atop";
         ctx.fillStyle = COLORS.overlayBody;
         ctx.fillRect(0, 0, size, size);
         ctx.globalCompositeOperation = "source-over";
+        */
       })
       .catch((error) => console.error("Image loading failed:", error));
   };

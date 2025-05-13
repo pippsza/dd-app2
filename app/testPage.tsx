@@ -3,7 +3,7 @@ import CanvasImage from "./components/canvas";
 import CanvasImageRN from "./components/canvas";
 
 export default function TestPage() {
-  const player = "Kirby_[4]";
+  const player = "nanami";
   return (
     <View
       style={{
@@ -14,10 +14,7 @@ export default function TestPage() {
     >
       <Text>Testing</Text>
       <View>
-        <CanvasImageRN
-          width={50}
-          src={`https://skins.ddnet.org/skin/community/${player}.png`}
-        ></CanvasImageRN>
+        <CanvasImageRN width={50} source={player}></CanvasImageRN>
       </View>
     </View>
   );

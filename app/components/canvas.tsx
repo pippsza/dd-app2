@@ -1,239 +1,196 @@
 import React from "react";
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import Canvas, { Image } from "react-native-canvas";
 import { responsiveWidth as rw } from "react-native-responsive-dimensions";
 
-type Props = { src: string; width: Number };
+type Props = { src: string; width: number };
 type CanvasFunc = (
-  sx: Number,
-  sy: Number,
-  sW: Number,
-  sH: Number,
-  dx: Number,
-  dy: Number,
-  dW: Number,
-  dH: Number
+  sx: number,
+  sy: number,
+  sW: number,
+  sH: number,
+  dx: number,
+  dy: number,
+  dW: number,
+  dH: number
 ) => void;
 
+// Цвета и параметры в одном месте
+const COLORS = {
+  overlayGreen: "rgba(50, 200, 100, 0.6)",
+};
+
+const CANVAS_BASE_SIZE = 100;
+
 const CanvasImageRN = ({ src, width }: Props) => {
-  function numberToRgba(colorNumber: number, alpha = 1): string {
-    const r = (colorNumber >> 16) & 0xff;
-    const g = (colorNumber >> 8) & 0xff;
-    const b = colorNumber & 0xff;
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-  }
-  const handleCanvas = async (canvas) => {
-    if (!canvas) return;
+  // Общая функция для создания и загрузки изображения
+  const loadImage = (canvas: any, src: string): Promise<Image> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image(canvas);
+      img.src = src;
+      img.addEventListener("load", () => resolve(img));
+      img.addEventListener("error", reject);
+    });
+  };
 
-    // Адаптивная ширина и квадратная высота = ширине
-    const canvasSize = rw(width);
-    canvas.width = canvasSize;
-    canvas.height = canvasSize;
-
+  // Общая функция для установки размеров и получения контекста
+  const setupCanvas = (canvas: any) => {
+    if (!canvas) return null;
+    const size = rw(width);
+    canvas.width = size;
+    canvas.height = size;
     const ctx = canvas.getContext("2d");
+    return { ctx, size, scale: size / CANVAS_BASE_SIZE };
+  };
 
-    // Единый коэффициент масштабирования по базовым 100x100
-    const scale = canvasSize / 100;
+  // Универсальная функция рисования заданного фрагмента изображения с масштабированием
+  const createDrawFunc = (
+    ctx: CanvasRenderingContext2D,
+    img: Image,
+    scale: number
+  ): CanvasFunc => {
+    return (sx, sy, sW, sH, dx, dy, dW, dH) => {
+      ctx.drawImage(
+        img,
+        sx,
+        sy,
+        sW,
+        sH,
+        dx * scale,
+        dy * scale,
+        dW * scale,
+        dH * scale
+      );
+    };
+  };
 
-    // Создаем и загружаем изображение
-    const img = new Image(canvas);
+  // Общая функция для отрисовки слоя с опциональной заливкой цветом
+  const drawLayer = async (
+    canvas: any,
+    src: string,
+    drawCommands: Array<Parameters<CanvasFunc>>,
+    overlayColor?: string
+  ) => {
+    if (!canvas) return;
+    const setup = setupCanvas(canvas);
+    if (!setup) return;
+    const { ctx, size, scale } = setup;
+
     try {
-      await new Promise((resolve, reject) => {
-        img.src = src;
-        img.addEventListener("load", resolve);
-        img.addEventListener("error", reject);
-      });
+      const img = await loadImage(canvas, src);
+      ctx.clearRect(0, 0, size, size);
 
-      ctx.clearRect(0, 0, canvasSize, canvasSize);
+      const draw = createDrawFunc(ctx, img, scale);
 
-      // Функция рисования с единым scale
-      const draw = (sx, sy, sW, sH, dx, dy, dW, dH): CanvasFunc => {
-        ctx.drawImage(
-          img,
-          sx,
-          sy,
-          sW,
-          sH,
-          dx * scale,
-          dy * scale,
-          dW * scale,
-          dH * scale
-        );
-      };
+      // Выполняем все команды рисования
+      drawCommands.forEach((params) => draw(...params));
 
-      //  фрагменты
+      // Если нужно, накладываем цвет с режимом source-atop (только на нарисованное)
+      if (overlayColor) {
+        ctx.globalCompositeOperation = "source-atop";
+        ctx.fillStyle = overlayColor;
+        ctx.fillRect(0, 0, size, size);
+        ctx.globalCompositeOperation = "source-over";
+      }
+    } catch (error) {
+      console.error("Image loading failed:", error);
+    }
+  };
+
+  // Обработчики для каждого слоя
+  const handleMainCanvas = async (canvas) => {
+    if (!canvas) return;
+    const setup = setupCanvas(canvas);
+    if (!setup) return;
+    const { ctx, size, scale } = setup;
+
+    try {
+      const img = await loadImage(canvas, src);
+      ctx.clearRect(0, 0, size, size);
+
+      const draw = createDrawFunc(ctx, img, scale);
+
+      // Рисуем фрагменты тела и глаз (без заливки)
       draw(192, 64, 64, 30, -7, 52, 90, 38);
-
-      draw(192, 40, 70, 30, -13, 58, 110, 50); // нога
       draw(96, 0, 96, 96, 0, 0, 96, 96);
-      draw(0, 0, 96, 96, -2, -2, 100, 100); //ТЕЛО
-      draw(192, 64, 64, 30, 17, 52, 87, 38); // левая часть тела
-
-      draw(192, 40, 70, 30, 11, 58, 108, 50); // НОГА / НУЖНО ЗАКРАСИТЬ ЭТУ
-      draw(64, 100, 30, 40, 38, 27, 34, 50); // глаз
-
-      ctx.translate((38 + 34) * scale, 27 * scale);
-      ctx.scale(-1, 1);
-      ctx.drawImage(
-        img,
-        64,
-        100,
-        30,
-        40,
-        -17 * scale,
-        0 * scale,
-        34 * scale,
-        50 * scale
-      ); //глаз
-      ctx.restore();
+      draw(192, 64, 64, 30, 17, 52, 87, 38);
+      // Рисуем зеркальный глаз
     } catch (error) {
       console.error("Image loading failed:", error);
     }
   };
-  const canvasLeftLeg = async (canvas) => {
+
+  // Левую ногу рисуем и закрашиваем
+  const handleLeftLeg = (canvas) => {
+    const drawCommands = [
+      [192, 40, 70, 30, -13, 58, 110, 50], // нога
+    ];
+    drawLayer(canvas, src, drawCommands, COLORS.overlayGreen);
+  };
+
+  // Правую ногу рисуем и закрашиваем
+  const handleRightLeg = (canvas) => {
+    const drawCommands = [
+      [192, 40, 70, 30, 11, 58, 108, 50], // нога
+    ];
+    drawLayer(canvas, src, drawCommands, COLORS.overlayGreen);
+  };
+
+  // Тело с глазами и заливкой
+  const handleBody = (canvas) => {
     if (!canvas) return;
-    const canvasSize = rw(width);
-    canvas.width = canvasSize;
-    canvas.height = canvasSize;
-    const ctx = canvas.getContext("2d");
-    const scale = canvasSize / 100;
-    const img = new Image(canvas);
-    try {
-      await new Promise((resolve, reject) => {
-        img.src = src;
-        img.addEventListener("load", resolve);
-        img.addEventListener("error", reject);
-      });
-      ctx.clearRect(0, 0, canvasSize, canvasSize);
-      const draw = (sx, sy, sW, sH, dx, dy, dW, dH): CanvasFunc => {
+    const setup = setupCanvas(canvas);
+    if (!setup) return;
+    const { ctx, size, scale } = setup;
+
+    loadImage(canvas, src)
+      .then((img) => {
+        ctx.clearRect(0, 0, size, size);
+        const draw = createDrawFunc(ctx, img, scale);
+
+        draw(0, 0, 96, 96, -2, -2, 100, 100); // тело
+        draw(64, 100, 30, 40, 38, 27, 34, 50); // глаз
+
+        ctx.save();
+        ctx.translate((38 + 34) * scale, 27 * scale);
+        ctx.scale(-1, 1);
         ctx.drawImage(
           img,
-          sx,
-          sy,
-          sW,
-          sH,
-          dx * scale,
-          dy * scale,
-          dW * scale,
-          dH * scale
+          64,
+          100,
+          30,
+          40,
+          -17 * scale,
+          0,
+          34 * scale,
+          50 * scale
         );
-      };
-      //  фрагменты
-      draw(192, 40, 70, 30, -13, 58, 110, 50); // нога
-      ctx.globalCompositeOperation = "source-atop";
-      ctx.fillStyle = "rgba(50, 200, 100, 0.6)";
-      ctx.fillRect(0, 0, canvasSize, canvasSize);
-      ctx.restore();
-    } catch (error) {
-      console.error("Image loading failed:", error);
-    }
-  };
-  const canvasRightLeg = async (canvas) => {
-    if (!canvas) return;
-    const canvasSize = rw(width);
-    canvas.width = canvasSize;
-    canvas.height = canvasSize;
-    const ctx = canvas.getContext("2d");
-    const scale = canvasSize / 100;
-    const img = new Image(canvas);
-    try {
-      await new Promise((resolve, reject) => {
-        img.src = src;
-        img.addEventListener("load", resolve);
-        img.addEventListener("error", reject);
-      });
-      ctx.clearRect(0, 0, canvasSize, canvasSize);
-      const draw = (sx, sy, sW, sH, dx, dy, dW, dH): CanvasFunc => {
-        ctx.drawImage(
-          img,
-          sx,
-          sy,
-          sW,
-          sH,
-          dx * scale,
-          dy * scale,
-          dW * scale,
-          dH * scale
-        );
-      };
-      draw(192, 40, 70, 30, 11, 58, 108, 50); // НОГА / НУЖНО ЗАКРАСИТЬ ЭТУ
+        ctx.restore();
 
-      ctx.globalCompositeOperation = "source-atop";
-      ctx.fillStyle = "rgba(50, 200, 100, 0.6)";
-      ctx.fillRect(0, 0, canvasSize, canvasSize);
-      ctx.restore();
-    } catch (error) {
-      console.error("Image loading failed:", error);
-    }
+        ctx.globalCompositeOperation = "source-atop";
+        ctx.fillStyle = COLORS.overlayGreen;
+        ctx.fillRect(0, 0, size, size);
+        ctx.globalCompositeOperation = "source-over";
+      })
+      .catch((error) => console.error("Image loading failed:", error));
   };
-  const canvasBody = async (canvas) => {
-    if (!canvas) return;
-    const canvasSize = rw(width);
-    canvas.width = canvasSize;
-    canvas.height = canvasSize;
-    const ctx = canvas.getContext("2d");
-    const scale = canvasSize / 100;
-    const img = new Image(canvas);
-    try {
-      await new Promise((resolve, reject) => {
-        img.src = src;
-        img.addEventListener("load", resolve);
-        img.addEventListener("error", reject);
-      });
-      ctx.clearRect(0, 0, canvasSize, canvasSize);
-      const draw = (sx, sy, sW, sH, dx, dy, dW, dH): CanvasFunc => {
-        ctx.drawImage(
-          img,
-          sx,
-          sy,
-          sW,
-          sH,
-          dx * scale,
-          dy * scale,
-          dW * scale,
-          dH * scale
-        );
-      };
 
-      //  фрагменты
-      draw(0, 0, 96, 96, -2, -2, 100, 100); //ТЕЛО
-      draw(64, 100, 30, 40, 38, 27, 34, 50); // глаз
-      ctx.translate((38 + 34) * scale, 27 * scale);
-      ctx.scale(-1, 1);
-      ctx.drawImage(
-        img,
-        64,
-        100,
-        30,
-        40,
-        -17 * scale,
-        0 * scale,
-        34 * scale,
-        50 * scale
-      ); //глаз
-
-      ctx.globalCompositeOperation = "source-atop";
-      ctx.fillStyle = "rgba(50, 200, 100, 0.6)";
-      ctx.fillRect(0, 0, canvasSize, canvasSize);
-      ctx.restore();
-    } catch (error) {
-      console.error("Image loading failed:", error);
-    }
-  };
   return (
     <View style={{ width: rw(width), height: rw(width) }}>
-      <Canvas style={style.tee} ref={handleCanvas} />
-      <Canvas style={style.tee} ref={canvasLeftLeg}></Canvas>
-      <Canvas ref={canvasBody} style={style.tee}></Canvas>
-      <Canvas style={style.tee} ref={canvasRightLeg}></Canvas>
+      <Canvas style={style.tee} ref={handleMainCanvas} />
+      <Canvas style={style.tee} ref={handleLeftLeg} />
+      <Canvas style={style.tee} ref={handleBody} />
+      <Canvas style={style.tee} ref={handleRightLeg} />
     </View>
   );
 };
-import { StyleSheet } from "react-native";
+
 const style = StyleSheet.create({
   tee: {
     position: "absolute",
     top: 0,
+    left: 0,
   },
 });
+
 export default CanvasImageRN;

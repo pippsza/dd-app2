@@ -3,13 +3,18 @@ import { View } from "react-native";
 import Canvas, { Image } from "react-native-canvas";
 import { responsiveWidth as rw } from "react-native-responsive-dimensions";
 
-/**
- * CanvasImageRN рендерит изображение (мишку) на Canvas с адаптивными размерами.
- * @param {object} props
- * @param {string} props.src - URL изображения
- * @param {number} props.width - ширина в % экрана
- */
-const CanvasImageRN = ({ src, width }) => {
+type Props = { src: string; width: Number };
+type CanvasFunc = (
+  sx: Number,
+  sy: Number,
+  sW: Number,
+  sH: Number,
+  dx: Number,
+  dy: Number,
+  dW: Number,
+  dH: Number
+) => void;
+const CanvasImageRN = ({ src, width }: Props) => {
   const handleCanvas = async (canvas) => {
     if (!canvas) return;
 
@@ -35,7 +40,7 @@ const CanvasImageRN = ({ src, width }) => {
       ctx.clearRect(0, 0, canvasSize, canvasSize);
 
       // Функция рисования с единым scale
-      const draw = (sx, sy, sW, sH, dx, dy, dW, dH) => {
+      const draw = (sx, sy, sW, sH, dx, dy, dW, dH): CanvasFunc => {
         ctx.drawImage(
           img,
           sx,

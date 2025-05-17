@@ -7,7 +7,12 @@ export default function Layout() {
   return (
     <ImageBackground
       source={require("../assets/images/background.png")}
-      style={{ flex: 1, zIndex: -5, position: "relative" }}
+      style={{
+        flex: 1,
+        zIndex: -5,
+        position: "relative",
+        backgroundColor: "skyblue",
+      }}
       resizeMode="cover"
     >
       <Slot />

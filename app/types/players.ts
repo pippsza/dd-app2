@@ -16,7 +16,7 @@ type OneTee = {
   recent_player_info: recentPlayerInfo[];
   favourite_teammates: favouriteTeammates[];
 };
-type favouriteTeammates = { name: string };
+type favouriteTeammates = { name: string }[];
 type recentPlayerInfo = {
   skin_name: string;
   skin_color_body: number;

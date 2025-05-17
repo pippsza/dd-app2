@@ -15,7 +15,7 @@ export default function GameCategoryPie({ data }: any) {
     .map((item, idx) => {
       return {
         name: "hours - " + item.key,
-        population: Math.round(item.seconds_played / 60),
+        population: Math.round(item.seconds_played / 3600),
         color: getColorGamecategories(idx),
         legendFontColor: "#1b1b1e",
         legendFontSize: rf(1.9),

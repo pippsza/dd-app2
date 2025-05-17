@@ -12,7 +12,7 @@ import { useNavigation } from "expo-router";
 export default function PlayerList() {
   const navigation = useNavigation();
   const navigateFunc = () => {
-    console.log("penis");
+    console.log("has navigated");
     navigation.navigate("info", { item: JSON.stringify(data) });
   };
   return (
@@ -55,7 +55,7 @@ const data: AllTees = [
       name: "good santa",
       points: 124453,
       clan: "NEMO",
-      skin_name: "Kirby_[4]",
+      skin_name: "nanami_glow",
       skin_color_body: "",
       skin_color_feet: "",
     },

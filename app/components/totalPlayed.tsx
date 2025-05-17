@@ -6,7 +6,7 @@ export default function TotalPlayed({ data }: any) {
     <>
       <Text style={style.text}>
         Total played{" "}
-        {Math.round(data.general_activity.total_seconds_played / 60)} hours
+        {Math.round(data.general_activity.total_seconds_played / 3600)} hours
         since {data.general_activity.start_of_playtime}
       </Text>
     </>

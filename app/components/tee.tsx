@@ -24,7 +24,8 @@ const COLORS = {
 const CANVAS_BASE_SIZE = 100;
 
 const Tee = ({ source, width }: Props) => {
-  const src = `https://skins.ddnet.org/skin/community/${source}.png`;
+  const rawSrc = `https://skins.ddnet.org/skin/community/${source}.png`;
+  const src = encodeURI(rawSrc);
   // Общая функция для создания и загрузки изображения
   const loadImage = (canvas: any, src: string): Promise<Image> => {
     return new Promise((resolve, reject) => {

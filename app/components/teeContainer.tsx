@@ -18,9 +18,9 @@ export default function TeeContainer({ data }: any) {
         </View>
         <View style={style.container}>
           <View>
-            <Text style={style.bigText}>♥{data.status} </Text>
+            {/* <Text style={style.bigText}>♥{data.status} </Text>
             <Text style={style.regText}>Playing on: {data.playing_map}</Text>
-            <Text style={style.regText}>{data.playing_server}</Text>
+            <Text style={style.regText}>{data.playing_server}</Text> */}
           </View>
           <Tee width={rh(4)} source={data.profile.skin_name}></Tee>
           <View>

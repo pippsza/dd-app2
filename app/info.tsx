@@ -1,4 +1,4 @@
-import { TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { Link } from "expo-router";
 import {
@@ -12,7 +12,10 @@ import GameCategoryPie from "./components/gameCategoriesPie";
 import GameModePie from "./components/gamemodesPie";
 import TotalPlayed from "./components/totalPlayed";
 import TeeContainer from "./components/teeContainer";
+import axios from "axios";
+import { useEffect, useState } from "react";
 let data: AllTees;
+let userName: String = "Vika2077";
 export default function Info({}) {
   const route = useRoute();
   const { item }: any = route.params;
@@ -21,21 +24,48 @@ export default function Info({}) {
   } catch (error) {
     console.error("Ошибка при парсинге данных:", error);
   }
-  const testData: OneTee = data[0];
 
-  return (
+  const [player, setPlayer] = useState(null);
+  let testData: any;
+  useEffect(() => {
+    const fetch = async (playername: String) => {
+      try {
+        const response = await axios.get(
+          `http://ddstats.tw/player/json?player=${playername}`
+        );
+        console.log("response is:", response);
+        setPlayer(response.data);
+      } catch (err) {
+        console.log(err);
+        throw new Error();
+      }
+    };
+    fetch(userName);
+  }, []);
+
+  // const setPlayer: OneTee = data[0];
+
+  const loadingComponent = (
+    <View style={style.mainContainer}>
+      <Text>Loading..</Text>
+    </View>
+  );
+
+  const fullComponent = (
     <View style={style.mainContainer}>
       <Link asChild href="/">
         <TouchableOpacity>
           <CrossDark style={style.svg}></CrossDark>
         </TouchableOpacity>
       </Link>
-      <TeeContainer data={testData} />
-      <TotalPlayed data={testData} />
-      <GameModePie data={testData}></GameModePie>
-      <GameCategoryPie data={testData}></GameCategoryPie>
+      <TeeContainer data={player} />
+      <TotalPlayed data={player} />
+      <GameModePie data={player}></GameModePie>
+      <GameCategoryPie data={player}></GameCategoryPie>
     </View>
   );
+
+  return player ? fullComponent : loadingComponent;
 }
 
 const style = StyleSheet.create({

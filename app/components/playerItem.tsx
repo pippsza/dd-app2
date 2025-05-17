@@ -1,66 +1,89 @@
-import { Text, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
-type Props = {
-  item: any;
-  isActive: any;
-};
+import Tee from "./tee";
+import { useEffect, useState } from "react";
+import axios from "axios";
+const ITEM_HEIGHT = rh(11.83);
+export default function PlayerItem({ player }: any) {
+  const [playerData, setPlayerData]: any = useState(null);
 
-export default function PlayerItem({ item, isActive }: Props) {
-  const FirstCard = (
-    <>
-      <View style={style.firstCard}>
-        <Text>{item.status}</Text>
-        <Text style={style.nick}>{item.name}</Text>
-      </View>
-    </>
+  let data;
+  useEffect(() => {
+    const fetch = async (playername: String) => {
+      try {
+        const response = await axios.get(
+          `http://ddstats.tw/profile/json?player=${playername}`
+        );
+        setPlayerData(response.data);
+      } catch (err) {
+        console.log(err);
+        throw new Error();
+      }
+    };
+    fetch(player);
+  }, []);
+  return (
+    <View style={styles.cardBox}>
+      <TouchableOpacity
+        onPress={() => {
+          console.log("pressed:", player);
+        }}
+      >
+        <View style={styles.cardInside}>
+          {playerData ? (
+            <Tee source={playerData.skin_name} width={rw(4)}></Tee>
+          ) : (
+            <Text>Is Loading</Text>
+          )}
+          <Text style={styles.cardText}>{player}</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
   );
-  const RegularCard = (
-    <>
-      <View style={style.box}>
-        <Text>{item.status}</Text>
-        <Text style={style.nick}>{item.name}</Text>
-      </View>
-    </>
-  );
-
-  return <> {isActive ? FirstCard : RegularCard}</>;
 }
 
-import { StyleSheet } from "react-native";
-const style = StyleSheet.create({
-  box: {
-    height: rh(15), // 15% высоты экрана
-    width: rw(90), // 90% ширины экрана
-    marginHorizontal: rw(5),
-    marginVertical: rh(1),
-    borderRadius: rh(1),
-    borderWidth: 3,
-    borderColor: "black",
-    padding: rw(4),
+const styles = StyleSheet.create({
+  listContainer: {
+    alignItems: "center",
+  },
+  cardBox: {
+    height: ITEM_HEIGHT,
+    width: rw(90),
 
-    backgroundColor: "white",
-    justifyContent: "center",
+    paddingVertical: 4,
+    marginBottom: 0,
   },
-  firstCard: {
-    backgroundColor: "green",
-    width: rw(100),
-    marginHorizontal: 0,
-    borderWidth: 3,
+  cardText: {
+    fontSize: rf(2),
+    color: "black",
+    fontWeight: "600",
+  },
+  cardInside: {
     borderColor: "black",
-    height: rh(20), // 20% высоты для первой карточки
-    elevation: 5, // Тень для Android
-    shadowColor: "#000", // Тень для iOS
+    borderWidth: 2,
+    justifyContent: "space-between",
+    flexDirection: "row",
+    padding: rw(8),
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    borderRadius: 8,
+    backgroundColor: "white",
+    height: "100%",
+    width: rw(89),
   },
-  nick: {
-    fontSize: rf(2.3), // 2.3% ширины экрана
-    fontWeight: "700",
-    textAlign: "center",
-  },
-  // firstCard: {},
 });

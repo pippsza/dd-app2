@@ -17,7 +17,16 @@ export default function Main() {
   const [theme, setTheme] = useState<boolean>(false);
   const [names, setNames] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
-
+  const data: [] = [
+    "pippsza",
+    "good santa",
+    "Vika2077",
+    "Vika2088",
+    "DarkNessLait",
+    "DarkNessLait",
+    "DarkNessLait",
+    "DarkNessLait",
+  ];
   const toggleTheme = (): void => {
     console.log("theme has toggled");
     setTheme((prev) => !prev);
@@ -84,7 +93,7 @@ export default function Main() {
           ></ModalWindow>
         )}
         <View style={style.sliderContainer}>
-          <Slider></Slider>
+          <Slider players={data}></Slider>
         </View>
 
         {/* <PlayerList></PlayerList> */}

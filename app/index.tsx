@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import PlayerList from "./components/playersList";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
+import Slider from "./components/slider";
 export default function Main() {
   const [modal, setModal] = useState<boolean>(false);
   const [theme, setTheme] = useState<boolean>(false);
@@ -72,7 +73,7 @@ export default function Main() {
 
   return (
     <View style={style.box}>
-      <View style={style.container}>
+      {/* <View style={style.container}>
         <Header toggleTheme={toggleTheme}></Header>
         {modal && (
           <ModalWindow
@@ -88,7 +89,8 @@ export default function Main() {
           return <Text>{el}</Text>;
         })}
         <AddFrBttn openModal={openModal}></AddFrBttn>
-      </View>
+      </View> */}
+      <Slider></Slider>
     </View>
   );
 }

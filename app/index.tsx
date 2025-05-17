@@ -73,7 +73,7 @@ export default function Main() {
 
   return (
     <View style={style.box}>
-      {/* <View style={style.container}>
+      <View style={style.container}>
         <Header toggleTheme={toggleTheme}></Header>
         {modal && (
           <ModalWindow
@@ -83,14 +83,17 @@ export default function Main() {
             addName={addName}
           ></ModalWindow>
         )}
-        <PlayerList></PlayerList>
+        <View style={style.sliderContainer}>
+          <Slider></Slider>
+        </View>
+
+        {/* <PlayerList></PlayerList> */}
         {theme && <Text>Theme is {theme}</Text>}
         {names.map((el) => {
           return <Text>{el}</Text>;
         })}
         <AddFrBttn openModal={openModal}></AddFrBttn>
-      </View> */}
-      <Slider></Slider>
+      </View>
     </View>
   );
 }
@@ -104,6 +107,7 @@ const style = StyleSheet.create({
     alignItems: "center",
     padding: rw(2),
   },
+  sliderContainer: { height: rh(83) },
 });
 
 // https://ddnet.org/players/?query=Cor -МОЖНО ДЕЛАТЬ ЗАПРОС НА СЕРВЕР И ПОЛУЧАТЬ ПОДХОДЯЩИЕ НИКИ

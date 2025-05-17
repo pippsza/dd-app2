@@ -14,7 +14,7 @@ const PLAYERS = [
   { id: "4", name: "Dave" },
   { id: "5", name: "Eve" },
 ];
-const ITEM_HEIGHT = rh(12.14); // 4 элемента на экране
+const ITEM_HEIGHT = rh(11.83); // 4 элемента на экране
 
 // Бесконечный массив из трех копий
 const loopData = (data) => [...data, ...data, ...data];

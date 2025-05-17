@@ -15,7 +15,7 @@ import TeeContainer from "./components/teeContainer";
 import axios from "axios";
 import { useEffect, useState } from "react";
 let data: AllTees;
-let userName: String = "Vika2077";
+let userName: String = "pippsza";
 export default function Info({}) {
   const route = useRoute();
   const { item }: any = route.params;

@@ -8,15 +8,20 @@ import {
 
 // Массив игроков
 const PLAYERS = [
-  { id: "1", name: "Alice" },
-  { id: "2", name: "Bob" },
-  { id: "3", name: "Carol" },
-  { id: "4", name: "Dave" },
-  { id: "5", name: "Eve" },
+  { id: "1", name: "people 1" },
+  { id: "2", name: "people 2" },
+  { id: "3", name: "people 3" },
+  { id: "4", name: "people 4" },
+  { id: "5", name: "people 5" },
+  { id: "6", name: "people 6" },
+  { id: "7", name: "people 7" },
+  { id: "8", name: "people 8" },
+  { id: "9", name: "people 9" },
 ];
 const ITEM_HEIGHT = rh(11.83); // 4 элемента на экране
 
 // Бесконечный массив из трех копий
+
 const loopData = (data) => [...data, ...data, ...data];
 
 // Конфигурация стилей и ширин для каждой позиции
@@ -93,15 +98,20 @@ function PlayerCard({ player, styleConfig, onPress }) {
 export default function Slider() {
   const listRef = useRef(null);
   const [topIndex, setTopIndex] = useState(PLAYERS.length);
-  const data = loopData(PLAYERS);
+  let data;
+  if (PLAYERS.length <= 7) {
+    data = PLAYERS;
+  } else {
+    data = loopData(PLAYERS);
+  }
 
   // Стартуем в центре
-  useEffect(() => {
-    listRef.current?.scrollToOffset({
-      offset: PLAYERS.length * ITEM_HEIGHT,
-      animated: false,
-    });
-  }, []);
+  // useEffect(() => {
+  //   listRef.current?.scrollToOffset({
+  //     offset: PLAYERS.length * ITEM_HEIGHT,
+  //     animated: false,
+  //   });
+  // }, []);
 
   const handlePress = (idx) => {
     if (idx === topIndex) {

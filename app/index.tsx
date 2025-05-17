@@ -7,26 +7,16 @@ import {
 } from "react-native-responsive-dimensions";
 import AddFrBttn from "./components/addFriendBttn";
 import ModalWindow from "./components/modalWindow";
-import { useEffect, useState } from "react";
-import PlayerList from "./components/playersList";
+import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import Slider from "./components/slider";
-export default function Main() {
+export default React.memo(function Main() {
   const [modal, setModal] = useState<boolean>(false);
   const [theme, setTheme] = useState<boolean>(false);
-  const [names, setNames] = useState<string[]>([]);
+  const [names, setNames] = useState<String[]>(["pippsza", "MonikFox"]);
   const [inputValue, setInputValue] = useState("");
-  const data: [] = [
-    "pippsza",
-    "good santa",
-    "Vika2077",
-    "Vika2088",
-    "DarkNessLait",
-    "DarkNessLait",
-    "DarkNessLait",
-    "DarkNessLait",
-  ];
+
   const toggleTheme = (): void => {
     console.log("theme has toggled");
     setTheme((prev) => !prev);
@@ -93,19 +83,16 @@ export default function Main() {
           ></ModalWindow>
         )}
         <View style={style.sliderContainer}>
-          <Slider players={data}></Slider>
+          <Slider setNames={setNames} players={names}></Slider>
         </View>
 
-        {/* <PlayerList></PlayerList> */}
         {theme && <Text>Theme is {theme}</Text>}
-        {names.map((el) => {
-          return <Text>{el}</Text>;
-        })}
+
         <AddFrBttn openModal={openModal}></AddFrBttn>
       </View>
     </View>
   );
-}
+});
 
 const style = StyleSheet.create({
   box: { flex: 1 },

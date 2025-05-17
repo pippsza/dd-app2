@@ -14,8 +14,8 @@ import TotalPlayed from "./components/totalPlayed";
 import TeeContainer from "./components/teeContainer";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Spinner from "react-native-loading-spinner-overlay";
 let data: AllTees;
-let userName: String = "pippsza";
 export default function Info({}) {
   const route = useRoute();
   const { item }: any = route.params;
@@ -33,21 +33,25 @@ export default function Info({}) {
         const response = await axios.get(
           `http://ddstats.tw/player/json?player=${playername}`
         );
-        console.log("response is:", response);
+
         setPlayer(response.data);
       } catch (err) {
         console.log(err);
         throw new Error();
       }
     };
-    fetch(userName);
+    fetch(data);
   }, []);
 
   // const setPlayer: OneTee = data[0];
 
   const loadingComponent = (
     <View style={style.mainContainer}>
-      <Text>Loading..</Text>
+      <Spinner
+        visible={true}
+        textContent="Loading..."
+        textStyle={{ color: "#FFF" }}
+      />
     </View>
   );
 

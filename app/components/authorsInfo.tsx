@@ -1,11 +1,15 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import { Link } from "expo-router";
+import { Link, useNavigation } from "expo-router";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
 export default function AuthorsInfo() {
+  const navigation = useNavigation();
+  const authorsInfo = (player: any) => {
+    navigation.navigate("info", { item: JSON.stringify(player) });
+  };
   return (
     <>
       <View style={style.box}>
@@ -14,10 +18,16 @@ export default function AuthorsInfo() {
           <View style={style.container}>
             <View>
               <Text style={style.name}>Developer</Text>
-              <Image
-                style={style.img}
-                source={require("../../assets/images/pippsza.png")}
-              ></Image>
+              <TouchableOpacity
+                onPress={() => {
+                  authorsInfo("pippsza");
+                }}
+              >
+                <Image
+                  style={style.img}
+                  source={require("../../assets/images/pippsza.png")}
+                ></Image>
+              </TouchableOpacity>
               <Text style={style.name}>pippsza</Text>
               <Link
                 href="https://github.com/pippsza/"
@@ -40,10 +50,16 @@ export default function AuthorsInfo() {
             </View>
             <View>
               <Text style={style.name}>Designer</Text>
-              <Image
-                style={style.img}
-                source={require("../../assets/images/monik.png")}
-              ></Image>
+              <TouchableOpacity
+                onPress={() => {
+                  authorsInfo("MonikFox");
+                }}
+              >
+                <Image
+                  style={style.img}
+                  source={require("../../assets/images/monik.png")}
+                ></Image>
+              </TouchableOpacity>
               <Text style={style.name}>MonikFox</Text>
               <Link
                 href="https://youtube.com/@monikddnet?si=rKhHM9AF8fJ1dfdS"

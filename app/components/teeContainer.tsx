@@ -13,7 +13,9 @@ export default function TeeContainer({ data }: any) {
         <View>
           <Text style={style.regText}>Best friend:</Text>
           <Text style={style.smallText}>
-            {data.favourite_teammates[0].name}
+            {data.favourite_teammates.length > 0
+              ? data.favourite_teammates[0].name
+              : "None"}
           </Text>
         </View>
         <View style={style.container}>
@@ -33,13 +35,17 @@ export default function TeeContainer({ data }: any) {
           <View>
             <Text style={style.rightText}>Fav map:</Text>
             <Text style={style.rightSmallText}>
-              {data.most_played_maps[0].map_name}
+              {data.most_played_maps.lenght > 0
+                ? data.most_played_maps[0].map_name
+                : "None"}
             </Text>
           </View>
           <View>
             <Text style={style.rightText}>Fav region:</Text>
             <Text style={style.rightSmallText}>
-              {data.most_played_locations[0].key.toUpperCase()}
+              {data.most_played_locations.lenght > 0
+                ? data.most_played_locations[0].key.toUpperCase()
+                : "None"}
             </Text>
           </View>
         </View>

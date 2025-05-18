@@ -14,7 +14,6 @@ import {
 } from "react-native-responsive-dimensions";
 import Tee from "./tee";
 import axios from "axios";
-import Spinner from "react-native-loading-spinner-overlay";
 import { useNavigation } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 

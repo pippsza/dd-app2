@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import Slider from "./components/slider";
+import axios from "axios";
 export default React.memo(function Main() {
   const [modal, setModal] = useState<boolean>(false);
   const [theme, setTheme] = useState<boolean>(false);
@@ -32,25 +33,48 @@ export default React.memo(function Main() {
     setModal(false);
   };
 
-  const addName = () => {
-    console.log(inputValue);
-    if (inputValue.trim().length > 16) {
+  const addName = async () => {
+    const trimmed = inputValue.trim();
+
+    if (trimmed.length > 16) {
       Toast.show({
         type: "info",
-        text1: "Name must be shorter then 16 symbols!",
+        text1: "Name must be shorter than 16 symbols!",
       });
       return;
-    } else if (inputValue.trim().length === 0) {
+    }
+
+    if (trimmed.length === 0) {
       Toast.show({
         type: "info",
         text1: "Name field can't be empty!",
       });
+      return;
+    }
+    if (names.includes(trimmed)) {
+      Toast.show({
+        type: "info",
+        text1: "This player is already your friend!",
+      });
+      return;
     }
 
-    if (inputValue.trim() === "") return;
-    setNames((prev) => [...prev, inputValue.trim()]);
-    setInputValue("");
-    closeModal();
+    try {
+      const response = await axios.get(
+        `http://ddstats.tw/profile/json?player=${encodeURIComponent(trimmed)}`
+      );
+      console.log(response.data);
+
+      setNames((prev) => [...prev, trimmed]);
+      setInputValue("");
+      closeModal();
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Player doesn't exist",
+      });
+      console.error(error);
+    }
   };
 
   // Загрузка из AsyncStorage при монтировании

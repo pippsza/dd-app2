@@ -16,12 +16,16 @@ import TeeContainer from "./components/teeContainer";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Spinner from "react-native-loading-spinner-overlay";
-let data: any;
+
 export default function Info({}) {
   const route = useRoute();
-  const { item }: any = route.params;
+  let online;
+  let data: any;
+
   try {
-    data = JSON.parse(item);
+    const { item, onlineData }: any = route.params;
+    data = item;
+    online = onlineData;
   } catch (error) {
     console.error("Ошибка при парсинге данных:", error);
   }
@@ -70,6 +74,9 @@ export default function Info({}) {
       </Link>
       <TeeContainer data={player} />
       <TotalPlayed data={player} />
+      <Text>
+        {online.status},{online.mapName},{online.server},{online.game}
+      </Text>
       <GameModePie data={player}></GameModePie>
       <GameCategoryPie data={player}></GameCategoryPie>
     </View>

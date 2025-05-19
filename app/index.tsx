@@ -98,7 +98,7 @@ export default React.memo(function Main() {
         setTheme(JSON.parse(themeStored));
       }
       if (stored) {
-        console.log("stored:", stored);
+        // console.log("stored:", stored);
         setNames(JSON.parse(stored));
       }
     })();

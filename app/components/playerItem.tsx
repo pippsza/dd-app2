@@ -31,7 +31,10 @@ const PlayerItem = React.memo(({ player, setNames, playerOnline }: Props) => {
 
   const navigation = useNavigation();
   const navigateHandle = () => {
-    navigation.navigate("info", { item: JSON.stringify(player) });
+    navigation.navigate("info", {
+      item: player,
+      onlineData: playerOnline,
+    });
   };
   useEffect(() => {
     let isMounted = true;
@@ -62,7 +65,6 @@ const PlayerItem = React.memo(({ player, setNames, playerOnline }: Props) => {
 
   useEffect(() => {
     setPlayersObj(playerOnline);
-    console.log("playerOnline:", playerOnline);
   }, [playerOnline]);
   const deletePlayer = async () => {
     try {
@@ -91,7 +93,7 @@ const PlayerItem = React.memo(({ player, setNames, playerOnline }: Props) => {
             <ActivityIndicator size="small" />
           )}
           <View style={styles.textContainer}>
-            <Text>{playersObj?.status || "Nothing"}</Text>
+            <Text>{playersObj?.status || "Offline..."}</Text>
 
             <Text style={styles.cardText}>{player}</Text>
           </View>

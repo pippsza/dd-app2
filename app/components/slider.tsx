@@ -1,10 +1,4 @@
-import React, {
-  useRef,
-  useEffect,
-  useState,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useRef, useEffect, useCallback, useMemo } from "react";
 import { View, FlatList, StyleSheet } from "react-native";
 import {
   responsiveHeight as rh,
@@ -12,93 +6,108 @@ import {
 } from "react-native-responsive-dimensions";
 import PlayerItem from "./playerItem";
 
-const ITEM_HEIGHT = rh(11.83); // высота одного элемента
+const ITEM_HEIGHT = rh(11.83);
 
 type SliderProps = {
-  playersArr: any;
-  setNames: any;
+  playersArr: Array<{ name: string; data: any }>;
+  setNames: (names: any) => void;
 };
 
+/**
+ * Компонент слайдера для отображения списка игроков с бесконечной прокруткой
+ * Оптимизированная версия с исправлением проблемы устаревших данных
+ */
 export default React.memo(function Slider({
   playersArr,
   setNames,
 }: SliderProps) {
-  const listRef = useRef<FlatList<any>>(null);
+  const listRef = useRef<FlatList>(null);
 
-  const [players, setPlayers] = useState([]);
-
-  useEffect(() => {
-    setPlayers(
-      playersArr.map((player: any) => {
-        return player.name;
-      })
-    );
-  }, [playersArr]);
-  const [topIndex, setTopIndex] = useState(players.length);
-  console.log(playersArr);
-
-  // Для бесконечной прокрутки дублируем массив 3 раза, если игроков больше 7
+  // Мемоизированный массив данных для бесконечной прокрутки
   const data = useMemo(() => {
-    if (players.length > 7) {
-      return [...players, ...players, ...players];
+    if (playersArr.length > 7) {
+      return [...playersArr, ...playersArr, ...playersArr];
     }
-    return players;
-  }, [players]);
+    return playersArr;
+  }, [playersArr]);
 
-  // При монтировании устанавливаем начальную позицию прокрутки в середину дублированного массива
+  // Создаем хеш-карту для мгновенного доступа к данным игроков
+  const playersMap = useMemo(
+    () =>
+      playersArr.reduce((acc, player) => {
+        acc[player.name] = player.data;
+        return acc;
+      }, {} as Record<string, any>),
+    [playersArr]
+  );
+
+  // Устанавливаем начальную позицию прокрутки при монтировании
   useEffect(() => {
-    if (players.length > 7) {
+    if (playersArr.length > 7) {
+      const initialOffset = playersArr.length * ITEM_HEIGHT;
       listRef.current?.scrollToOffset({
-        offset: players.length * ITEM_HEIGHT,
+        offset: initialOffset,
         animated: false,
       });
-      setTopIndex(players.length);
     }
-  }, [players]);
+  }, [playersArr.length]);
 
-  const getPlayerData = (playerName: any) => {
-    console.log(
-      "GetPlayer data",
-      playersArr.find((item: any) => item.name === playerName)?.data
-    );
-    console.log("playersArr:", playersArr);
-    return playersArr.find((item: any) => item.name === playerName)?.data;
-  };
+  /**
+   * Получение данных игрока по имени
+   * Использует мемоизированную карту игроков для мгновенного доступа
+   */
+  const getPlayerData = useCallback(
+    (playerName: string) => {
+      return playersMap[playerName] || null;
+    },
+    [playersMap]
+  );
 
-  // Меморизируем renderItem для предотвращения лишних рендеров
-  const renderItem = useCallback(({ item, index }: any) => {
-    const onlineData = getPlayerData(item);
-    console.log("slider render func", onlineData);
-    return (
-      <PlayerItem setNames={setNames} player={item} playerOnline={onlineData} />
-    );
-  }, []);
+  /**
+   * Рендер-функция для элементов списка
+   * Мемоизирована с зависимостью от getPlayerData
+   */
+  const renderItem = useCallback(
+    ({ item }: { item: { name: string } }) => (
+      <PlayerItem
+        player={item.name}
+        playerOnline={getPlayerData(item.name)}
+        setNames={setNames}
+      />
+    ),
+    [getPlayerData, setNames]
+  );
 
-  // Обработчик окончания прокрутки с циклической логикой
-  const onMomentumScrollEnd = useCallback(
-    (e: any) => {
+  /**
+   * Обработчик завершения прокрутки с логикой бесконечного скролла
+   */
+  const handleScrollEnd = useCallback(
+    (e: { nativeEvent: { contentOffset: { y: number } } }) => {
       const offsetY = e.nativeEvent.contentOffset.y;
-      let idx = Math.round(offsetY / ITEM_HEIGHT);
+      let newIndex = Math.round(offsetY / ITEM_HEIGHT);
 
-      if (players.length > 7) {
-        if (idx < players.length) {
-          idx += players.length;
-        } else if (idx >= players.length * 2) {
-          idx -= players.length;
+      if (playersArr.length > 7) {
+        if (newIndex < playersArr.length) {
+          newIndex += playersArr.length;
+        } else if (newIndex >= playersArr.length * 2) {
+          newIndex -= playersArr.length;
         }
+
         listRef.current?.scrollToOffset({
-          offset: idx * ITEM_HEIGHT,
+          offset: newIndex * ITEM_HEIGHT,
           animated: false,
         });
       }
-      setTopIndex(idx);
     },
-    [players.length]
+    [playersArr.length]
   );
 
-  // getItemLayout для оптимизации прокрутки
+  /**
+   * Функция для расчета layout элементов списка
+   * Обязательна для корректной работы скролла
+   */
   const getItemLayout = useCallback(
-    (_data: any, index: any) => ({
+    (_: any, index: number) => ({
       length: ITEM_HEIGHT,
       offset: ITEM_HEIGHT * index,
       index,
@@ -107,19 +116,21 @@ export default React.memo(function Slider({
   );
 
   return (
-    <View style={{ height: ITEM_HEIGHT * 7 }}>
+    <View style={styles.container}>
       <FlatList
         ref={listRef}
         data={data}
-        keyExtractor={(item, index) => `${item.id}_${index}`}
+        keyExtractor={(item, index) => `${item.name}_${index}`}
         renderItem={renderItem}
         getItemLayout={getItemLayout}
+        onMomentumScrollEnd={handleScrollEnd}
         showsVerticalScrollIndicator={false}
-        pagingEnabled
         snapToInterval={ITEM_HEIGHT}
         decelerationRate="fast"
-        onMomentumScrollEnd={onMomentumScrollEnd}
-        extraData={topIndex}
+        initialNumToRender={10}
+        maxToRenderPerBatch={5}
+        windowSize={21}
+        extraData={playersMap}
         contentContainerStyle={styles.listContainer}
       />
     </View>
@@ -127,7 +138,12 @@ export default React.memo(function Slider({
 });
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: "100%",
+  },
   listContainer: {
     alignItems: "center",
+    paddingVertical: rh(2),
   },
 });

@@ -15,13 +15,20 @@ import PlayerItem from "./playerItem";
 const ITEM_HEIGHT = rh(11.83); // высота одного элемента
 
 type SliderProps = {
-  players: Player[];
+  playersArr: any;
   setNames: any;
 };
 
-export default React.memo(function Slider({ players, setNames }: SliderProps) {
+export default React.memo(function Slider({
+  playersArr,
+  setNames,
+}: SliderProps) {
   const listRef = useRef<FlatList<any>>(null);
+  const players = playersArr.map((player: any) => {
+    return player.name;
+  });
   const [topIndex, setTopIndex] = useState(players.length);
+  console.log(playersArr);
 
   // Для бесконечной прокрутки дублируем массив 3 раза, если игроков больше 7
   const data = useMemo(() => {
@@ -42,14 +49,21 @@ export default React.memo(function Slider({ players, setNames }: SliderProps) {
     }
   }, [players]);
 
+  const getPlayerData = (playerName: any) => {
+    return playersArr.find((item: any) => item.name === playerName)?.data;
+  };
+
   // Меморизируем renderItem для предотвращения лишних рендеров
-  const renderItem = useCallback(({ item, index }) => {
-    return <PlayerItem setNames={setNames} player={item} />;
+  const renderItem = useCallback(({ item, index }: any) => {
+    const onlineData = getPlayerData(item);
+    return (
+      <PlayerItem setNames={setNames} player={item} playerOnline={onlineData} />
+    );
   }, []);
 
   // Обработчик окончания прокрутки с циклической логикой
   const onMomentumScrollEnd = useCallback(
-    (e) => {
+    (e: any) => {
       const offsetY = e.nativeEvent.contentOffset.y;
       let idx = Math.round(offsetY / ITEM_HEIGHT);
 
@@ -71,7 +85,7 @@ export default React.memo(function Slider({ players, setNames }: SliderProps) {
 
   // getItemLayout для оптимизации прокрутки
   const getItemLayout = useCallback(
-    (_data, index) => ({
+    (_data: any, index: any) => ({
       length: ITEM_HEIGHT,
       offset: ITEM_HEIGHT * index,
       index,

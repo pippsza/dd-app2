@@ -17,7 +17,7 @@ export default React.memo(function Main() {
   const [theme, setTheme] = useState<boolean>(false);
   const [names, setNames] = useState<String[]>(["pippsza", "MonikFox"]);
   const [inputValue, setInputValue] = useState("");
-
+  const [players, setPlayers] = useState<any>([]);
   const toggleTheme = (): void => {
     console.log("theme has toggled");
     setTheme((prev) => !prev);
@@ -63,7 +63,6 @@ export default React.memo(function Main() {
       const response = await axios.get(
         `http://ddstats.tw/profile/json?player=${encodeURIComponent(trimmed)}`
       );
-      console.log(response.data);
 
       setNames((prev) => [...prev, trimmed]);
       setInputValue("");
@@ -93,6 +92,63 @@ export default React.memo(function Main() {
   useEffect(() => {
     AsyncStorage.setItem("friendsNames", JSON.stringify(names));
   }, [names]);
+  useEffect(() => {
+    fetchOnline();
+    setInterval(() => {
+      fetchOnline();
+    }, 30000);
+  }, [names]);
+
+  const fetchOnline = async () => {
+    const oldData = players;
+
+    const MASTER_URL = "https://master1.ddnet.org/ddnet/15/servers.json";
+    const response = await axios.get(MASTER_URL);
+    const servers = response.data.servers;
+    const playersObj = names.map((name) => ({
+      name,
+      data: {
+        status: "Offline",
+        game: null,
+        server: null,
+        mapName: null,
+      },
+    }));
+
+    // Нужно для быстрой проверки наличия игроков в друзьях:
+    const lookup = playersObj.reduce((accumulator: any, entry: any) => {
+      accumulator[entry.name] = entry.data;
+      return accumulator;
+    }, {});
+
+    for (const server of servers) {
+      if (!server.info || !server.info.clients) {
+        continue;
+      }
+      const serverName = server.info.name;
+      const gameType = server.info.game_type;
+      const mapName = server.info.map?.name || null;
+      const playersArr = server.info.clients;
+
+      for (const playerObj of playersArr) {
+        const playerName = playerObj.name;
+        if (!lookup[playerName]) {
+          continue;
+        }
+        const dataEntry = lookup[playerName];
+        dataEntry.status = playerObj.afk ? "AFK" : "Online";
+        dataEntry.game = gameType;
+        dataEntry.server = serverName;
+        dataEntry.mapName = mapName;
+      }
+    }
+    if (oldData === playersObj) {
+      return;
+    }
+    setPlayers(playersObj);
+
+    // console.log(players);
+  };
 
   return (
     <View style={style.box}>
@@ -107,7 +163,7 @@ export default React.memo(function Main() {
           ></ModalWindow>
         )}
         <View style={style.sliderContainer}>
-          <Slider setNames={setNames} players={names}></Slider>
+          <Slider setNames={setNames} playersArr={players}></Slider>
         </View>
 
         {theme && <Text>Theme is {theme}</Text>}

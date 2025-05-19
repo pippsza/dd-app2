@@ -8,6 +8,7 @@ import {
 } from "react-native-responsive-dimensions";
 import { StyleSheet } from "react-native";
 import CrossDark from "../assets/svg/cross-dark.svg";
+import MoreDark from "../assets/svg/more-dark.svg";
 import GameCategoryPie from "./components/gameCategoriesPie";
 import GameModePie from "./components/gamemodesPie";
 import TotalPlayed from "./components/totalPlayed";
@@ -15,7 +16,7 @@ import TeeContainer from "./components/teeContainer";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Spinner from "react-native-loading-spinner-overlay";
-let data: AllTees;
+let data: any;
 export default function Info({}) {
   const route = useRoute();
   const { item }: any = route.params;
@@ -62,6 +63,11 @@ export default function Info({}) {
           <CrossDark style={style.svg}></CrossDark>
         </TouchableOpacity>
       </Link>
+      <Link asChild href={`https://ddstats.tw/player/${data}`}>
+        <TouchableOpacity>
+          <MoreDark style={style.moreSvg}></MoreDark>
+        </TouchableOpacity>
+      </Link>
       <TeeContainer data={player} />
       <TotalPlayed data={player} />
       <GameModePie data={player}></GameModePie>
@@ -77,6 +83,7 @@ const style = StyleSheet.create({
     flex: 1,
     justifyContent: "space-between",
     paddingVertical: rh(1),
+    position: "relative",
   },
   svg: {
     width: rw(14),
@@ -84,5 +91,12 @@ const style = StyleSheet.create({
     position: "absolute",
     right: 0,
     top: 0,
+  },
+  moreSvg: {
+    width: rw(7),
+    height: rw(7),
+    position: "absolute",
+    left: rw(3),
+    top: rh(-2.1),
   },
 });

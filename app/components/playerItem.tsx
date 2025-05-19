@@ -19,15 +19,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ITEM_HEIGHT = rh(11.83);
 
-const PlayerItem = React.memo(({ player, setNames }: any) => {
+const PlayerItem = React.memo(({ player, setNames, playerOnline }: any) => {
   const [playerData, setPlayerData]: any = useState(null);
   const [loading, setLoading] = useState(true);
+  const [playersObj, setPlayersObj]: any = useState({});
+
   const navigation = useNavigation();
   const navigateHandle = () => {
     navigation.navigate("info", { item: JSON.stringify(player) });
   };
   useEffect(() => {
-    let isMounted = true; // флаг для предотвращения обновления после размонтирования
+    let isMounted = true;
 
     const fetch = async (playername: string) => {
       try {
@@ -52,6 +54,11 @@ const PlayerItem = React.memo(({ player, setNames }: any) => {
       isMounted = false;
     };
   }, [player]);
+
+  useEffect(() => {
+    setPlayersObj(playerOnline);
+    console.log("playerOnline:", playerOnline);
+  }, []);
   const deletePlayer = async () => {
     try {
       const stored = await AsyncStorage.getItem("friendsNames");
@@ -78,6 +85,11 @@ const PlayerItem = React.memo(({ player, setNames }: any) => {
           ) : (
             <ActivityIndicator size="small" />
           )}
+          {/* {playersObj.status ? (
+            <Text>{playersObj.status}</Text>
+          ) : (
+            <Text>nothing</Text>
+          )} */}
 
           <Text style={styles.cardText}>{player}</Text>
           <TouchableOpacity onPress={deletePlayer}>

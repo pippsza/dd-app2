@@ -19,7 +19,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ITEM_HEIGHT = rh(11.83);
 
-const PlayerItem = React.memo(({ player, setNames, playerOnline }: any) => {
+type Props = {
+  player: any;
+  setNames: any;
+  playerOnline: any;
+};
+const PlayerItem = React.memo(({ player, setNames, playerOnline }: Props) => {
   const [playerData, setPlayerData]: any = useState(null);
   const [loading, setLoading] = useState(true);
   const [playersObj, setPlayersObj]: any = useState({});
@@ -58,7 +63,7 @@ const PlayerItem = React.memo(({ player, setNames, playerOnline }: any) => {
   useEffect(() => {
     setPlayersObj(playerOnline);
     console.log("playerOnline:", playerOnline);
-  }, []);
+  }, [playerData]);
   const deletePlayer = async () => {
     try {
       const stored = await AsyncStorage.getItem("friendsNames");
@@ -85,13 +90,11 @@ const PlayerItem = React.memo(({ player, setNames, playerOnline }: any) => {
           ) : (
             <ActivityIndicator size="small" />
           )}
-          {/* {playersObj.status ? (
-            <Text>{playersObj.status}</Text>
-          ) : (
-            <Text>nothing</Text>
-          )} */}
+          <View style={styles.textContainer}>
+            <Text>{playersObj?.status || "Nothing"}</Text>
 
-          <Text style={styles.cardText}>{player}</Text>
+            <Text style={styles.cardText}>{player}</Text>
+          </View>
           <TouchableOpacity onPress={deletePlayer}>
             <TrashDark style={styles.svg}></TrashDark>
           </TouchableOpacity>
@@ -119,7 +122,7 @@ const styles = StyleSheet.create({
   cardInside: {
     borderColor: "black",
     borderWidth: 2,
-    justifyContent: "space-between",
+
     flexDirection: "row",
     padding: rw(8),
     alignItems: "center",
@@ -132,10 +135,16 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     height: "100%",
     width: rw(89),
+    justifyContent: "space-between",
   },
   svg: {
     width: 30,
     height: 30,
+  },
+  textContainer: {
+    flex: 1,
+    gap: rh(1),
+    textAlign: "center",
   },
 });
 

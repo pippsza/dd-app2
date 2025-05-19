@@ -92,11 +92,11 @@ export default React.memo(function Main() {
   useEffect(() => {
     AsyncStorage.setItem("friendsNames", JSON.stringify(names));
   }, [names]);
+
   useEffect(() => {
     fetchOnline();
-    setInterval(() => {
-      fetchOnline();
-    }, 30000);
+    const intervalId = setInterval(fetchOnline, 30000);
+    return () => clearInterval(intervalId);
   }, [names]);
 
   const fetchOnline = async () => {

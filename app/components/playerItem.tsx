@@ -63,15 +63,15 @@ const PlayerItem = React.memo(({ player, setNames, playerOnline }: Props) => {
   useEffect(() => {
     setPlayersObj(playerOnline);
     console.log("playerOnline:", playerOnline);
-  }, [playerData]);
+  }, [playerOnline]);
   const deletePlayer = async () => {
     try {
       const stored = await AsyncStorage.getItem("friendsNames");
       if (!stored) return;
 
-      const names: string[] = JSON.parse(stored);
+      const names: any = JSON.parse(stored);
 
-      const filtered = names.filter((name) => name !== player);
+      const filtered = names.filter((name: any) => name.name !== player);
 
       await AsyncStorage.setItem("friendsNames", JSON.stringify(filtered));
       setNames(filtered);

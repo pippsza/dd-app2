@@ -24,9 +24,16 @@ export default React.memo(function Slider({
   setNames,
 }: SliderProps) {
   const listRef = useRef<FlatList<any>>(null);
-  const players = playersArr.map((player: any) => {
-    return player.name;
-  });
+
+  const [players, setPlayers] = useState([]);
+
+  useEffect(() => {
+    setPlayers(
+      playersArr.map((player: any) => {
+        return player.name;
+      })
+    );
+  }, [playersArr]);
   const [topIndex, setTopIndex] = useState(players.length);
   console.log(playersArr);
 
@@ -50,12 +57,18 @@ export default React.memo(function Slider({
   }, [players]);
 
   const getPlayerData = (playerName: any) => {
+    console.log(
+      "GetPlayer data",
+      playersArr.find((item: any) => item.name === playerName)?.data
+    );
+    console.log("playersArr:", playersArr);
     return playersArr.find((item: any) => item.name === playerName)?.data;
   };
 
   // Меморизируем renderItem для предотвращения лишних рендеров
   const renderItem = useCallback(({ item, index }: any) => {
     const onlineData = getPlayerData(item);
+    console.log("slider render func", onlineData);
     return (
       <PlayerItem setNames={setNames} player={item} playerOnline={onlineData} />
     );

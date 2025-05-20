@@ -1,60 +1,83 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import { StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import Header from "./components/header";
+import ModalWindow from "./components/modalWindow";
+import AddFrBttn from "./components/addFriendBttn";
+import Slider from "./components/slider";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
 } from "react-native-responsive-dimensions";
-import AddFrBttn from "./components/addFriendBttn";
-import ModalWindow from "./components/modalWindow";
-import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
-import Slider from "./components/slider";
 import axios from "axios";
+
 export default React.memo(function Main() {
   const [modal, setModal] = useState<boolean>(false);
   const [theme, setTheme] = useState<boolean>(false);
-  const [names, setNames] = useState<any>([
-    {
-      name: "pippsza",
-      data: { status: "Offline", game: null, server: null, mapName: null },
-    },
-    {
-      name: "MonikFox",
-      data: { status: "Offline", game: null, server: null, mapName: null },
-    },
-  ]);
-  const [inputValue, setInputValue] = useState("");
+  const [names, setNames] = useState<any>([]);
+  const [inputValue, setInputValue] = useState<string>("");
+  const [isInitialized, setIsInitialized] = useState<boolean>(false);
+
   const toggleTheme = (): void => {
-    console.log("theme has toggled");
     setTheme((prev) => !prev);
   };
-  useEffect(() => {
-    AsyncStorage.setItem("theme", JSON.stringify(theme));
-  }, [theme]);
+
   const openModal = (): void => {
     setModal(true);
   };
+
   const closeModal = (): void => {
     setModal(false);
   };
 
+  // Load friends and theme from AsyncStorage on mount
+  useEffect(() => {
+    (async () => {
+      try {
+        const storedNames = await AsyncStorage.getItem("friendsNames");
+        const storedTheme = await AsyncStorage.getItem("theme");
+
+        if (storedNames) {
+          setNames(JSON.parse(storedNames));
+        }
+        if (storedTheme !== null) {
+          setTheme(JSON.parse(storedTheme));
+        }
+      } catch (error) {
+        console.error("Error loading from storage:", error);
+      } finally {
+        setIsInitialized(true);
+      }
+    })();
+  }, []);
+
+  // Save names when updated, only after initialization
+  useEffect(() => {
+    if (!isInitialized) return;
+    AsyncStorage.setItem("friendsNames", JSON.stringify(names)).catch((err) =>
+      console.error("Error saving friendsNames:", err)
+    );
+  }, [names, isInitialized]);
+
+  // Save theme when toggled
+  useEffect(() => {
+    AsyncStorage.setItem("theme", JSON.stringify(theme)).catch((err) =>
+      console.error("Error saving theme:", err)
+    );
+  }, [theme]);
+
   const addName = async () => {
     const trimmed = inputValue.trim();
 
+    if (trimmed.length === 0) {
+      Toast.show({ type: "info", text1: "Name field can't be empty!" });
+      return;
+    }
     if (trimmed.length > 16) {
       Toast.show({
         type: "info",
         text1: "Name must be shorter than 16 symbols!",
-      });
-      return;
-    }
-
-    if (trimmed.length === 0) {
-      Toast.show({
-        type: "info",
-        text1: "Name field can't be empty!",
       });
       return;
     }
@@ -67,7 +90,7 @@ export default React.memo(function Main() {
     }
 
     try {
-      const response = await axios.get(
+      await axios.get(
         `http://ddstats.tw/profile/json?player=${encodeURIComponent(trimmed)}`
       );
 
@@ -81,112 +104,79 @@ export default React.memo(function Main() {
       setInputValue("");
       closeModal();
     } catch (error) {
-      Toast.show({
-        type: "error",
-        text1: "Player doesn't exist",
-      });
+      Toast.show({ type: "error", text1: "Player doesn't exist" });
       console.error(error);
     }
   };
 
-  // Загрузка из AsyncStorage при монтировании
+  // Fetch online status every 30s and on names change
   useEffect(() => {
-    (async () => {
-      const stored = await AsyncStorage.getItem("friendsNames");
-      const themeStored = await AsyncStorage.getItem("theme");
-      if (themeStored !== null) {
-        setTheme(JSON.parse(themeStored));
-      }
-      if (stored) {
-        // console.log("stored:", stored);
-        setNames(JSON.parse(stored));
-      }
-    })();
-  }, []);
-  useEffect(() => {
-    AsyncStorage.setItem("friendsNames", JSON.stringify(names));
-  }, [names]);
+    if (names.length === 0) return;
+    const fetchOnline = async () => {
+      try {
+        const MASTER_URL = "https://master1.ddnet.org/ddnet/15/servers.json";
+        const response = await axios.get(MASTER_URL);
+        const servers = response.data.servers;
 
-  useEffect(() => {
+        const updated = names.map((friend: any) => ({
+          ...friend,
+          data: { status: "Offline", game: null, server: null, mapName: null },
+        }));
+
+        const lookup: Record<string, any> = {};
+        updated.forEach((f: any) => {
+          lookup[f.name] = f;
+        });
+
+        servers.forEach((server: any) => {
+          if (!server.info?.clients) return;
+          server.info.clients.forEach((p: any) => {
+            const f = lookup[p.name];
+            if (f) {
+              f.data = {
+                status: p.afk ? "AFK" : "Online",
+                game: server.info.game_type,
+                server: server.info.name,
+                mapName: server.info.map?.name || null,
+              };
+            }
+          });
+        });
+
+        const oldStr = JSON.stringify(names);
+        const newStr = JSON.stringify(updated);
+        if (oldStr !== newStr) setNames(updated);
+      } catch (err) {
+        console.error("Error updating online status:", err);
+      }
+    };
+
     fetchOnline();
-    const intervalId = setInterval(fetchOnline, 30000);
-    return () => clearInterval(intervalId);
+    const id = setInterval(fetchOnline, 30000);
+    return () => clearInterval(id);
   }, [names]);
-
-  const fetchOnline = async () => {
-    try {
-      const MASTER_URL = "https://master1.ddnet.org/ddnet/15/servers.json";
-      const response = await axios.get(MASTER_URL);
-      const servers = response.data.servers;
-
-      // Создаём новый массив с дефолтными данными
-      const updatedNames = names.map((friend: any) => ({
-        ...friend,
-        data: {
-          status: "Offline",
-          game: null,
-          server: null,
-          mapName: null,
-        },
-      }));
-
-      // Быстрый доступ по имени
-      const lookup = updatedNames.reduce((acc: any, friend: any) => {
-        acc[friend.name] = friend;
-        return acc;
-      }, {} as Record<string, (typeof updatedNames)[0]>);
-
-      for (const server of servers) {
-        if (!server.info || !server.info.clients) continue;
-        const serverName = server.info.name;
-        const gameType = server.info.game_type;
-        const mapName = server.info.map?.name || null;
-        const playersArr = server.info.clients;
-
-        for (const playerObj of playersArr) {
-          const playerName = playerObj.name;
-          if (!lookup[playerName]) continue;
-
-          // Обновляем копию объекта
-          lookup[playerName].data = {
-            status: playerObj.afk ? "AFK" : "Online",
-            game: gameType,
-            server: serverName,
-            mapName: mapName,
-          };
-        }
-      }
-
-      // Проверяем, изменились ли данные (глубокое сравнение)
-      const oldString = JSON.stringify(names);
-      const newString = JSON.stringify(updatedNames);
-      if (oldString !== newString) {
-        setNames(updatedNames);
-      }
-    } catch (error) {
-      console.error("Ошибка при обновлении онлайн-статусов:", error);
-    }
-  };
 
   return (
     <View style={style.box}>
       <View style={style.container}>
-        <Header toggleTheme={toggleTheme}></Header>
+        <Header toggleTheme={toggleTheme} />
+
         {modal && (
           <ModalWindow
             closeModal={closeModal}
             inputValue={inputValue}
             setInputValue={setInputValue}
             addName={addName}
-          ></ModalWindow>
+          />
         )}
+
         <View style={style.sliderContainer}>
-          <Slider setNames={setNames} playersArr={names}></Slider>
+          <Slider setNames={setNames} playersArr={names} />
         </View>
 
-        {theme && <Text>Theme is {theme}</Text>}
+        {theme && <Text>Theme is {theme.toString()}</Text>}
 
-        <AddFrBttn openModal={openModal}></AddFrBttn>
+        <AddFrBttn openModal={openModal} />
       </View>
     </View>
   );
@@ -195,7 +185,6 @@ export default React.memo(function Main() {
 const style = StyleSheet.create({
   box: { flex: 1 },
   container: {
-    position: "relative",
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
@@ -203,5 +192,3 @@ const style = StyleSheet.create({
   },
   sliderContainer: { height: rh(83) },
 });
-
-// https://ddnet.org/players/?query=Cor -МОЖНО ДЕЛАТЬ ЗАПРОС НА СЕРВЕР И ПОЛУЧАТЬ ПОДХОДЯЩИЕ НИКИ

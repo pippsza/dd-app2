@@ -7,8 +7,11 @@ import {
 } from "react-native-responsive-dimensions";
 export default function AuthorsInfo() {
   const navigation = useNavigation();
-  const authorsInfo = (player: any) => {
-    navigation.navigate("info", { item: JSON.stringify(player) });
+  const authorsInfo = (player: any, role: any) => {
+    let online = { status: null };
+    online.status = role;
+
+    navigation.navigate("info", { item: player, onlineData: online });
   };
   return (
     <>
@@ -20,7 +23,7 @@ export default function AuthorsInfo() {
               <Text style={style.name}>Developer</Text>
               <TouchableOpacity
                 onPress={() => {
-                  authorsInfo("pippsza");
+                  authorsInfo("pippsza", "Developer");
                 }}
               >
                 <Image
@@ -52,7 +55,7 @@ export default function AuthorsInfo() {
               <Text style={style.name}>Designer</Text>
               <TouchableOpacity
                 onPress={() => {
-                  authorsInfo("MonikFox");
+                  authorsInfo("MonikFox", "Designer");
                 }}
               >
                 <Image

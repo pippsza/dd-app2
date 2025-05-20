@@ -1,5 +1,5 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, Image as RNImage } from "react-native";
 import Canvas, { Image } from "react-native-canvas";
 import { responsiveWidth as rw } from "react-native-responsive-dimensions";
 
@@ -22,10 +22,21 @@ const COLORS = {
 };
 
 const CANVAS_BASE_SIZE = 100;
+const DEFAULT_URI = require("../../assets/images/default.png");
 
 const Tee = ({ source, width }: Props) => {
   const rawSrc = `https://skins.ddnet.org/skin/community/${source}.png`;
   const src = encodeURI(rawSrc);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Предварительная загрузка изображения
+  useEffect(() => {
+    setIsLoaded(false);
+    RNImage.prefetch(src)
+      .then(() => setIsLoaded(true))
+      .catch(() => setIsLoaded(false));
+  }, [src]);
+
   // Общая функция для создания и загрузки изображения
   const loadImage = (canvas: any, src: string): Promise<Image> => {
     return new Promise((resolve, reject) => {
@@ -34,13 +45,12 @@ const Tee = ({ source, width }: Props) => {
       img.addEventListener("load", () => resolve(img));
       img.addEventListener("error", () => {
         const defImg = new Image(canvas);
-        defImg.src = `https://skins.ddnet.org/skin/community/default.png`;
+        defImg.src = DEFAULT_URI;
         defImg.addEventListener("load", () => resolve(defImg));
       });
     });
   };
 
-  // Общая функция для установки размеров и получения контекста
   const setupCanvas = (canvas: any) => {
     if (!canvas) return null;
     const size = rw(width);
@@ -50,7 +60,6 @@ const Tee = ({ source, width }: Props) => {
     return { ctx, size, scale: size / CANVAS_BASE_SIZE };
   };
 
-  // Универсальная функция рисования заданного фрагмента изображения с масштабированием
   const createDrawFunc = (
     ctx: CanvasRenderingContext2D,
     img: Image,
@@ -71,7 +80,6 @@ const Tee = ({ source, width }: Props) => {
     };
   };
 
-  // Общая функция для отрисовки слоя с опциональной заливкой цветом
   const drawLayer = async (
     canvas: any,
     src: string,
@@ -86,29 +94,14 @@ const Tee = ({ source, width }: Props) => {
     try {
       const img = await loadImage(canvas, src);
       ctx.clearRect(0, 0, size, size);
-
       const draw = createDrawFunc(ctx, img, scale);
-
-      // Выполняем все команды рисования
       drawCommands.forEach((params) => draw(...params));
-
-      // Механика цвета "законсервирована" - временно не заливать
-      /*
-      if (overlayColor) {
-        ctx.globalCompositeOperation = "source-atop";
-        ctx.fillStyle = overlayColor;
-        ctx.fillRect(0, 0, size, size);
-        ctx.globalCompositeOperation = "source-over";
-      }
-      */
     } catch (error) {
       console.error("Image loading failed:", error);
     }
   };
 
-  // Обработчики для каждого слоя
   const handleMainCanvas = async (canvas) => {
-    if (!canvas) return;
     const setup = setupCanvas(canvas);
     if (!setup) return;
     const { ctx, size, scale } = setup;
@@ -116,36 +109,22 @@ const Tee = ({ source, width }: Props) => {
     try {
       const img = await loadImage(canvas, src);
       ctx.clearRect(0, 0, size, size);
-
       const draw = createDrawFunc(ctx, img, scale);
-
-      // Рисуем фрагменты тела и глаз (без заливки)
       draw(192, 64, 64, 30, -7, 52, 90, 38);
       draw(96, 0, 96, 96, 0, 0, 96, 96);
       draw(192, 64, 64, 30, 17, 52, 87, 38);
-      // Здесь можно добавить зеркальный глаз, если нужно
     } catch (error) {
       console.error("Image loading failed:", error);
     }
   };
 
-  // Левую ногу рисуем и закрашиваем (заливка отключена)
   const handleLeftLeg = (canvas) => {
-    const drawCommands = [
-      [192, 40, 70, 30, -13, 58, 110, 50], // нога
-    ];
-    drawLayer(canvas, src, drawCommands /*, COLORS.overlayLegs */);
+    drawLayer(canvas, src, [[192, 40, 70, 30, -13, 58, 110, 50]]);
   };
-
-  // Правую ногу рисуем и закрашиваем (заливка отключена)
   const handleRightLeg = (canvas) => {
-    const drawCommands = [
-      [192, 40, 70, 30, 11, 58, 108, 50], // нога
-    ];
-    drawLayer(canvas, src, drawCommands /*, COLORS.overlayLegs */);
+    drawLayer(canvas, src, [[192, 40, 70, 30, 11, 58, 108, 50]]);
   };
 
-  // Тело с глазами и заливкой (заливка отключена)
   const handleBody = (canvas) => {
     if (!canvas) return;
     const setup = setupCanvas(canvas);
@@ -156,10 +135,8 @@ const Tee = ({ source, width }: Props) => {
       .then((img) => {
         ctx.clearRect(0, 0, size, size);
         const draw = createDrawFunc(ctx, img, scale);
-
-        draw(0, 0, 96, 96, -2, -2, 100, 100); // тело
-        draw(64, 100, 30, 40, 38, 27, 34, 50); // глаз
-
+        draw(0, 0, 96, 96, -2, -2, 100, 100);
+        draw(64, 100, 30, 40, 38, 27, 34, 50);
         ctx.save();
         ctx.translate((38 + 34) * scale, 27 * scale);
         ctx.scale(-1, 1);
@@ -175,17 +152,20 @@ const Tee = ({ source, width }: Props) => {
           50 * scale
         );
         ctx.restore();
-
-        // Механика цвета "законсервирована"
-        /*
-        ctx.globalCompositeOperation = "source-atop";
-        ctx.fillStyle = COLORS.overlayBody;
-        ctx.fillRect(0, 0, size, size);
-        ctx.globalCompositeOperation = "source-over";
-        */
       })
       .catch((error) => console.error("Image loading failed:", error));
   };
+
+  // Рендерим плейсхолдер до завершения загрузки
+  if (!isLoaded) {
+    return (
+      <RNImage
+        source={DEFAULT_URI}
+        style={{ width: rw(width), height: rw(width) }}
+        resizeMode="contain"
+      />
+    );
+  }
 
   return (
     <View style={{ width: rw(width), height: rw(width) }}>

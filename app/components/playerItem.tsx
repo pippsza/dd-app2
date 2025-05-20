@@ -86,14 +86,15 @@ const PlayerItem = React.memo(({ player, setNames, playerOnline }: Props) => {
     <View style={styles.cardBox}>
       <TouchableOpacity onPress={navigateHandle}>
         <View style={styles.cardInside}>
-          {/* Показываем Tee только когда данные загрузились */}
           {playerData ? (
             <Tee source={playerData.skin_name} width={rw(4)} />
           ) : (
             <ActivityIndicator size="small" />
           )}
           <View style={styles.textContainer}>
-            <Text>{playersObj?.status || "Offline..."}</Text>
+            <Text style={styles[playersObj.status]}>
+              {playersObj?.status || "Offline..."}
+            </Text>
 
             <Text style={styles.cardText}>{player}</Text>
           </View>
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 3,
-    borderRadius: 8,
+    borderRadius: rw(4),
     backgroundColor: "white",
     height: "100%",
     width: rw(89),
@@ -148,6 +149,9 @@ const styles = StyleSheet.create({
     gap: rh(1),
     textAlign: "center",
   },
+  Offline: { fontSize: rf(2), color: "red" },
+  Online: { fontSize: rf(2), color: "green" },
+  AFK: { fontSize: rf(2), color: "blue" },
 });
 
 export default PlayerItem;

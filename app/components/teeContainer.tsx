@@ -6,7 +6,9 @@ import {
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
 import Tee from "./tee";
-export default function TeeContainer({ data }: any) {
+export default function TeeContainer({ data, online }: any) {
+  console.log(online);
+
   return (
     <>
       <View style={style.teeContainer}>
@@ -19,11 +21,22 @@ export default function TeeContainer({ data }: any) {
           </Text>
         </View>
         <View style={style.container}>
-          <View>
-            {/* <Text style={style.bigText}>♥{data.status} </Text>
-            <Text style={style.regText}>Playing on: {data.playing_map}</Text>
-            <Text style={style.regText}>{data.playing_server}</Text> */}
-          </View>
+          {online.status === "Designer" && "Developer" ? (
+            <Text style={style[online.status]}>{online.status}</Text>
+          ) : (
+            <View>
+              <Text style={style[online.status]}>{online.status} </Text>
+              {online.mapName ? (
+                <>
+                  <Text style={style.regText}>
+                    Playing on: {online.mapName}
+                  </Text>
+                  <Text style={style.regText}>{online.server}</Text>
+                </>
+              ) : null}
+            </View>
+          )}
+
           <Tee width={rh(4)} source={data.profile.skin_name}></Tee>
           <View>
             <Text style={style.bigText}>{data.profile.name}</Text>
@@ -70,4 +83,9 @@ const style = StyleSheet.create({
   },
   rightText: { fontSize: rf(2), textAlign: "center" },
   rightSmallText: { fontSize: rf(1.8), textAlign: "center" },
+  Online: { textAlign: "center", fontSize: rf(3), color: "green" },
+  Offline: { textAlign: "center", fontSize: rf(3), color: "red" },
+  AFK: { textAlign: "center", fontSize: rf(3), color: "blue" },
+  Designer: { textAlign: "center", fontSize: rf(5), color: "orange" },
+  Developer: { textAlign: "center", fontSize: rf(5), color: "#c9007c" },
 });

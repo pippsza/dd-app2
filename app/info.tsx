@@ -72,11 +72,9 @@ export default function Info({}) {
           <MoreDark style={style.moreSvg}></MoreDark>
         </TouchableOpacity>
       </Link>
-      <TeeContainer data={player} />
+      <TeeContainer online={online} data={player} />
       <TotalPlayed data={player} />
-      <Text>
-        {online.status},{online.mapName},{online.server},{online.game}
-      </Text>
+
       <GameModePie data={player}></GameModePie>
       <GameCategoryPie data={player}></GameCategoryPie>
     </View>

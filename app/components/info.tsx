@@ -9,19 +9,20 @@ import {
 import { StyleSheet } from "react-native";
 import CrossDark from "../assets/svg/cross-dark.svg";
 import MoreDark from "../assets/svg/more-dark.svg";
-import GameCategoryPie from "./components/gameCategoriesPie";
-import GameModePie from "./components/gamemodesPie";
-import TotalPlayed from "./components/totalPlayed";
-import TeeContainer from "./components/teeContainer";
+import GameCategoryPie from "./gameCategoriesPie";
+import GameModePie from "./gamemodesPie";
+import TotalPlayed from "./totalPlayed";
+import TeeContainer from "./teeContainer";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Spinner from "react-native-loading-spinner-overlay";
+import Toast from "react-native-toast-message";
 
 export default function Info({}) {
-  const navigation = useNavigation();
   const route = useRoute();
   let online;
   let data: any;
+  const navigation = useNavigation();
 
   try {
     const { item, onlineData }: any = route.params;
@@ -43,6 +44,7 @@ export default function Info({}) {
         setPlayer(response.data);
       } catch (err) {
         console.log(err);
+
         navigation.navigate("index", { error: true });
         throw new Error();
       }
@@ -59,11 +61,13 @@ export default function Info({}) {
         textContent="Loading..."
         textStyle={{ color: "#FFF" }}
       />
+      <Toast></Toast>
     </View>
   );
 
   const fullComponent = (
     <View style={style.mainContainer}>
+      <Toast></Toast>
       <Link asChild href="/">
         <TouchableOpacity>
           <CrossDark style={style.svg}></CrossDark>
@@ -76,7 +80,6 @@ export default function Info({}) {
       </Link>
       <TeeContainer online={online} data={player} />
       <TotalPlayed data={player} />
-
       <GameModePie data={player}></GameModePie>
       <GameCategoryPie data={player}></GameCategoryPie>
     </View>

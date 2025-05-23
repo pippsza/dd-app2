@@ -11,6 +11,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import axios from "axios";
+import { useRoute } from "@react-navigation/native";
 
 export default React.memo(function Main() {
   const [modal, setModal] = useState<boolean>(false);
@@ -18,6 +19,11 @@ export default React.memo(function Main() {
   const [names, setNames] = useState<any>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
+  const route: any = useRoute();
+  let params = { error: false };
+  if (route.params != undefined) {
+    params = route.params;
+  }
 
   const toggleTheme = (): void => {
     setTheme((prev) => !prev);
@@ -50,6 +56,15 @@ export default React.memo(function Main() {
         setIsInitialized(true);
       }
     })();
+
+    if (Object.keys(params).length > 0) {
+      if ((params.error = true)) {
+        Toast.show({
+          type: "error",
+          text1: "Oops, something went wrong :(",
+        });
+      }
+    }
   }, []);
 
   // Save names when updated, only after initialization

@@ -16,41 +16,28 @@ type CanvasFunc = (
   dH: number
 ) => void;
 
-// Цвета и параметры в одном месте
 const COLORS = {
-  overlayBody: "rgba(0, 140, 255, 0.3)", // цвет заливки тела
-  overlayLegs: "rgba(0, 255, 0, 0.3)", // цвет заливки ног
+  overlayBody: "rgba(0, 140, 255, 0.3)",
+  overlayLegs: "rgba(0, 255, 0, 0.3)",
 };
 
 const CANVAS_BASE_SIZE = 100;
 const DEFAULT_URI = require("../../assets/images/default.png");
+
+// Глобальний кеш для зображень
+const imageCache = new Map<string, Image>();
 
 const Tee = ({ source, width }: Props) => {
   const rawSrc = `https://skins.ddnet.org/skin/community/${source}.png`;
   const src = encodeURI(rawSrc);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Предварительная загрузка изображения
   useEffect(() => {
     setIsLoaded(false);
     RNImage.prefetch(src)
       .then(() => setIsLoaded(true))
       .catch(() => setIsLoaded(false));
   }, [src]);
-
-  // Общая функция для создания и загрузки изображения
-  const loadImage = (canvas: any, src: string): Promise<Image> => {
-    return new Promise((resolve, reject) => {
-      const img = new Image(canvas);
-      img.src = src;
-      img.addEventListener("load", () => resolve(img));
-      img.addEventListener("error", () => {
-        const defImg = new Image(canvas);
-        defImg.src = DEFAULT_URI;
-        defImg.addEventListener("load", () => resolve(defImg));
-      });
-    });
-  };
 
   const setupCanvas = (canvas: any) => {
     if (!canvas) return null;
@@ -81,6 +68,29 @@ const Tee = ({ source, width }: Props) => {
     };
   };
 
+  const loadImage = (canvas: any, src: string): Promise<Image> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image(canvas);
+      img.addEventListener("load", () => {
+        // Перевірка: чи має зображення розмір
+        if (img.width === 0 || img.height === 0) {
+          reject("Image has zero size");
+        } else {
+          resolve(img);
+        }
+      });
+      img.addEventListener("error", () => {
+        const defImg = new Image(canvas);
+        defImg.src = DEFAULT_URI;
+        defImg.addEventListener("load", () => resolve(defImg));
+        defImg.addEventListener("error", () =>
+          reject("Default image failed too")
+        );
+      });
+      img.src = src;
+    });
+  };
+
   const drawLayer = async (
     canvas: any,
     src: string,
@@ -102,7 +112,7 @@ const Tee = ({ source, width }: Props) => {
     }
   };
 
-  const handleMainCanvas = async (canvas) => {
+  const handleMainCanvas = async (canvas: any) => {
     const setup = setupCanvas(canvas);
     if (!setup) return;
     const { ctx, size, scale } = setup;
@@ -119,14 +129,15 @@ const Tee = ({ source, width }: Props) => {
     }
   };
 
-  const handleLeftLeg = (canvas) => {
+  const handleLeftLeg = (canvas: any) => {
     drawLayer(canvas, src, [[192, 40, 70, 30, -13, 58, 110, 50]]);
   };
-  const handleRightLeg = (canvas) => {
+
+  const handleRightLeg = (canvas: any) => {
     drawLayer(canvas, src, [[192, 40, 70, 30, 11, 58, 108, 50]]);
   };
 
-  const handleFullRenderCanvas = async (canvas) => {
+  const handleFullRenderCanvas = async (canvas: any) => {
     const setup = setupCanvas(canvas);
     if (!setup) return;
     const { ctx, size, scale } = setup;
@@ -136,13 +147,11 @@ const Tee = ({ source, width }: Props) => {
       ctx.clearRect(0, 0, size, size);
       const draw = createDrawFunc(ctx, img, scale);
 
-      // Рисуем ноги
-      draw(192, 40, 70, 30, -13, 58, 110, 50); // левая
-
-      // Рисуем тело
+      draw(192, 40, 70, 30, -13, 58, 110, 50);
       draw(0, 0, 96, 96, -2, -2, 100, 100);
-      draw(64, 100, 30, 40, 38, 27, 34, 50); // рука
-      draw(192, 40, 70, 30, 11, 58, 108, 50); // правая
+      draw(64, 100, 30, 40, 38, 27, 34, 50);
+      draw(192, 40, 70, 30, 11, 58, 108, 50);
+
       ctx.save();
       ctx.translate((38 + 34) * scale, 27 * scale);
       ctx.scale(-1, 1);
@@ -156,45 +165,45 @@ const Tee = ({ source, width }: Props) => {
         0,
         34 * scale,
         50 * scale
-      ); // отражённая рука
+      );
       ctx.restore();
     } catch (error) {
       console.error("Full render failed:", error);
     }
   };
 
-  const handleBody = (canvas) => {
-    if (!canvas) return;
+  const handleBody = async (canvas: any) => {
     const setup = setupCanvas(canvas);
     if (!setup) return;
     const { ctx, size, scale } = setup;
 
-    loadImage(canvas, src)
-      .then((img) => {
-        ctx.clearRect(0, 0, size, size);
-        const draw = createDrawFunc(ctx, img, scale);
-        draw(0, 0, 96, 96, -2, -2, 100, 100);
-        draw(64, 100, 30, 40, 38, 27, 34, 50);
-        ctx.save();
-        ctx.translate((38 + 34) * scale, 27 * scale);
-        ctx.scale(-1, 1);
-        ctx.drawImage(
-          img,
-          64,
-          100,
-          30,
-          40,
-          -17 * scale,
-          0,
-          34 * scale,
-          50 * scale
-        );
-        ctx.restore();
-      })
-      .catch((error) => console.error("Image loading failed:", error));
+    try {
+      const img = await loadImage(canvas, src);
+      ctx.clearRect(0, 0, size, size);
+      const draw = createDrawFunc(ctx, img, scale);
+      draw(0, 0, 96, 96, -2, -2, 100, 100);
+      draw(64, 100, 30, 40, 38, 27, 34, 50);
+
+      ctx.save();
+      ctx.translate((38 + 34) * scale, 27 * scale);
+      ctx.scale(-1, 1);
+      ctx.drawImage(
+        img,
+        64,
+        100,
+        30,
+        40,
+        -17 * scale,
+        0,
+        34 * scale,
+        50 * scale
+      );
+      ctx.restore();
+    } catch (error) {
+      console.error("Body render failed:", error);
+    }
   };
 
-  // Рендерим плейсхолдер до завершения загрузки
   if (!isLoaded) {
     return (
       <RNImage
@@ -211,7 +220,7 @@ const Tee = ({ source, width }: Props) => {
       <Canvas style={style.tee} ref={handleLeftLeg} />
       <Canvas style={style.tee} ref={handleBody} />
       <Canvas style={style.tee} ref={handleRightLeg} /> */}
-      <Canvas style={style.tee} ref={handleFullRenderCanvas}></Canvas>
+      <Canvas style={style.tee} ref={handleFullRenderCanvas} />
     </View>
   );
 };

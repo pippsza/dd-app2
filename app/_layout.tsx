@@ -1,5 +1,5 @@
 // app/_layout.tsx
-import { ImageBackground } from "react-native";
+import { ImageBackground, View } from "react-native";
 import { Slot } from "expo-router";
 import { enableLayoutAnimations } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
@@ -32,7 +32,10 @@ export default function Layout() {
       }}
       resizeMode="cover"
     >
-      <Toast></Toast>
+      <View style={{ zIndex: 9999 }}>
+        <Toast></Toast>
+      </View>
+
       {isConnected ? <Slot /> : <NotFoundPage />}
     </ImageBackground>
   );

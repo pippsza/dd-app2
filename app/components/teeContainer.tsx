@@ -6,8 +6,53 @@ import {
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
 import Tee from "./tee";
+import { useContext } from "react";
+import { ThemeContext } from "./themeSwitcher";
 export default function TeeContainer({ data, online }: any) {
-  console.log(online);
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const style = StyleSheet.create({
+    container: { alignItems: "center", gap: rh(2) },
+    regText: {
+      textAlign: "center",
+      fontSize: rf(2),
+      color: isDarkMode ? "black" : "white",
+    },
+    bigText: {
+      textAlign: "center",
+      fontSize: rf(3),
+      color: isDarkMode ? "black" : "white",
+    },
+    smallText: {
+      textAlign: "center",
+      fontSize: rf(1.8),
+      color: isDarkMode ? "black" : "white",
+    },
+    teeContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-evenly",
+      width: rw(100),
+    },
+    img: {
+      width: rw(20),
+      height: rw(20),
+    },
+    rightText: {
+      fontSize: rf(2),
+      textAlign: "center",
+      color: isDarkMode ? "black" : "white",
+    },
+    rightSmallText: {
+      fontSize: rf(1.8),
+      textAlign: "center",
+      color: isDarkMode ? "black" : "white",
+    },
+    Online: { textAlign: "center", fontSize: rf(3), color: "green" },
+    Offline: { textAlign: "center", fontSize: rf(3), color: "red" },
+    AFK: { textAlign: "center", fontSize: rf(3), color: "blue" },
+    Designer: { textAlign: "center", fontSize: rf(5), color: "orange" },
+    Developer: { textAlign: "center", fontSize: rf(5), color: "#c9007c" },
+  });
 
   return (
     <>
@@ -66,26 +111,3 @@ export default function TeeContainer({ data, online }: any) {
     </>
   );
 }
-const style = StyleSheet.create({
-  container: { alignItems: "center", gap: rh(2) },
-  regText: { textAlign: "center", fontSize: rf(2) },
-  bigText: { textAlign: "center", fontSize: rf(3) },
-  smallText: { textAlign: "center", fontSize: rf(1.8) },
-  teeContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-evenly",
-    width: rw(100),
-  },
-  img: {
-    width: rw(20),
-    height: rw(20),
-  },
-  rightText: { fontSize: rf(2), textAlign: "center" },
-  rightSmallText: { fontSize: rf(1.8), textAlign: "center" },
-  Online: { textAlign: "center", fontSize: rf(3), color: "green" },
-  Offline: { textAlign: "center", fontSize: rf(3), color: "red" },
-  AFK: { textAlign: "center", fontSize: rf(3), color: "blue" },
-  Designer: { textAlign: "center", fontSize: rf(5), color: "orange" },
-  Developer: { textAlign: "center", fontSize: rf(5), color: "#c9007c" },
-});

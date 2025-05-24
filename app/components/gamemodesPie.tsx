@@ -5,8 +5,22 @@ import {
   responsiveWidth as rw,
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
+import { StyleSheet } from "react-native";
+import { useContext } from "react";
+import { ThemeContext } from "./themeSwitcher";
 
 export default function GameModePie({ data }: any) {
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const style = StyleSheet.create({
+    bigText: {
+      textAlign: "center",
+      fontSize: rf(3),
+      color: isDarkMode ? "black" : "white",
+    },
+    fakeContainer: { height: rh(20) },
+    fakeText: { color: "red", textAlign: "center", fontSize: rf(3) },
+  });
+
   const getColorGametypes = (index: number) => {
     const colors = ["#ff6a76", "#ffe178", "#6df5c2"];
     return colors[index];
@@ -19,7 +33,7 @@ export default function GameModePie({ data }: any) {
         name: "hours - " + item.key,
         population: Math.round(item.seconds_played / 3600),
         color: getColorGametypes(idx),
-        legendFontColor: "#1b1b1e",
+        legendFontColor: isDarkMode ? "black" : "white",
         legendFontSize: rf(1.9),
       };
     });
@@ -36,7 +50,7 @@ export default function GameModePie({ data }: any) {
                 width={rw(100)}
                 height={rw(40)}
                 chartConfig={{
-                  color: () => `rgba(0, 0, 0, 1)`,
+                  color: () => (isDarkMode ? "green" : "white"),
                 }}
                 accessor="population"
                 backgroundColor="transparent"
@@ -55,10 +69,3 @@ export default function GameModePie({ data }: any) {
     </>
   );
 }
-
-import { StyleSheet } from "react-native";
-const style = StyleSheet.create({
-  bigText: { textAlign: "center", fontSize: rf(3) },
-  fakeContainer: { height: rh(20) },
-  fakeText: { color: "red", textAlign: "center", fontSize: rf(3) },
-});

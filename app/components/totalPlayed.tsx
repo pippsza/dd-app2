@@ -3,6 +3,15 @@ import { responsiveFontSize as rf } from "react-native-responsive-dimensions";
 
 export default function TotalPlayed({ data }: any) {
   const activity = data?.general_activity;
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const style = StyleSheet.create({
+    text: {
+      fontSize: rf(2),
+      textAlign: "center",
+      color: isDarkMode ? "black" : "white",
+    },
+    fakeText: { color: "red", textAlign: "center", fontSize: rf(3) },
+  });
 
   return (
     <Text style={activity ? style.text : style.fakeText}>
@@ -16,7 +25,5 @@ export default function TotalPlayed({ data }: any) {
 }
 
 import { StyleSheet } from "react-native";
-const style = StyleSheet.create({
-  text: { fontSize: rf(2), textAlign: "center" },
-  fakeText: { color: "red", textAlign: "center", fontSize: rf(3) },
-});
+import { useContext } from "react";
+import { ThemeContext } from "./themeSwitcher";

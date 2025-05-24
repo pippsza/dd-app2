@@ -15,7 +15,7 @@ import { useRoute } from "@react-navigation/native";
 
 export default React.memo(function Main() {
   const [modal, setModal] = useState<boolean>(false);
-  const [theme, setTheme] = useState<boolean>(false);
+
   const [names, setNames] = useState<any>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
@@ -25,10 +25,6 @@ export default React.memo(function Main() {
     params = route.params;
   }
 
-  const toggleTheme = (): void => {
-    setTheme((prev) => !prev);
-  };
-
   const openModal = (): void => {
     setModal(true);
   };
@@ -37,18 +33,13 @@ export default React.memo(function Main() {
     setModal(false);
   };
 
-  // Load friends and theme from AsyncStorage on mount
   useEffect(() => {
     (async () => {
       try {
         const storedNames = await AsyncStorage.getItem("friendsNames");
-        const storedTheme = await AsyncStorage.getItem("theme");
 
         if (storedNames) {
           setNames(JSON.parse(storedNames));
-        }
-        if (storedTheme !== null) {
-          setTheme(JSON.parse(storedTheme));
         }
       } catch (error) {
         console.error("Error loading from storage:", error);
@@ -74,13 +65,6 @@ export default React.memo(function Main() {
       console.error("Error saving friendsNames:", err)
     );
   }, [names, isInitialized]);
-
-  // Save theme when toggled
-  useEffect(() => {
-    AsyncStorage.setItem("theme", JSON.stringify(theme)).catch((err) =>
-      console.error("Error saving theme:", err)
-    );
-  }, [theme]);
 
   const addName = async () => {
     const trimmed = inputValue.trim();
@@ -174,7 +158,7 @@ export default React.memo(function Main() {
   return (
     <View style={style.box}>
       <View style={style.container}>
-        <Header toggleTheme={toggleTheme} />
+        <Header />
 
         {modal && (
           <ModalWindow
@@ -188,8 +172,6 @@ export default React.memo(function Main() {
         <View style={style.sliderContainer}>
           <Slider setNames={setNames} playersArr={names} />
         </View>
-
-        {theme && <Text>Theme is {theme.toString()}</Text>}
 
         <AddFrBttn openModal={openModal} />
       </View>

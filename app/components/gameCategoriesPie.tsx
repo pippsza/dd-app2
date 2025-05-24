@@ -5,7 +5,19 @@ import {
   responsiveWidth as rw,
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
+
 export default function GameCategoryPie({ data }: any) {
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const style = StyleSheet.create({
+    bigText: {
+      textAlign: "center",
+      fontSize: rf(3),
+      color: isDarkMode ? "black" : "white",
+    },
+    fakeContainer: { height: rh(20) },
+    fakeText: { color: "red", textAlign: "center", fontSize: rf(3) },
+  });
+
   const getColorGamecategories = (index: number) => {
     const colors = ["#009589", "#001e87", "#920a3d"];
     return colors[index];
@@ -17,7 +29,7 @@ export default function GameCategoryPie({ data }: any) {
         name: "hours - " + item.key,
         population: Math.round(item.seconds_played / 3600),
         color: getColorGamecategories(idx),
-        legendFontColor: "#1b1b1e",
+        legendFontColor: isDarkMode ? "black" : "white",
         legendFontSize: rf(1.9),
       };
     });
@@ -54,8 +66,5 @@ export default function GameCategoryPie({ data }: any) {
 }
 
 import { StyleSheet } from "react-native";
-const style = StyleSheet.create({
-  bigText: { textAlign: "center", fontSize: rf(3) },
-  fakeContainer: { height: rh(20) },
-  fakeText: { color: "red", textAlign: "center", fontSize: rf(3) },
-});
+import { useContext } from "react";
+import { ThemeContext } from "./themeSwitcher";

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   TouchableOpacity,
   StyleSheet,
@@ -16,7 +16,8 @@ import Tee from "./tee";
 import axios from "axios";
 import { useNavigation } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Toast from "react-native-toast-message";
+import TrashLight from "../../assets/svg/trash-light.svg";
+import { ThemeContext } from "./themeSwitcher";
 
 const ITEM_HEIGHT = rh(11.83);
 
@@ -26,6 +27,7 @@ type Props = {
   playerOnline: any;
 };
 const PlayerItem = React.memo(({ player, setNames, playerOnline }: Props) => {
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const [playerData, setPlayerData]: any = useState(null);
   const [loading, setLoading] = useState(true);
   const [playersObj, setPlayersObj]: any = useState({});
@@ -37,7 +39,52 @@ const PlayerItem = React.memo(({ player, setNames, playerOnline }: Props) => {
       onlineData: playerOnline,
     });
   };
+  const styles = StyleSheet.create({
+    listContainer: {
+      alignItems: "center",
+    },
+    cardBox: {
+      height: ITEM_HEIGHT,
+      width: rw(90),
+      paddingVertical: 4,
+      marginBottom: 0,
+    },
+    cardText: {
+      fontSize: rf(2),
+      color: isDarkMode ? "black" : "white",
+      fontWeight: "600",
+    },
+    cardInside: {
+      borderColor: isDarkMode ? "black" : "white",
+      borderWidth: 2,
 
+      flexDirection: "row",
+      padding: rw(8),
+      alignItems: "center",
+      shadowColor: "#000",
+      shadowOpacity: 0.2,
+      shadowOffset: { width: 0, height: 2 },
+      shadowRadius: 4,
+      elevation: 3,
+      borderRadius: rw(4),
+      backgroundColor: isDarkMode ? "white" : "#272727",
+      height: "100%",
+      width: rw(89),
+      justifyContent: "space-between",
+    },
+    svg: {
+      width: 30,
+      height: 30,
+    },
+    textContainer: {
+      flex: 1,
+      gap: rh(1),
+      textAlign: "center",
+    },
+    Offline: { fontSize: rf(2), color: "red" },
+    Online: { fontSize: rf(2), color: "green" },
+    AFK: { fontSize: rf(2), color: "blue" },
+  });
   useEffect(() => {
     let isMounted = true;
 
@@ -101,59 +148,16 @@ const PlayerItem = React.memo(({ player, setNames, playerOnline }: Props) => {
             <Text style={styles.cardText}>{player}</Text>
           </View>
           <TouchableOpacity onPress={deletePlayer}>
-            <TrashDark style={styles.svg}></TrashDark>
+            {isDarkMode ? (
+              <TrashDark style={styles.svg}></TrashDark>
+            ) : (
+              <TrashLight style={styles.svg}></TrashLight>
+            )}
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
     </View>
   );
-});
-
-const styles = StyleSheet.create({
-  listContainer: {
-    alignItems: "center",
-  },
-  cardBox: {
-    height: ITEM_HEIGHT,
-    width: rw(90),
-    paddingVertical: 4,
-    marginBottom: 0,
-  },
-  cardText: {
-    fontSize: rf(2),
-    color: "black",
-    fontWeight: "600",
-  },
-  cardInside: {
-    borderColor: "black",
-    borderWidth: 2,
-
-    flexDirection: "row",
-    padding: rw(8),
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 3,
-    borderRadius: rw(4),
-    backgroundColor: "white",
-    height: "100%",
-    width: rw(89),
-    justifyContent: "space-between",
-  },
-  svg: {
-    width: 30,
-    height: 30,
-  },
-  textContainer: {
-    flex: 1,
-    gap: rh(1),
-    textAlign: "center",
-  },
-  Offline: { fontSize: rf(2), color: "red" },
-  Online: { fontSize: rf(2), color: "green" },
-  AFK: { fontSize: rf(2), color: "blue" },
 });
 
 export default PlayerItem;

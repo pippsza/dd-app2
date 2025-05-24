@@ -7,12 +7,47 @@ import {
 } from "react-native-responsive-dimensions";
 export default function AuthorsInfo() {
   const navigation = useNavigation();
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const authorsInfo = (player: any, role: any) => {
     let online = { status: null };
     online.status = role;
 
     navigation.navigate("info", { item: player, onlineData: online });
   };
+  const style = StyleSheet.create({
+    name: {
+      textAlign: "center",
+      fontSize: rf(3),
+      color: isDarkMode ? "black" : "white",
+    },
+    text: {
+      textAlign: "center",
+      fontSize: rf(2),
+      textDecorationLine: "underline",
+      color: isDarkMode ? "black" : "white",
+    },
+    container: { flexDirection: "row", gap: rw(5) },
+    img: {
+      width: rw(34),
+      height: rw(34),
+    },
+    bigContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    box: {
+      flex: 1,
+
+      width: rw(100),
+    },
+    head: {
+      fontSize: rf(4),
+      textAlign: "center",
+      color: isDarkMode ? "black" : "white",
+    },
+  });
+
   return (
     <>
       <View style={style.box}>
@@ -86,27 +121,5 @@ export default function AuthorsInfo() {
   );
 }
 import { StyleSheet } from "react-native";
-const style = StyleSheet.create({
-  name: { textAlign: "center", fontSize: rf(3) },
-  text: {
-    textAlign: "center",
-    fontSize: rf(2),
-    textDecorationLine: "underline",
-  },
-  container: { flexDirection: "row", gap: rw(5) },
-  img: {
-    width: rw(34),
-    height: rw(34),
-  },
-  bigContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  box: {
-    flex: 1,
-
-    width: rw(100),
-  },
-  head: { fontSize: rf(4), textAlign: "center" },
-});
+import { ThemeContext } from "./themeSwitcher";
+import { useContext } from "react";

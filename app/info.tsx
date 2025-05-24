@@ -12,12 +12,16 @@ import MoreDark from "../assets/svg/more-dark.svg";
 import GameCategoryPie from "./components/gameCategoriesPie";
 import GameModePie from "./components/gamemodesPie";
 import TotalPlayed from "./components/totalPlayed";
+import CrossLight from "../assets/svg/cross-light.svg";
+import MoreLight from "../assets/svg/more-light.svg";
 import TeeContainer from "./components/teeContainer";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Spinner from "react-native-loading-spinner-overlay";
+import { ThemeContext } from "./components/themeSwitcher";
 
 export default function Info({}) {
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const navigation = useNavigation();
   const route = useRoute();
   let online;
@@ -66,12 +70,20 @@ export default function Info({}) {
     <View style={style.mainContainer}>
       <Link asChild href="/">
         <TouchableOpacity>
-          <CrossDark style={style.svg}></CrossDark>
+          {isDarkMode ? (
+            <CrossDark style={style.svg}></CrossDark>
+          ) : (
+            <CrossLight style={style.svg}></CrossLight>
+          )}
         </TouchableOpacity>
       </Link>
       <Link asChild href={`https://ddstats.tw/player/${data}`}>
         <TouchableOpacity>
-          <MoreDark style={style.moreSvg}></MoreDark>
+          {isDarkMode ? (
+            <MoreDark style={style.moreSvg}></MoreDark>
+          ) : (
+            <MoreLight style={style.moreSvg}></MoreLight>
+          )}
         </TouchableOpacity>
       </Link>
       <TeeContainer online={online} data={player} />
@@ -104,6 +116,6 @@ const style = StyleSheet.create({
     height: rw(7),
     position: "absolute",
     left: rw(3),
-    top: rh(-2.1),
+    top: rh(-1),
   },
 });

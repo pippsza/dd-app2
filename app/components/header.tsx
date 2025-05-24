@@ -1,24 +1,37 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Link } from "expo-router";
-import SunLight from "../../assets/svg/sun-dark.svg";
+import SunDark from "../../assets/svg/sun-dark.svg";
 import BurgeDark from "../../assets/svg/burger-dark.svg";
+import BurgerLight from "../../assets/svg/burger-light.svg";
+import SunLight from "../../assets/svg/sun-light.svg";
 import { StyleSheet } from "react-native";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
 } from "react-native-responsive-dimensions";
+import { useContext } from "react";
+import { ThemeContext } from "./themeSwitcher";
 
-export default function Header({ toggleTheme }: any) {
-  const changeTheme = () => {
-    console.log("PENIS");
-  };
+export default function Header() {
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+
   return (
     <>
       <View style={styles.header}>
-        <SunLight onPress={toggleTheme} style={styles.svgDark}></SunLight>
+        <TouchableOpacity>
+          {isDarkMode ? (
+            <SunDark onPress={toggleTheme} style={styles.svg}></SunDark>
+          ) : (
+            <SunLight onPress={toggleTheme} style={styles.svg}></SunLight>
+          )}
+        </TouchableOpacity>
         <Link href="/authors" asChild>
           <TouchableOpacity>
-            <BurgeDark style={styles.svgDark}></BurgeDark>
+            {isDarkMode ? (
+              <BurgeDark style={styles.svg}></BurgeDark>
+            ) : (
+              <BurgerLight style={styles.svg}></BurgerLight>
+            )}
           </TouchableOpacity>
         </Link>
       </View>
@@ -35,7 +48,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  svgDark: {
+  svg: {
     width: rw(10),
     height: rw(10),
   },

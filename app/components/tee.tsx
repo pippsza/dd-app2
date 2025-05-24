@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Image as RNImage } from "react-native";
 import Canvas, { Image } from "react-native-canvas";
 import { responsiveWidth as rw } from "react-native-responsive-dimensions";
+import FastImage from "react-native-fast-image";
 
 type Props = { source: string; width: number };
 type CanvasFunc = (
@@ -125,6 +126,43 @@ const Tee = ({ source, width }: Props) => {
     drawLayer(canvas, src, [[192, 40, 70, 30, 11, 58, 108, 50]]);
   };
 
+  const handleFullRenderCanvas = async (canvas) => {
+    const setup = setupCanvas(canvas);
+    if (!setup) return;
+    const { ctx, size, scale } = setup;
+
+    try {
+      const img = await loadImage(canvas, src);
+      ctx.clearRect(0, 0, size, size);
+      const draw = createDrawFunc(ctx, img, scale);
+
+      // Рисуем ноги
+      draw(192, 40, 70, 30, -13, 58, 110, 50); // левая
+
+      // Рисуем тело
+      draw(0, 0, 96, 96, -2, -2, 100, 100);
+      draw(64, 100, 30, 40, 38, 27, 34, 50); // рука
+      draw(192, 40, 70, 30, 11, 58, 108, 50); // правая
+      ctx.save();
+      ctx.translate((38 + 34) * scale, 27 * scale);
+      ctx.scale(-1, 1);
+      ctx.drawImage(
+        img,
+        64,
+        100,
+        30,
+        40,
+        -17 * scale,
+        0,
+        34 * scale,
+        50 * scale
+      ); // отражённая рука
+      ctx.restore();
+    } catch (error) {
+      console.error("Full render failed:", error);
+    }
+  };
+
   const handleBody = (canvas) => {
     if (!canvas) return;
     const setup = setupCanvas(canvas);
@@ -169,10 +207,11 @@ const Tee = ({ source, width }: Props) => {
 
   return (
     <View style={{ width: rw(width), height: rw(width) }}>
-      <Canvas style={style.tee} ref={handleMainCanvas} />
+      {/* <Canvas style={style.tee} ref={handleMainCanvas} />
       <Canvas style={style.tee} ref={handleLeftLeg} />
       <Canvas style={style.tee} ref={handleBody} />
-      <Canvas style={style.tee} ref={handleRightLeg} />
+      <Canvas style={style.tee} ref={handleRightLeg} /> */}
+      <Canvas style={style.tee} ref={handleFullRenderCanvas}></Canvas>
     </View>
   );
 };

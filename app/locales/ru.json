@@ -27,7 +27,7 @@
     "online": "В сети",
     "AFK": "Отошёл",
     "playingOn": "Играет на",
-    "PTS": "Очки",
+    "PTS": "ПТС",
     "bestFriend": "Бести",
     "favMap": "Лав карта",
     "favRegion": "Регион",
@@ -39,11 +39,11 @@
     "noPlayed": "Всего сыграно: нет данных"
   },
   "gamemodesPie": {
-    "mostPlayed": "Самые популярные режимы",
+    "mostPlayed": "Любимые режимы",
     "noInfo": "Нет информации о Tee"
   },
   "categoriesPie": {
-    "mostPlayed": "Самые популярные категории",
+    "mostPlayed": "Любимые категории",
     "noInfo": "Нет информации о Tee"
   },
   "toasts": {

@@ -9,13 +9,21 @@ import SunDark from "../../assets/svg/sun-dark.svg";
 import { StyleSheet } from "react-native";
 import { ThemeContext } from "./themeSwitcher";
 import { useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { useLanguage } from "./languageProvide";
 
 export default function Settings() {
+  const { t } = useTranslation();
+  const { language, setLanguage } = useLanguage();
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const availableLanguages = ["en", "ru", "es", "pt", "zh"];
   const changeLanguage = () => {
-    console.log("language has changed");
+    const currentIndex = availableLanguages.indexOf(language);
+    const nextIndex = (currentIndex + 1) % availableLanguages.length;
+    const nextLang = availableLanguages[nextIndex];
+    setLanguage(nextLang);
+    console.log(`Language changed to: ${nextLang}`);
   };
-
   const toggleNotifications = () => {
     console.log("Notifications has toggled!");
   };
@@ -56,17 +64,17 @@ export default function Settings() {
   return (
     <>
       <View style={style.box}>
-        <Text style={style.head}>Settings</Text>
+        <Text style={style.head}>{t("settings.settings")}</Text>
 
         <View style={style.container}>
           <TouchableOpacity style={style.option} onPress={changeLanguage}>
-            <Text style={style.text}>Language</Text>
+            <Text style={style.text}>{t("settings.language")}</Text>
             <View>
-              <Text style={style.text}>EN</Text>
+              <Text style={style.text}>{t("settings.lang")}</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={toggleTheme} style={style.option}>
-            <Text style={style.text}>Theme</Text>
+            <Text style={style.text}>{t("settings.theme")}</Text>
             {isDarkMode ? (
               <SunDark style={style.svg}></SunDark>
             ) : (
@@ -74,7 +82,7 @@ export default function Settings() {
             )}
           </TouchableOpacity>
           <TouchableOpacity onPress={toggleNotifications} style={style.option}>
-            <Text style={style.text}>Notifications</Text>
+            <Text style={style.text}>{t("settings.notifications")}</Text>
             <View style={style.checkBox}></View>
           </TouchableOpacity>
         </View>

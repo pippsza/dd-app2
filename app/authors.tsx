@@ -7,13 +7,16 @@ import CrossLight from "../assets/svg/cross-light.svg";
 import { StyleSheet } from "react-native";
 import { useContext } from "react";
 import { ThemeContext } from "./components/themeSwitcher";
-
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
+import { useTranslation } from "react-i18next";
+import { useLanguage } from "./components/languageProvide";
 export default function Authors() {
+  const { t } = useTranslation();
+  const { language, setLanguage } = useLanguage();
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const style = StyleSheet.create({
     container: { flex: 1, padding: rw(2) },
@@ -56,11 +59,7 @@ export default function Authors() {
           <AuthorsInfo></AuthorsInfo>
           <Settings></Settings>
         </View>
-        <Text style={style.text}>
-          Are you a React Native developer? I'd love your support! You can join
-          the project on GitHub — it's open-source. Or just drop me a message on
-          Discord: #pippsza.
-        </Text>
+        <Text style={style.text}>{t("mainSettings")}</Text>
       </View>
     </>
   );

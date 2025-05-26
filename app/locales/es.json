@@ -1,0 +1,56 @@
+{
+  "mainSettings": "     ¿Eres desarrollador de React Native? ¡Agradecería tu apoyo! Puedes unirte al proyecto en GitHub — es de código abierto. O simplemente mándame un mensaje en Discord: #pippsza.",
+  "settings": {
+    "settings": "Configuración",
+    "language": "Idioma",
+    "lang": "ES",
+    "theme": "Tema",
+    "notifications": "Notificaciones"
+  },
+  "authorsInfo": {
+    "author": "Autores",
+    "github": "Github",
+    "telegram": "Telegram",
+    "youtube": "Youtube"
+  },
+  "modalWindow": {
+    "enterName": "Introduce el nombre del amigo:",
+    "add": "Agregar"
+  },
+  "playerItem": {
+    "offline": "Desconectado",
+    "online": "En línea",
+    "AFK": "Ausente"
+  },
+  "teeContainer": {
+    "offline": "Desconectado",
+    "online": "En línea",
+    "AFK": "Ausente",
+    "playingOn": "Jugando en",
+    "PTS": "PTS",
+    "bestFriend": "Mejor amigo",
+    "favMap": "Mapa fav",
+    "favRegion": "Región fav",
+    "none": "Ninguno"
+  },
+  "totalPlayed": {
+    "totalPlayed": "Total jugado",
+    "hours": "horas desde",
+    "noPlayed": "Total jugado: ninguno"
+  },
+  "gamemodesPie": {
+    "mostPlayed": "Modos más jugados",
+    "noInfo": "Sin información del Tee"
+  },
+  "categoriesPie": {
+    "mostPlayed": "Categorías más jugadas",
+    "noInfo": "Sin información del Tee"
+  },
+  "toasts": {
+    "emptyName": "¡El nombre no puede estar vacío!",
+    "nameTooLong": "¡El nombre debe tener menos de 16 caracteres!",
+    "alreadyFriend": "¡Este jugador ya es tu amigo!",
+    "playerNotFound": "Jugador no encontrado",
+    "unexpectedError": "Ups, algo salió mal :("
+  }
+}

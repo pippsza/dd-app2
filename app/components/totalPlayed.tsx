@@ -4,6 +4,7 @@ import { responsiveFontSize as rf } from "react-native-responsive-dimensions";
 export default function TotalPlayed({ data }: any) {
   const activity = data?.general_activity;
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const { t } = useTranslation();
   const style = StyleSheet.create({
     text: {
       fontSize: rf(2),
@@ -16,10 +17,10 @@ export default function TotalPlayed({ data }: any) {
   return (
     <Text style={activity ? style.text : style.fakeText}>
       {activity
-        ? `Total played ${Math.round(
+        ? `${t("totalPlayed.totalPlayed")} ${Math.round(
             activity.total_seconds_played / 3600
-          )} hours since ${activity.start_of_playtime}`
-        : "Total played: none"}
+          )} ${t("totalPlayed.hours")} ${activity.start_of_playtime}`
+        : t("totalPlayed.noPlayed")}
     </Text>
   );
 }
@@ -27,3 +28,4 @@ export default function TotalPlayed({ data }: any) {
 import { StyleSheet } from "react-native";
 import { useContext } from "react";
 import { ThemeContext } from "./themeSwitcher";
+import { useTranslation } from "react-i18next";

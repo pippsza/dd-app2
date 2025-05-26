@@ -1,0 +1,56 @@
+{
+  "mainSettings": "     Вы разработчик на React Native? Буду рад вашей поддержке! Вы можете присоединиться к проекту на GitHub — он с открытым исходным кодом. Или просто напишите мне в Discord: #pippsza.",
+  "settings": {
+    "settings": "Настройки",
+    "language": "Язык",
+    "lang": "RU",
+    "theme": "Тема",
+    "notifications": "Уведомления"
+  },
+  "authorsInfo": {
+    "author": "Авторы",
+    "github": "Гитхаб",
+    "telegram": "Телеграм",
+    "youtube": "Ютуб"
+  },
+  "modalWindow": {
+    "enterName": "Введите имя друга:",
+    "add": "Добавить"
+  },
+  "playerItem": {
+    "offline": "Не в сети",
+    "online": "В сети",
+    "AFK": "Отошёл"
+  },
+  "teeContainer": {
+    "offline": "Не в сети",
+    "online": "В сети",
+    "AFK": "Отошёл",
+    "playingOn": "Играет на",
+    "PTS": "Очки",
+    "bestFriend": "Бести",
+    "favMap": "Лав карта",
+    "favRegion": "Регион",
+    "none": "Нету"
+  },
+  "totalPlayed": {
+    "totalPlayed": "Всего сыграно",
+    "hours": "часов с",
+    "noPlayed": "Всего сыграно: нет данных"
+  },
+  "gamemodesPie": {
+    "mostPlayed": "Самые популярные режимы",
+    "noInfo": "Нет информации о Tee"
+  },
+  "categoriesPie": {
+    "mostPlayed": "Самые популярные категории",
+    "noInfo": "Нет информации о Tee"
+  },
+  "toasts": {
+    "emptyName": "Поле имени не может быть пустым!",
+    "nameTooLong": "Имя должно быть короче 16 символов!",
+    "alreadyFriend": "Этот игрок уже у вас в друзьях!",
+    "playerNotFound": "Игрок не найден",
+    "unexpectedError": "Упс, что-то пошло не так :("
+  }
+}

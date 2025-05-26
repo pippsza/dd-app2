@@ -1,0 +1,56 @@
+{
+  "mainSettings": "     Are you a React Native developer? I'd love your support! You can join the project on GitHub — it's open-source. Or just drop me a message on Discord: #pippsza. ",
+  "settings": {
+    "settings": "Settings",
+    "language": "Language",
+    "lang": "EN",
+    "theme": "Theme",
+    "notifications": "Notifications"
+  },
+  "authorsInfo": {
+    "author": "Authors",
+    "github": "Github",
+    "telegram": "Telegram",
+    "youtube": "Youtube"
+  },
+  "modalWindow": {
+    "enterName": "Enter friend name:",
+    "add": "Add"
+  },
+  "playerItem": {
+    "offline": "Offline",
+    "online": "Online",
+    "AFK": "AFK"
+  },
+  "teeContainer": {
+    "offline": "Offline",
+    "online": "Online",
+    "AFK": "AFK",
+    "playingOn": "Playing on",
+    "PTS": "PTS",
+    "bestFriend": "Best friend",
+    "favMap": "Fav map",
+    "favRegion": "Fav region",
+    "none": "None"
+  },
+  "totalPlayed": {
+    "totalPlayed": "Total played",
+    "hours": "hours since",
+    "noPlayed": "Total played: none"
+  },
+  "gamemodesPie": {
+    "mostPlayed": "Most played gamemodes",
+    "noInfo": "No information for Tee"
+  },
+  "categoriesPie": {
+    "mostPlayed": "Most played Categories",
+    "noInfo": "No information for Tee"
+  },
+  "toasts": {
+    "emptyName": "Name field can't be empty!",
+    "nameTooLong": "Name must be shorter than 16 symbols!",
+    "alreadyFriend": "This player is already your friend!",
+    "playerNotFound": "Player doesn't exist",
+    "unexpectedError": "Oops, something went wrong :("
+  }
+}

@@ -25,11 +25,12 @@ export default function ModalWindow({
   setInputValue,
   addName,
 }: Props) {
+  const { t } = useTranslation();
   return (
     <Pressable onPress={closeModal} style={style.modal}>
       <Toast></Toast>
       <Pressable onPress={(e) => e.stopPropagation()} style={style.modalWin}>
-        <Text style={style.text}>Enter friend name</Text>
+        <Text style={style.text}>{t("modalWindow.enterName")}</Text>
         <TextInput
           value={inputValue}
           onChangeText={setInputValue}
@@ -37,7 +38,7 @@ export default function ModalWindow({
           placeholder="nameless tee"
         />
         <TouchableOpacity onPress={addName} style={style.button}>
-          <Text style={style.text}>Add</Text>
+          <Text style={style.text}>{t("modalWindow.add")}</Text>
         </TouchableOpacity>
       </Pressable>
     </Pressable>
@@ -46,6 +47,7 @@ export default function ModalWindow({
 
 import { StyleSheet } from "react-native";
 import Toast from "react-native-toast-message";
+import { useTranslation } from "react-i18next";
 const style = StyleSheet.create({
   modal: {
     flex: 1,
@@ -68,12 +70,12 @@ const style = StyleSheet.create({
     alignItems: "center",
     borderColor: "black",
     borderWidth: 3,
-    borderRadius: 10,
+    borderRadius: 5,
   },
   modalWin: {
     width: rw(80),
     height: rh(40),
-    borderRadius: 40,
+    borderRadius: 9,
     borderWidth: 4,
     opacity: 1,
     backgroundColor: "white",
@@ -85,7 +87,7 @@ const style = StyleSheet.create({
     borderWidth: 3,
     paddingHorizontal: rw(10),
     backgroundColor: "white",
-    borderRadius: 10,
+    borderRadius: 4,
     height: rh(8),
     width: rw(60),
   },

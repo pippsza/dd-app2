@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, ReactNode } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Spinner from "react-native-loading-spinner-overlay";
 
 type ThemeContextType = {
   isDarkMode: boolean;
@@ -46,8 +47,7 @@ export const ThemeProvider = ({ children }: Props) => {
   };
 
   if (loading) {
-    // Можно вернуть загрузочный спиннер или пустой View
-    return null;
+    return <Spinner color="black" visible />;
   }
 
   return (

@@ -12,8 +12,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import axios from "axios";
 import { useRoute } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 export default React.memo(function Main() {
+  const { t } = useTranslation();
   const [modal, setModal] = useState<boolean>(false);
 
   const [names, setNames] = useState<any>([]);
@@ -52,7 +54,7 @@ export default React.memo(function Main() {
       if ((params.error = true)) {
         Toast.show({
           type: "error",
-          text1: "Oops, something went wrong :(",
+          text1: t("toasts.unexpectedError"),
         });
       }
     }
@@ -70,20 +72,20 @@ export default React.memo(function Main() {
     const trimmed = inputValue.trim();
 
     if (trimmed.length === 0) {
-      Toast.show({ type: "info", text1: "Name field can't be empty!" });
+      Toast.show({ type: "info", text1: t("toasts.emptyName") });
       return;
     }
     if (trimmed.length > 16) {
       Toast.show({
         type: "info",
-        text1: "Name must be shorter than 16 symbols!",
+        text1: t("toasts.nameTooLong"),
       });
       return;
     }
     if (names.some((friend: any) => friend.name === trimmed)) {
       Toast.show({
         type: "info",
-        text1: "This player is already your friend!",
+        text1: t("toasts.alreadyFriend"),
       });
       return;
     }
@@ -103,7 +105,7 @@ export default React.memo(function Main() {
       setInputValue("");
       closeModal();
     } catch (error) {
-      Toast.show({ type: "error", text1: "Player doesn't exist" });
+      Toast.show({ type: "error", text1: t("toasts.playerNotFound") });
       console.error(error);
     }
   };

@@ -8,6 +8,7 @@ import {
 
 export default function GameCategoryPie({ data }: any) {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const { t } = useTranslation();
   const style = StyleSheet.create({
     bigText: {
       textAlign: "center",
@@ -38,7 +39,7 @@ export default function GameCategoryPie({ data }: any) {
       <View>
         {data.most_played_categories.length > 0 ? (
           <View>
-            <Text style={style.bigText}>Most played categories</Text>
+            <Text style={style.bigText}>{t("categoriesPie.mostPlayed")}</Text>
             <View>
               <PieChart
                 data={pieDataGamecategories}
@@ -57,7 +58,7 @@ export default function GameCategoryPie({ data }: any) {
           </View>
         ) : (
           <View style={style.fakeContainer}>
-            <Text style={style.fakeText}>No information for Tee</Text>
+            <Text style={style.fakeText}>{t("categoriesPie.noInfo")}</Text>
           </View>
         )}
       </View>
@@ -68,3 +69,4 @@ export default function GameCategoryPie({ data }: any) {
 import { StyleSheet } from "react-native";
 import { useContext } from "react";
 import { ThemeContext } from "./themeSwitcher";
+import { useTranslation } from "react-i18next";

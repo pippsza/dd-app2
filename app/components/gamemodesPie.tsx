@@ -8,9 +8,11 @@ import {
 import { StyleSheet } from "react-native";
 import { useContext } from "react";
 import { ThemeContext } from "./themeSwitcher";
+import { useTranslation } from "react-i18next";
 
 export default function GameModePie({ data }: any) {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const { t } = useTranslation();
   const style = StyleSheet.create({
     bigText: {
       textAlign: "center",
@@ -43,7 +45,7 @@ export default function GameModePie({ data }: any) {
       <View>
         {data.most_played_gametypes.length > 0 ? (
           <View>
-            <Text style={style.bigText}>Most played gamemodes</Text>
+            <Text style={style.bigText}>{t("gamemodesPie.mostPlayed")}</Text>
             <View>
               <PieChart
                 data={pieDataGametypes}
@@ -62,7 +64,7 @@ export default function GameModePie({ data }: any) {
           </View>
         ) : (
           <View style={style.fakeContainer}>
-            <Text style={style.fakeText}>No information for Tee</Text>
+            <Text style={style.fakeText}>{t("gamemodesPie.noInfo")}</Text>
           </View>
         )}
       </View>

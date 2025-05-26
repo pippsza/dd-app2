@@ -6,6 +6,7 @@ import {
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
 export default function AuthorsInfo() {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const authorsInfo = (player: any, role: any) => {
@@ -51,7 +52,7 @@ export default function AuthorsInfo() {
   return (
     <>
       <View style={style.box}>
-        <Text style={style.head}>Authors</Text>
+        <Text style={style.head}>{t("authorsInfo.author")}</Text>
         <View style={style.bigContainer}>
           <View style={style.container}>
             <View>
@@ -73,7 +74,7 @@ export default function AuthorsInfo() {
                 asChild
               >
                 <TouchableOpacity>
-                  <Text style={style.text}>GitHub</Text>
+                  <Text style={style.text}>{t("authorsInfo.github")}</Text>
                 </TouchableOpacity>
               </Link>
               <Link
@@ -82,7 +83,7 @@ export default function AuthorsInfo() {
                 asChild
               >
                 <TouchableOpacity>
-                  <Text style={style.text}>Telegram</Text>
+                  <Text style={style.text}>{t("authorsInfo.telegram")}</Text>
                 </TouchableOpacity>
               </Link>
             </View>
@@ -105,12 +106,12 @@ export default function AuthorsInfo() {
                 asChild
               >
                 <TouchableOpacity>
-                  <Text style={style.text}>YouTube</Text>
+                  <Text style={style.text}>{t("authorsInfo.youtube")}</Text>
                 </TouchableOpacity>
               </Link>
               <Link href="https://t.me/SilverPaww" style={style.text} asChild>
                 <TouchableOpacity>
-                  <Text style={style.text}>Telegram</Text>
+                  <Text style={style.text}>{t("authorsInfo.telegram")}</Text>
                 </TouchableOpacity>
               </Link>
             </View>
@@ -123,3 +124,4 @@ export default function AuthorsInfo() {
 import { StyleSheet } from "react-native";
 import { ThemeContext } from "./themeSwitcher";
 import { useContext } from "react";
+import { useTranslation } from "react-i18next";

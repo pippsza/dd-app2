@@ -18,6 +18,7 @@ import { useNavigation } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import TrashLight from "../../assets/svg/trash-light.svg";
 import { ThemeContext } from "./themeSwitcher";
+import { useTranslation } from "react-i18next";
 
 const ITEM_HEIGHT = rh(11.83);
 
@@ -33,6 +34,7 @@ const PlayerItem = React.memo(({ player, setNames, playerOnline }: Props) => {
   const [playersObj, setPlayersObj]: any = useState({});
 
   const navigation = useNavigation();
+  const { t } = useTranslation();
   const navigateHandle = () => {
     navigation.navigate("info", {
       item: player,
@@ -142,7 +144,11 @@ const PlayerItem = React.memo(({ player, setNames, playerOnline }: Props) => {
           )}
           <View style={styles.textContainer}>
             <Text style={styles[playersObj.status]}>
-              {playersObj?.status || "Offline..."}
+              {playersObj?.status === "Offline"
+                ? t("playerItem.offline")
+                : playersObj?.status === "Online"
+                ? t("playerItem.online")
+                : t("playerItem.AFK")}
             </Text>
 
             <Text style={styles.cardText}>{player}</Text>

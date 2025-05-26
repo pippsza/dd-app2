@@ -1,0 +1,56 @@
+{
+  "mainSettings": "     你是 React Native 开发者吗？欢迎支持我！你可以在 GitHub 上加入该项目 — 它是开源的。也可以在 Discord 上联系我：#pippsza。",
+  "settings": {
+    "settings": "设置",
+    "language": "语言",
+    "lang": "ZH",
+    "theme": "主题",
+    "notifications": "通知"
+  },
+  "authorsInfo": {
+    "author": "作者",
+    "github": "Github",
+    "telegram": "Telegram",
+    "youtube": "Youtube"
+  },
+  "modalWindow": {
+    "enterName": "输入朋友名字：",
+    "add": "添加"
+  },
+  "playerItem": {
+    "offline": "离线",
+    "online": "在线",
+    "AFK": "离开"
+  },
+  "teeContainer": {
+    "offline": "离线",
+    "online": "在线",
+    "AFK": "离开",
+    "playingOn": "正在游戏于",
+    "PTS": "PTS",
+    "bestFriend": "最好的朋友",
+    "favMap": "喜爱地图",
+    "favRegion": "喜爱区域",
+    "none": "无"
+  },
+  "totalPlayed": {
+    "totalPlayed": "总游戏时间",
+    "hours": "小时，自",
+    "noPlayed": "总游戏时间：无"
+  },
+  "gamemodesPie": {
+    "mostPlayed": "最常玩的模式",
+    "noInfo": "没有 Tee 的信息"
+  },
+  "categoriesPie": {
+    "mostPlayed": "最常玩的分类",
+    "noInfo": "没有 Tee 的信息"
+  },
+  "toasts": {
+    "emptyName": "名字不能为空！",
+    "nameTooLong": "名字必须少于16个字符！",
+    "alreadyFriend": "这个玩家已经是你的朋友了！",
+    "playerNotFound": "未找到玩家",
+    "unexpectedError": "哎呀，出了点问题 :("
+  }
+}

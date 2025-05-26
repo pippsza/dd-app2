@@ -68,6 +68,13 @@ export default function TeeContainer({ data, online }: any) {
     AFK: { textAlign: "center", fontSize: rf(3), color: "blue" },
     Designer: { textAlign: "center", fontSize: rf(5), color: "orange" },
     Developer: { textAlign: "center", fontSize: rf(5), color: "#c9007c" },
+    teeWrapper: {
+      position: "absolute",
+      right: rw(-19),
+    },
+    bigTeeWrapper: {
+      height: rh(17),
+    },
   });
 
   return (
@@ -104,8 +111,11 @@ export default function TeeContainer({ data, online }: any) {
               ) : null}
             </View>
           )}
-
-          <Tee width={rh(4)} source={data.profile.skin_name}></Tee>
+          <View style={style.bigTeeWrapper}>
+            <View style={style.teeWrapper}>
+              <Tee width={rh(4)} source={data.profile.skin_name}></Tee>
+            </View>
+          </View>
           <View>
             <Text style={style.bigText}>{data.profile.name}</Text>
             <Text style={style.smallText}>{data.profile.clan}</Text>

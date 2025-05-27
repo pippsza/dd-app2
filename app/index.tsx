@@ -13,6 +13,7 @@ import Toast from "react-native-toast-message";
 import axios from "axios";
 import { useRoute } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import { SlideUp } from "./components/test";
 
 export default React.memo(function Main() {
   const { t } = useTranslation();

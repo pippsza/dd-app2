@@ -10,6 +10,7 @@ import { useContext } from "react";
 import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
 import { Link } from "expo-router";
+import { FadeIn, SlideLeftToRight, SlideRightToLeft } from "./test";
 
 export default function TeeContainer({ data, online }: any) {
   const { t } = useTranslation();
@@ -153,85 +154,97 @@ export default function TeeContainer({ data, online }: any) {
   return (
     <View style={style.mainContainer}>
       {/* Первый ряд - Статус */}
-      <View style={style.rowContainer}>
-        <View style={style.statusBlock}>
-          {online.status === "Designer" || online.status === "Developer" ? (
-            <Text style={[style.regText, style[online.status]]}>
-              {online.status}
-            </Text>
-          ) : (
-            <>
+      <SlideLeftToRight>
+        <View style={style.rowContainer}>
+          <View style={style.statusBlock}>
+            {online.status === "Designer" || online.status === "Developer" ? (
               <Text style={[style.regText, style[online.status]]}>
-                {online.status === "Offline"
-                  ? t("teeContainer.offline")
-                  : online.status === "Online"
-                  ? t("teeContainer.online")
-                  : t("teeContainer.AFK")}
+                {online.status}
               </Text>
-              {online.mapName && (
-                <>
-                  <Text style={style.longText}>
-                    {t("teeContainer.playingOn")}: {online.mapName}
-                  </Text>
-                  <Text style={style.longText}>{online.server}</Text>
-                </>
-              )}
-            </>
-          )}
+            ) : (
+              <>
+                <Text style={[style.regText, style[online.status]]}>
+                  {online.status === "Offline"
+                    ? t("teeContainer.offline")
+                    : online.status === "Online"
+                    ? t("teeContainer.online")
+                    : t("teeContainer.AFK")}
+                </Text>
+                {online.mapName && (
+                  <>
+                    <Text style={style.longText}>
+                      {t("teeContainer.playingOn")}: {online.mapName}
+                    </Text>
+                    <Text style={style.longText}>{online.server}</Text>
+                  </>
+                )}
+              </>
+            )}
+          </View>
         </View>
-      </View>
+      </SlideLeftToRight>
 
       {/* Второй ряд - Тишка и любимые */}
       <View style={style.rowContainer}>
         <View style={style.teeBlock}>
-          <Tee width={rh(4)} source={data.profile.skin_name} />
-          <View style={style.rightContainer}>
-            <Text style={style.regText}>
-              {t("teeContainer.bestFriend")}:{" "}
-              <Text style={style.smallText}>
-                {data.favourite_teammates.length > 0
-                  ? data.favourite_teammates[0].name
-                  : t("teeContainer.none")}
+          <FadeIn>
+            <Tee width={rh(4)} source={data.profile.skin_name} />
+          </FadeIn>
+
+          <SlideRightToLeft>
+            <View style={style.rightContainer}>
+              <Text style={style.regText}>
+                {t("teeContainer.bestFriend")}:{" "}
+                <Text style={style.smallText}>
+                  {data.favourite_teammates.length > 0
+                    ? data.favourite_teammates[0].name
+                    : t("teeContainer.none")}
+                </Text>
               </Text>
-            </Text>
-            <Text style={style.regText}>
-              {t("teeContainer.favMap")}:{" "}
-              <Text style={style.longTextLove}>
-                {data.most_played_maps.length > 0
-                  ? data.most_played_maps[0].map_name
-                  : t("teeContainer.none")}
+
+              <Text style={style.regText}>
+                {t("teeContainer.favMap")}:{" "}
+                <Text style={style.longTextLove}>
+                  {data.most_played_maps.length > 0
+                    ? data.most_played_maps[0].map_name
+                    : t("teeContainer.none")}
+                </Text>
               </Text>
-            </Text>
-            <Text style={style.regText}>
-              {t("teeContainer.favRegion")}:{" "}
-              <Text style={style.smallText}>
-                {data.most_played_locations.length > 0
-                  ? data.most_played_locations[0].key.toUpperCase()
-                  : t("teeContainer.none")}
+              <Text style={style.regText}>
+                {t("teeContainer.favRegion")}:{" "}
+                <Text style={style.smallText}>
+                  {data.most_played_locations.length > 0
+                    ? data.most_played_locations[0].key.toUpperCase()
+                    : t("teeContainer.none")}
+                </Text>
               </Text>
-            </Text>
-          </View>
+            </View>
+          </SlideRightToLeft>
         </View>
       </View>
 
       {/* Третий ряд - Профиль */}
       <View style={style.profileBlock}>
-        <Link asChild href={`https://ddstats.tw/player/${data}`}>
-          <TouchableOpacity>
-            <View style={style.name}>
-              <Text style={style.bigText}>{data.profile.name}</Text>
-              {data.profile.clan ? (
-                <Text style={style.clanText}>{data.profile.clan}</Text>
-              ) : null}
-            </View>
-          </TouchableOpacity>
-        </Link>
+        <SlideLeftToRight>
+          <Link asChild href={`https://ddstats.tw/player/${data}`}>
+            <TouchableOpacity>
+              <View style={style.name}>
+                <Text style={style.bigText}>{data.profile.name}</Text>
+                {data.profile.clan ? (
+                  <Text style={style.clanText}>{data.profile.clan}</Text>
+                ) : null}
+              </View>
+            </TouchableOpacity>
+          </Link>
+        </SlideLeftToRight>
 
-        <View style={style.pts}>
-          <Text style={style.bigText}>
-            {data.profile.points} {t("teeContainer.PTS")}
-          </Text>
-        </View>
+        <SlideRightToLeft>
+          <View style={style.pts}>
+            <Text style={style.bigText}>
+              {data.profile.points} {t("teeContainer.PTS")}
+            </Text>
+          </View>
+        </SlideRightToLeft>
       </View>
     </View>
   );

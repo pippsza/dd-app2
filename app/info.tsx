@@ -19,6 +19,7 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import Spinner from "react-native-loading-spinner-overlay";
 import { ThemeContext } from "./components/themeSwitcher";
+import { FadeIn, SlideLeftToRight, SlideRightToLeft } from "./components/test";
 
 export default function Info({}) {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
@@ -79,10 +80,17 @@ export default function Info({}) {
       </Link>
 
       <TeeContainer online={online} data={player} />
-      <TotalPlayed data={player} />
+      <FadeIn>
+        <TotalPlayed data={player} />
+      </FadeIn>
 
-      <GameModePie data={player}></GameModePie>
-      <GameCategoryPie data={player}></GameCategoryPie>
+      <SlideLeftToRight>
+        <GameModePie data={player}></GameModePie>
+      </SlideLeftToRight>
+
+      <SlideRightToLeft>
+        <GameCategoryPie data={player}></GameCategoryPie>
+      </SlideRightToLeft>
     </View>
   );
 

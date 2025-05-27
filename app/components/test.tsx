@@ -1,50 +1,80 @@
-import React, { useRef, useEffect } from "react";
-import { Animated, View, Text, StyleSheet } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { Animated, Dimensions, Easing } from "react-native";
 
-const FadeInView = ({ children }) => {
-  const fadeAnim = useRef(new Animated.Value(0)).current; // Стартова прозорість = 0
+const { width, height } = Dimensions.get("window");
+
+// Глобальные настройки анимации
+const ANIMATION_DURATION = 800;
+const ANIMATION_EASING = Easing.bezier(0.42, 0, 0.58, 1); // плавная дуговая кривая
+
+export function SlideUp({ children, duration = ANIMATION_DURATION }) {
+  const translateY = useRef(new Animated.Value(height)).current;
 
   useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1, // Плавне з'явлення (opacity = 1)
-      duration: 1000,
+    Animated.timing(translateY, {
+      toValue: 0,
+      duration,
+      easing: ANIMATION_EASING,
       useNativeDriver: true,
     }).start();
   }, []);
 
   return (
-    <Animated.View style={{ ...styles.fadingContainer, opacity: fadeAnim }}>
+    <Animated.View style={{ transform: [{ translateY }] }}>
       {children}
     </Animated.View>
   );
-};
+}
 
-const Test = () => {
+export function SlideLeftToRight({ children, duration = ANIMATION_DURATION }) {
+  const translateX = useRef(new Animated.Value(-width)).current;
+
+  useEffect(() => {
+    Animated.timing(translateX, {
+      toValue: 0,
+      duration,
+      easing: ANIMATION_EASING,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <FadeInView>
-        <Text style={styles.fadingText}>Привіт, React Native!</Text>
-      </FadeInView>
-    </View>
+    <Animated.View style={{ transform: [{ translateX }] }}>
+      {children}
+    </Animated.View>
   );
-};
+}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#fff",
-  },
-  fadingContainer: {
-    padding: 20,
-    backgroundColor: "powderblue",
-    borderRadius: 10,
-  },
-  fadingText: {
-    fontSize: 20,
-    color: "#333",
-  },
-});
+export function SlideRightToLeft({ children, duration = ANIMATION_DURATION }) {
+  const translateX = useRef(new Animated.Value(width)).current;
 
-export default Test;
+  useEffect(() => {
+    Animated.timing(translateX, {
+      toValue: 0,
+      duration,
+      easing: ANIMATION_EASING,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  return (
+    <Animated.View style={{ transform: [{ translateX }] }}>
+      {children}
+    </Animated.View>
+  );
+}
+
+export function FadeIn({ children, duration = ANIMATION_DURATION }) {
+  const opacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration,
+      easing: ANIMATION_EASING,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  return <Animated.View style={{ opacity }}>{children}</Animated.View>;
+}

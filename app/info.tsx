@@ -116,6 +116,7 @@ const style = StyleSheet.create({
     height: rw(7),
     position: "absolute",
     left: rw(3),
-    top: rh(-1),
+    zIndex: 999999999,
+    top: rh(1),
   },
 });

@@ -25,6 +25,61 @@ export default function ModalWindow({
   setInputValue,
   addName,
 }: Props) {
+  const { isDarkMode } = useContext(ThemeContext);
+  const bg = isDarkMode ? "rgba(255,255,255,1)" : "rgba(39,39,39,1)";
+  const border = isDarkMode ? "black" : "white";
+  const text = isDarkMode ? "black" : "white";
+  const style = StyleSheet.create({
+    modal: {
+      flex: 1,
+      position: "absolute",
+      backgroundColor: isDarkMode
+        ? "rgba(39,39,39,0.1)"
+        : "rgba(255,255,255,0.1)",
+
+      justifyContent: "center",
+      alignItems: "center",
+      width: rw(100),
+      height: rh(100),
+      zIndex: 9999,
+    },
+    text: {
+      fontSize: rf(3),
+      color: text,
+    },
+    button: {
+      backgroundColor: bg,
+      width: rw(35),
+      height: rh(7),
+      justifyContent: "center",
+      alignItems: "center",
+      borderColor: border,
+      borderWidth: 3,
+      borderRadius: 5,
+    },
+    modalWin: {
+      width: rw(80),
+      height: rh(40),
+      borderColor: border,
+      borderRadius: 9,
+      borderWidth: 4,
+      opacity: 1,
+      backgroundColor: bg,
+      justifyContent: "space-evenly",
+      alignItems: "center",
+    },
+    input: {
+      borderColor: border,
+      borderWidth: 3,
+      paddingHorizontal: rw(10),
+      backgroundColor: bg,
+      borderRadius: 4,
+      height: rh(8),
+      width: rw(60),
+      color: text,
+    },
+  });
+
   const { t } = useTranslation();
   return (
     <Pressable onPress={closeModal} style={style.modal}>
@@ -48,47 +103,5 @@ export default function ModalWindow({
 import { StyleSheet } from "react-native";
 import Toast from "react-native-toast-message";
 import { useTranslation } from "react-i18next";
-const style = StyleSheet.create({
-  modal: {
-    flex: 1,
-    position: "absolute",
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    justifyContent: "center",
-    alignItems: "center",
-    width: rw(100),
-    height: rh(100),
-    zIndex: 9999,
-  },
-  text: {
-    fontSize: rf(3),
-  },
-  button: {
-    backgroundColor: "white",
-    width: rw(35),
-    height: rh(7),
-    justifyContent: "center",
-    alignItems: "center",
-    borderColor: "black",
-    borderWidth: 3,
-    borderRadius: 5,
-  },
-  modalWin: {
-    width: rw(80),
-    height: rh(40),
-    borderRadius: 9,
-    borderWidth: 4,
-    opacity: 1,
-    backgroundColor: "white",
-    justifyContent: "space-evenly",
-    alignItems: "center",
-  },
-  input: {
-    borderColor: "black",
-    borderWidth: 3,
-    paddingHorizontal: rw(10),
-    backgroundColor: "white",
-    borderRadius: 4,
-    height: rh(8),
-    width: rw(60),
-  },
-});
+import { useContext } from "react";
+import { ThemeContext } from "./themeSwitcher";

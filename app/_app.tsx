@@ -28,7 +28,7 @@ export default function App() {
       flex: 1,
       zIndex: -5,
       position: "relative",
-      backgroundColor: isDarkMode ? "skyblue" : "#272727",
+      backgroundColor: isDarkMode ? "white" : "#272727",
     },
   });
 

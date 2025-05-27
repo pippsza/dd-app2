@@ -9,14 +9,28 @@ import {
 export default function GameCategoryPie({ data }: any) {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const { t } = useTranslation();
+  const bg = isDarkMode ? "rgba(255,255,255,0.8)" : "rgba(39,39,39,0.8)";
+  const border = isDarkMode ? "black" : "white";
+  const text = isDarkMode ? "black" : "white";
   const style = StyleSheet.create({
     bigText: {
       textAlign: "center",
       fontSize: rf(3),
       color: isDarkMode ? "black" : "white",
     },
-    fakeContainer: { height: rh(20) },
-    fakeText: { color: "red", textAlign: "center", fontSize: rf(3) },
+    fakeContainer: { height: rh(20), justifyContent: "center" },
+    fakeText: { color: "red", textAlign: "center", fontSize: rf(2.5) },
+    container: {
+      backgroundColor: bg,
+      borderColor: border,
+      borderWidth: rw(0.4),
+      borderRightWidth: 0,
+      // borderRightWidth: 0,
+      // paddingRight:10,
+      marginLeft: rw(2),
+      borderBottomLeftRadius: rw(3),
+      borderTopLeftRadius: rw(3),
+    },
   });
 
   const getColorGamecategories = (index: number) => {
@@ -36,7 +50,7 @@ export default function GameCategoryPie({ data }: any) {
     });
   return (
     <>
-      <View>
+      <View style={style.container}>
         {data.most_played_categories.length > 0 ? (
           <View>
             <Text style={style.bigText}>{t("categoriesPie.mostPlayed")}</Text>

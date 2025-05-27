@@ -13,6 +13,9 @@ import { useTranslation } from "react-i18next";
 export default function TeeContainer({ data, online }: any) {
   const { t } = useTranslation();
   const { isDarkMode } = useContext(ThemeContext);
+  const bg = isDarkMode ? "rgba(255,255,255,0.8)" : "rgba(39,39,39,0.8)";
+  const border = isDarkMode ? "black" : "white";
+  const text = isDarkMode ? "black" : "white";
 
   const style = StyleSheet.create({
     mainContainer: {
@@ -35,10 +38,11 @@ export default function TeeContainer({ data, online }: any) {
       alignItems: "flex-start",
       paddingLeft: rw(3),
       paddingVertical: rh(1),
-      backgroundColor: isDarkMode ? "white" : "#272727",
+
+      backgroundColor: bg,
       opacity: 1,
       zIndex: -1,
-      borderColor: isDarkMode ? "black" : "white",
+      borderColor: border,
       borderWidth: rw(0.4),
       borderLeftWidth: 0,
       borderRadius: rw(6),
@@ -46,9 +50,9 @@ export default function TeeContainer({ data, online }: any) {
       borderBottomLeftRadius: 0,
     },
     rightContainer: {
-      backgroundColor: isDarkMode ? "white" : "#272727",
+      backgroundColor: bg,
       opacity: 1,
-      borderColor: isDarkMode ? "black" : "white",
+      borderColor: border,
       paddingVertical: rh(1),
       paddingLeft: rw(6),
       paddingRight: rw(4),
@@ -73,14 +77,17 @@ export default function TeeContainer({ data, online }: any) {
       flexDirection: "row",
       justifyContent: "space-between",
       width: rw(100),
-      // backgroundColor: isDarkMode ? "white" : "#272727",
+      //
+      // backgroundColor: bg,
       opacity: 1,
     },
     name: {
-      backgroundColor: isDarkMode ? "white" : "#272727",
+      // backgroundColor: bg,
       opacity: 1,
-      borderColor: isDarkMode ? "black" : "white",
-      borderWidth: rw(0.4),
+      borderColor: border,
+      // borderWidth: rw(0.4),
+      borderBottomWidth: rw(0.6),
+      // borderTopWidth: rw(0.6),
       borderLeftWidth: 0,
       borderRadius: rw(3),
       borderTopLeftRadius: 0,
@@ -89,9 +96,9 @@ export default function TeeContainer({ data, online }: any) {
       paddingHorizontal: rw(4),
     },
     pts: {
-      backgroundColor: isDarkMode ? "white" : "#272727",
+      backgroundColor: bg,
       opacity: 1,
-      borderColor: isDarkMode ? "black" : "white",
+      borderColor: border,
       borderWidth: rw(0.4),
       borderRightWidth: 0,
       alignItems: "center",
@@ -106,12 +113,19 @@ export default function TeeContainer({ data, online }: any) {
       color: isDarkMode ? "black" : "white",
       paddingLeft: rw(2.6),
     },
+    longTextLove: {
+      fontSize: rf(
+        Math.max(3 - data?.most_played_maps[0]?.map_name.length * 0.07, 1)
+      ),
+      color: isDarkMode ? "black" : "white",
+      paddingLeft: rw(2.6),
+    },
     regText: {
       fontSize: rf(2),
       color: isDarkMode ? "black" : "white",
     },
     bigText: {
-      fontSize: rf(4),
+      fontSize: rf(3.7),
       // textAlign: "center",
       color: isDarkMode ? "black" : "white",
     },
@@ -181,7 +195,7 @@ export default function TeeContainer({ data, online }: any) {
             </Text>
             <Text style={style.regText}>
               {t("teeContainer.favMap")}:{" "}
-              <Text style={style.smallText}>
+              <Text style={style.longTextLove}>
                 {data.most_played_maps.length > 0
                   ? data.most_played_maps[0].map_name
                   : t("teeContainer.none")}

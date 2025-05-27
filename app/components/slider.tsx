@@ -144,6 +144,6 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     alignItems: "center",
-    paddingVertical: rh(2),
+    // paddingVertical: rh(2),
   },
 });

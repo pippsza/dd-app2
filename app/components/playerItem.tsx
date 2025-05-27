@@ -41,7 +41,7 @@ const PlayerItem = React.memo(({ player, setNames, playerOnline }: Props) => {
       onlineData: playerOnline,
     });
   };
-  const bg = isDarkMode ? "rgba(255, 0, 255, 0.4)" : "rgba(39,39,39,0.8)";
+  const bg = isDarkMode ? "rgba(255, 255, 255, 0.4)" : "rgba(39,39,39,0.4)";
   const styles = StyleSheet.create({
     listContainer: {
       alignItems: "center",
@@ -64,11 +64,11 @@ const PlayerItem = React.memo(({ player, setNames, playerOnline }: Props) => {
       flexDirection: "row",
       padding: rw(8),
       alignItems: "center",
-      shadowColor: "#000",
-      shadowOpacity: 0.2,
-      shadowOffset: { width: 0, height: 2 },
-      shadowRadius: 4,
-      elevation: 3,
+      // shadowColor: "#000",
+      // shadowOpacity: 0.2,
+      // shadowOffset: { width: 0, height: 2 },
+      // shadowRadius: 4,
+      // elevation: 3,
       borderRadius: rw(4),
       backgroundColor: bg,
       height: "100%",

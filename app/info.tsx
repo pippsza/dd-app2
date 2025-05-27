@@ -77,15 +77,7 @@ export default function Info({}) {
           )}
         </TouchableOpacity>
       </Link>
-      <Link asChild href={`https://ddstats.tw/player/${data}`}>
-        <TouchableOpacity>
-          {isDarkMode ? (
-            <MoreDark style={style.moreSvg}></MoreDark>
-          ) : (
-            <MoreLight style={style.moreSvg}></MoreLight>
-          )}
-        </TouchableOpacity>
-      </Link>
+
       <TeeContainer online={online} data={player} />
       <TotalPlayed data={player} />
 
@@ -110,13 +102,5 @@ const style = StyleSheet.create({
     position: "absolute",
     right: 0,
     top: 0,
-  },
-  moreSvg: {
-    width: rw(7),
-    height: rw(7),
-    position: "absolute",
-    left: rw(3),
-    zIndex: 999999999,
-    top: rh(1),
   },
 });

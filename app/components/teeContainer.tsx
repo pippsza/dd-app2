@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { StyleSheet } from "react-native";
 import {
   responsiveHeight as rh,
@@ -9,6 +9,7 @@ import Tee from "./tee";
 import { useContext } from "react";
 import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
+import { Link } from "expo-router";
 
 export default function TeeContainer({ data, online }: any) {
   const { t } = useTranslation();
@@ -215,12 +216,17 @@ export default function TeeContainer({ data, online }: any) {
 
       {/* Третий ряд - Профиль */}
       <View style={style.profileBlock}>
-        <View style={style.name}>
-          <Text style={style.bigText}>{data.profile.name}</Text>
-          {data.profile.clan ? (
-            <Text style={style.clanText}>{data.profile.clan}</Text>
-          ) : null}
-        </View>
+        <Link asChild href={`https://ddstats.tw/player/${data}`}>
+          <TouchableOpacity>
+            <View style={style.name}>
+              <Text style={style.bigText}>{data.profile.name}</Text>
+              {data.profile.clan ? (
+                <Text style={style.clanText}>{data.profile.clan}</Text>
+              ) : null}
+            </View>
+          </TouchableOpacity>
+        </Link>
+
         <View style={style.pts}>
           <Text style={style.bigText}>
             {data.profile.points} {t("teeContainer.PTS")}

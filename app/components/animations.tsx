@@ -78,3 +78,14 @@ export function FadeIn({ children, duration = ANIMATION_DURATION }) {
 
   return <Animated.View style={{ opacity }}>{children}</Animated.View>;
 }
+
+// Новый компонент RandomSlide
+export function RandomSlide({ children, duration = ANIMATION_DURATION }) {
+  const random = Math.random();
+  console.log(random);
+  if (random < 0.5) {
+    return <SlideLeftToRight duration={duration}>{children}</SlideLeftToRight>;
+  } else {
+    return <SlideRightToLeft duration={duration}>{children}</SlideRightToLeft>;
+  }
+}

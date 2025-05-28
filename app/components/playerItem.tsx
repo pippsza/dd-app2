@@ -19,6 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import TrashLight from "../../assets/svg/trash-light.svg";
 import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
+import { RandomSlide } from "./animations";
 
 const ITEM_HEIGHT = rh(11.83);
 
@@ -136,33 +137,35 @@ const PlayerItem = React.memo(({ player, setNames, playerOnline }: Props) => {
 
   return (
     <View style={styles.cardBox}>
-      <TouchableOpacity onPress={navigateHandle}>
-        <View style={styles.cardInside}>
-          {playerData ? (
-            <Tee source={playerData.skin_name} width={rw(4)} />
-          ) : (
-            <ActivityIndicator size="small" />
-          )}
-          <View style={styles.textContainer}>
-            <Text style={styles[playersObj.status]}>
-              {playersObj?.status === "Offline"
-                ? t("playerItem.offline")
-                : playersObj?.status === "Online"
-                ? t("playerItem.online")
-                : t("playerItem.AFK")}
-            </Text>
-
-            <Text style={styles.cardText}>{player}</Text>
-          </View>
-          <TouchableOpacity onPress={deletePlayer}>
-            {isDarkMode ? (
-              <TrashDark style={styles.svg}></TrashDark>
+      <RandomSlide duration={500}>
+        <TouchableOpacity onPress={navigateHandle}>
+          <View style={styles.cardInside}>
+            {playerData ? (
+              <Tee source={playerData.skin_name} width={rw(4)} />
             ) : (
-              <TrashLight style={styles.svg}></TrashLight>
+              <ActivityIndicator size="small" />
             )}
-          </TouchableOpacity>
-        </View>
-      </TouchableOpacity>
+            <View style={styles.textContainer}>
+              <Text style={styles[playersObj.status]}>
+                {playersObj?.status === "Offline"
+                  ? t("playerItem.offline")
+                  : playersObj?.status === "Online"
+                  ? t("playerItem.online")
+                  : t("playerItem.AFK")}
+              </Text>
+
+              <Text style={styles.cardText}>{player}</Text>
+            </View>
+            <TouchableOpacity onPress={deletePlayer}>
+              {isDarkMode ? (
+                <TrashDark style={styles.svg}></TrashDark>
+              ) : (
+                <TrashLight style={styles.svg}></TrashLight>
+              )}
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </RandomSlide>
     </View>
   );
 });

@@ -8,6 +8,7 @@ import { ThemeContext } from "./themeSwitcher";
 import { useContext } from "react";
 import PlusDark from "../../assets/svg/plus-dark.svg";
 import PlusLight from "../../assets/svg/plus-light.svg";
+import { SlideUp } from "./animations";
 type Props = { openModal: () => void };
 
 export default function AddFrBttn({ openModal }: Props) {
@@ -15,10 +16,10 @@ export default function AddFrBttn({ openModal }: Props) {
   const style = StyleSheet.create({
     box: {
       backgroundColor: isDarkMode ? "white" : "#272727",
-      position: "absolute",
+      // position: "absolute",
       justifyContent: "center",
       alignItems: "center",
-      bottom: 0,
+      // bottom: 0,
       width: rw(22),
       height: rw(18),
       borderColor: isDarkMode ? "black" : "white",
@@ -28,6 +29,14 @@ export default function AddFrBttn({ openModal }: Props) {
       borderWidth: 4,
       borderBottomWidth: 0,
     },
+    fakeBox: {
+      position: "absolute",
+      justifyContent: "center",
+      alignItems: "center",
+      bottom: 0,
+      width: rw(22),
+      height: rw(18),
+    },
     plus: {
       width: rw(13),
       height: rw(13),
@@ -36,14 +45,18 @@ export default function AddFrBttn({ openModal }: Props) {
 
   return (
     <>
-      <View style={style.box} onTouchStart={openModal}>
-        <TouchableOpacity>
-          {isDarkMode ? (
-            <PlusDark style={style.plus}></PlusDark>
-          ) : (
-            <PlusLight style={style.plus}></PlusLight>
-          )}
-        </TouchableOpacity>
+      <View style={style.fakeBox}>
+        <SlideUp>
+          <View style={style.box} onTouchStart={openModal}>
+            <TouchableOpacity>
+              {isDarkMode ? (
+                <PlusDark style={style.plus}></PlusDark>
+              ) : (
+                <PlusLight style={style.plus}></PlusLight>
+              )}
+            </TouchableOpacity>
+          </View>
+        </SlideUp>
       </View>
     </>
   );

@@ -1,5 +1,5 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import { Link } from "expo-router";
+import { Link, useNavigation } from "expo-router";
 import SunDark from "../../assets/svg/sun-dark.svg";
 import BurgeDark from "../../assets/svg/burger-dark.svg";
 import BurgerLight from "../../assets/svg/burger-light.svg";
@@ -9,12 +9,11 @@ import {
   responsiveHeight as rh,
   responsiveWidth as rw,
 } from "react-native-responsive-dimensions";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { ThemeContext } from "./themeSwitcher";
 
-export default function Header() {
+export default function Header({ onClose }) {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
-
   return (
     <>
       <View style={styles.header}>
@@ -25,15 +24,14 @@ export default function Header() {
             <SunLight onPress={toggleTheme} style={styles.svg}></SunLight>
           )}
         </TouchableOpacity>
-        <Link href="/authors" asChild>
-          <TouchableOpacity>
-            {isDarkMode ? (
-              <BurgeDark style={styles.svg}></BurgeDark>
-            ) : (
-              <BurgerLight style={styles.svg}></BurgerLight>
-            )}
-          </TouchableOpacity>
-        </Link>
+
+        <TouchableOpacity onPress={onClose}>
+          {isDarkMode ? (
+            <BurgeDark style={styles.svg}></BurgeDark>
+          ) : (
+            <BurgerLight style={styles.svg}></BurgerLight>
+          )}
+        </TouchableOpacity>
       </View>
     </>
   );

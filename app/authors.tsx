@@ -1,11 +1,11 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import { Link } from "expo-router";
+import { Link, useNavigation } from "expo-router";
 import Settings from "./components/settings";
 import AuthorsInfo from "./components/authorsInfo";
 import CrossDark from "../assets/svg/cross-dark.svg";
 import CrossLight from "../assets/svg/cross-light.svg";
 import { StyleSheet } from "react-native";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { ThemeContext } from "./components/themeSwitcher";
 import {
   responsiveHeight as rh,
@@ -14,6 +14,7 @@ import {
 } from "react-native-responsive-dimensions";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "./components/languageProvide";
+import FadeWrapper from "./animations";
 export default function Authors() {
   const { t } = useTranslation();
   const { language, setLanguage } = useLanguage();
@@ -42,25 +43,38 @@ export default function Authors() {
       top: 0,
     },
   });
-
+  const fadeRef = useRef();
+  const navigation = useNavigation();
+  const onClose = () => {
+    navigation.navigate("index");
+  };
+  const handleClosePress = () => {
+    if (fadeRef.current) {
+      fadeRef.current.fadeOut();
+    }
+  };
   return (
     <>
-      <View style={style.box}>
-        <View style={style.container}>
-          <Link href="/" asChild style={style.svgContainer}>
-            <TouchableOpacity>
+      <FadeWrapper ref={fadeRef} onFadeOutComplete={onClose}>
+        <View style={style.box}>
+          <View style={style.container}>
+            <TouchableOpacity
+              style={style.svgContainer}
+              onPress={handleClosePress}
+            >
               {isDarkMode ? (
                 <CrossDark style={style.svg}></CrossDark>
               ) : (
                 <CrossLight style={style.svg}></CrossLight>
               )}
             </TouchableOpacity>
-          </Link>
-          <AuthorsInfo></AuthorsInfo>
-          <Settings></Settings>
+
+            <AuthorsInfo></AuthorsInfo>
+            <Settings></Settings>
+          </View>
+          <Text style={style.text}>{t("mainSettings")}</Text>
         </View>
-        <Text style={style.text}>{t("mainSettings")}</Text>
-      </View>
+      </FadeWrapper>
     </>
   );
 }

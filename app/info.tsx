@@ -16,10 +16,15 @@ import CrossLight from "../assets/svg/cross-light.svg";
 import MoreLight from "../assets/svg/more-light.svg";
 import TeeContainer from "./components/teeContainer";
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Spinner from "react-native-loading-spinner-overlay";
 import { ThemeContext } from "./components/themeSwitcher";
-import { FadeIn, SlideLeftToRight, SlideRightToLeft } from "./components/test";
+import {
+  FadeIn,
+  SlideLeftToRight,
+  SlideRightToLeft,
+} from "./components/animations";
+import FadeWrapper from "./animations";
 
 export default function Info({}) {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
@@ -54,9 +59,16 @@ export default function Info({}) {
     };
     fetch(data);
   }, []);
+  const handleClosePress = () => {
+    if (fadeRef.current) {
+      fadeRef.current.fadeOut();
+    }
+  };
 
   // const setPlayer: OneTee = data[0];
-
+  const onClose = () => {
+    navigation.navigate("index");
+  };
   const loadingComponent = (
     <View style={style.mainContainer}>
       <Spinner
@@ -66,32 +78,32 @@ export default function Info({}) {
       />
     </View>
   );
-
+  const fadeRef = useRef();
   const fullComponent = (
-    <View style={style.mainContainer}>
-      <Link asChild href="/">
-        <TouchableOpacity>
+    <FadeWrapper ref={fadeRef} onFadeOutComplete={onClose}>
+      <View style={style.mainContainer}>
+        <TouchableOpacity onPress={handleClosePress}>
           {isDarkMode ? (
             <CrossDark style={style.svg}></CrossDark>
           ) : (
             <CrossLight style={style.svg}></CrossLight>
           )}
         </TouchableOpacity>
-      </Link>
 
-      <TeeContainer online={online} data={player} />
-      <FadeIn>
-        <TotalPlayed data={player} />
-      </FadeIn>
+        <TeeContainer online={online} data={player} />
+        <FadeIn>
+          <TotalPlayed data={player} />
+        </FadeIn>
 
-      <SlideLeftToRight>
-        <GameModePie data={player}></GameModePie>
-      </SlideLeftToRight>
+        <SlideLeftToRight>
+          <GameModePie data={player}></GameModePie>
+        </SlideLeftToRight>
 
-      <SlideRightToLeft>
-        <GameCategoryPie data={player}></GameCategoryPie>
-      </SlideRightToLeft>
-    </View>
+        <SlideRightToLeft>
+          <GameCategoryPie data={player}></GameCategoryPie>
+        </SlideRightToLeft>
+      </View>
+    </FadeWrapper>
   );
 
   return player ? fullComponent : loadingComponent;

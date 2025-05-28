@@ -16,7 +16,7 @@ import { useContext } from "react";
 import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
 import { Link } from "expo-router";
-import { FadeIn, SlideLeftToRight, SlideRightToLeft } from "./test";
+import { FadeIn, SlideLeftToRight, SlideRightToLeft } from "./animations";
 import { ImageBackground } from "react-native";
 
 export default function TeeContainer({ data, online }: any) {
@@ -27,7 +27,6 @@ export default function TeeContainer({ data, online }: any) {
   const text = isDarkMode ? "black" : "white";
   const rawUrl = `https://ddnet.org/ranks/maps/${data.most_played_maps[0]?.map_name}.png`;
   const bgUrl = rawUrl.replace(/ /g, "_");
-  console.log(bgUrl);
 
   const style = StyleSheet.create({
     mainContainer: {
@@ -43,7 +42,7 @@ export default function TeeContainer({ data, online }: any) {
       alignItems: "center",
       width: rw(90),
       paddingVertical: rh(1),
-      // backgroundColor: "green",
+      // background в тColor: "green",
     },
     statusBlock: {
       flex: 1,

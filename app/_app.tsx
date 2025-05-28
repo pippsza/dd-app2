@@ -7,8 +7,8 @@ import { useContext, useEffect, useState } from "react";
 import NetInfo from "@react-native-community/netinfo";
 import { StyleSheet } from "react-native";
 import { ThemeContext } from "./components/themeSwitcher";
-import Test from "./components/test";
-import FadeInView from "./components/test";
+
+import { BlinkingBackground } from "./components/blinkingBackground";
 
 export default function App() {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
@@ -41,17 +41,24 @@ export default function App() {
         barStyle={isDarkMode ? "dark-content" : "light-content"}
       />
 
-      <ImageBackground
+      {/* <ImageBackground
         source={require("../assets/images/background.png")}
         style={style.bg}
         resizeMode="cover"
-      >
-        <View style={{ zIndex: 9999 }}>
-          <Toast></Toast>
-        </View>
+      > */}
 
-        {isConnected ? <Slot /> : <NotFoundPage />}
-      </ImageBackground>
+      <View style={style.bg}>
+        <BlinkingBackground
+          imageSource={require("../assets/images/background.png")}
+        >
+          <View style={{ zIndex: 9999 }}>
+            <Toast></Toast>
+          </View>
+
+          {isConnected ? <Slot /> : <NotFoundPage />}
+        </BlinkingBackground>
+        {/* </ImageBackground> */}
+      </View>
     </>
   );
 }

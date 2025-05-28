@@ -6,6 +6,7 @@ import ru from "./ru.json";
 import zh from "./zh.json";
 import es from "./es.json";
 import pt from "./pt.json";
+import ua from "./ua.json";
 
 i18n.use(initReactI18next).init({
   fallbackLng: "en",
@@ -15,6 +16,7 @@ i18n.use(initReactI18next).init({
     es: { translation: es },
     pt: { translation: pt },
     zh: { translation: zh },
+    ua: { translation: ua },
   },
   interpolation: { escapeValue: false },
 });

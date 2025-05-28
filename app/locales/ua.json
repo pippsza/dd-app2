@@ -1,0 +1,56 @@
+{
+  "mainSettings": "Ви розробник на React Native? Буду радий вашій підтримці! Ви можете приєднатися до проєкту на GitHub — він з відкритим вихідним кодом. Або просто напишіть мені в Discord: #pippsza.",
+  "settings": {
+    "settings": "Налаштування",
+    "language": "Мова",
+    "lang": "UA",
+    "theme": "Тема",
+    "notifications": "Сповіщення"
+  },
+  "authorsInfo": {
+    "author": "Автори",
+    "github": "Гітхаб",
+    "telegram": "Телеграм",
+    "youtube": "Ютуб"
+  },
+  "modalWindow": {
+    "enterName": "Введіть ім'я друга:",
+    "add": "Додати"
+  },
+  "playerItem": {
+    "offline": "Не в мережі",
+    "online": "В мережі",
+    "AFK": "Відсутній"
+  },
+  "teeContainer": {
+    "offline": "Не в мережі",
+    "online": "В мережі",
+    "AFK": "Відсутній",
+    "playingOn": "Грає на",
+    "PTS": "ПТС",
+    "bestFriend": "Бест",
+    "favMap": "Улюб. карта",
+    "favRegion": "Регіон",
+    "none": "Немає"
+  },
+  "totalPlayed": {
+    "totalPlayed": "Всього зіграно",
+    "hours": "годин з",
+    "noPlayed": "Всього зіграно: немає даних"
+  },
+  "gamemodesPie": {
+    "mostPlayed": "Улюблені режими",
+    "noInfo": "Немає інформації про Tee"
+  },
+  "categoriesPie": {
+    "mostPlayed": "Улюблені категорії",
+    "noInfo": "Немає інформації про Tee"
+  },
+  "toasts": {
+    "emptyName": "Поле імені не може бути порожнім!",
+    "nameTooLong": "Ім'я має бути коротшим за 16 символів!",
+    "alreadyFriend": "Цей гравець вже у вас в друзях!",
+    "playerNotFound": "Гравця не знайдено",
+    "unexpectedError": "Упс, щось пішло не так :("
+  }
+}

@@ -14,7 +14,7 @@ import axios from "axios";
 import { useRoute } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { SlideUp } from "./components/animations";
-import FadeWrapper from "./animations";
+import { FadeWrapper } from "./animations";
 import { useNavigation } from "expo-router";
 
 export default React.memo(function Main() {

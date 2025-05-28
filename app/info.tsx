@@ -24,7 +24,7 @@ import {
   SlideLeftToRight,
   SlideRightToLeft,
 } from "./components/animations";
-import FadeWrapper from "./animations";
+import { FadeWrapper } from "./animations";
 
 export default function Info({}) {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);

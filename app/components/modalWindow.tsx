@@ -83,19 +83,21 @@ export default function ModalWindow({
   const { t } = useTranslation();
   return (
     <Pressable onPress={closeModal} style={style.modal}>
-      <Toast></Toast>
-      <Pressable onPress={(e) => e.stopPropagation()} style={style.modalWin}>
-        <Text style={style.text}>{t("modalWindow.enterName")}</Text>
-        <TextInput
-          value={inputValue}
-          onChangeText={setInputValue}
-          style={style.input}
-          placeholder="nameless tee"
-        />
-        <TouchableOpacity onPress={addName} style={style.button}>
-          <Text style={style.text}>{t("modalWindow.add")}</Text>
-        </TouchableOpacity>
-      </Pressable>
+      <SlideUp>
+        <Toast></Toast>
+        <Pressable onPress={(e) => e.stopPropagation()} style={style.modalWin}>
+          <Text style={style.text}>{t("modalWindow.enterName")}</Text>
+          <TextInput
+            value={inputValue}
+            onChangeText={setInputValue}
+            style={style.input}
+            placeholder="nameless tee"
+          />
+          <TouchableOpacity onPress={addName} style={style.button}>
+            <Text style={style.text}>{t("modalWindow.add")}</Text>
+          </TouchableOpacity>
+        </Pressable>
+      </SlideUp>
     </Pressable>
   );
 }
@@ -105,3 +107,4 @@ import Toast from "react-native-toast-message";
 import { useTranslation } from "react-i18next";
 import { useContext } from "react";
 import { ThemeContext } from "./themeSwitcher";
+import { FadeIn, SlideUp } from "./animations";

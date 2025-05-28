@@ -14,7 +14,7 @@ import {
 } from "react-native-responsive-dimensions";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "./components/languageProvide";
-import FadeWrapper from "./animations";
+import { FadeWrapper } from "./animations";
 export default function Authors() {
   const { t } = useTranslation();
   const { language, setLanguage } = useLanguage();

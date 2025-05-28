@@ -16,7 +16,7 @@ export default function Settings() {
   const { t } = useTranslation();
   const { language, setLanguage } = useLanguage();
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
-  const availableLanguages = ["en", "ru", "es", "pt", "zh"];
+  const availableLanguages = ["en", "ru", "es", "pt", "zh", "ua"];
   const changeLanguage = () => {
     const currentIndex = availableLanguages.indexOf(language);
     const nextIndex = (currentIndex + 1) % availableLanguages.length;

@@ -1,4 +1,10 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  ImageBackgroundComponent,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { StyleSheet } from "react-native";
 import {
   responsiveHeight as rh,
@@ -11,6 +17,7 @@ import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
 import { Link } from "expo-router";
 import { FadeIn, SlideLeftToRight, SlideRightToLeft } from "./test";
+import { ImageBackground } from "react-native";
 
 export default function TeeContainer({ data, online }: any) {
   const { t } = useTranslation();
@@ -18,6 +25,9 @@ export default function TeeContainer({ data, online }: any) {
   const bg = isDarkMode ? "rgba(255,255,255,0.8)" : "rgba(39,39,39,0.8)";
   const border = isDarkMode ? "black" : "white";
   const text = isDarkMode ? "black" : "white";
+  const rawUrl = `https://ddnet.org/ranks/maps/${data.most_played_maps[0]?.map_name}.png`;
+  const bgUrl = rawUrl.replace(/ /g, "_");
+  console.log(bgUrl);
 
   const style = StyleSheet.create({
     mainContainer: {
@@ -51,8 +61,22 @@ export default function TeeContainer({ data, online }: any) {
       borderTopLeftRadius: 0,
       borderBottomLeftRadius: 0,
     },
+    bg: {
+      borderTopLeftRadius: rw(4),
+      borderBottomLeftRadius: rw(4),
+      borderRadius: 100,
+    },
+    wrapper: {
+      borderTopLeftRadius: rw(4),
+      borderBottomLeftRadius: rw(4),
+
+      overflow: "hidden", // важная часть, чтобы скругления сработали
+    },
     rightContainer: {
-      backgroundColor: bg,
+      backgroundColor: isDarkMode
+        ? "rgba(255,255,255,0.5)"
+        : "rgba(39,39,39,0.5)",
+
       opacity: 1,
       borderColor: border,
       paddingVertical: rh(1),
@@ -115,6 +139,7 @@ export default function TeeContainer({ data, online }: any) {
       color: isDarkMode ? "black" : "white",
       paddingLeft: rw(2.6),
     },
+
     longTextLove: {
       fontSize: rf(
         Math.max(3 - data?.most_played_maps[0]?.map_name.length * 0.07, 1)
@@ -192,32 +217,42 @@ export default function TeeContainer({ data, online }: any) {
           </FadeIn>
 
           <SlideRightToLeft>
-            <View style={style.rightContainer}>
-              <Text style={style.regText}>
-                {t("teeContainer.bestFriend")}:{" "}
-                <Text style={style.smallText}>
-                  {data.favourite_teammates.length > 0
-                    ? data.favourite_teammates[0].name
-                    : t("teeContainer.none")}
-                </Text>
-              </Text>
+            <View style={style.wrapper}>
+              <ImageBackground
+                source={{
+                  uri: bgUrl,
+                }}
+                resizeMode="cover" // або "contain", залежно від потреб
+                style={style.bg}
+              >
+                <View style={style.rightContainer}>
+                  <Text style={style.regText}>
+                    {t("teeContainer.bestFriend")}:{" "}
+                    <Text style={style.smallText}>
+                      {data.favourite_teammates.length > 0
+                        ? data.favourite_teammates[0].name
+                        : t("teeContainer.none")}
+                    </Text>
+                  </Text>
 
-              <Text style={style.regText}>
-                {t("teeContainer.favMap")}:{" "}
-                <Text style={style.longTextLove}>
-                  {data.most_played_maps.length > 0
-                    ? data.most_played_maps[0].map_name
-                    : t("teeContainer.none")}
-                </Text>
-              </Text>
-              <Text style={style.regText}>
-                {t("teeContainer.favRegion")}:{" "}
-                <Text style={style.smallText}>
-                  {data.most_played_locations.length > 0
-                    ? data.most_played_locations[0].key.toUpperCase()
-                    : t("teeContainer.none")}
-                </Text>
-              </Text>
+                  <Text style={style.regText}>
+                    {t("teeContainer.favMap")}:{" "}
+                    <Text style={style.longTextLove}>
+                      {data.most_played_maps.length > 0
+                        ? data.most_played_maps[0].map_name
+                        : t("teeContainer.none")}
+                    </Text>
+                  </Text>
+                  <Text style={style.regText}>
+                    {t("teeContainer.favRegion")}:{" "}
+                    <Text style={style.smallText}>
+                      {data.most_played_locations.length > 0
+                        ? data.most_played_locations[0].key.toUpperCase()
+                        : t("teeContainer.none")}
+                    </Text>
+                  </Text>
+                </View>
+              </ImageBackground>
             </View>
           </SlideRightToLeft>
         </View>

@@ -22,8 +22,8 @@ import {
   FadeIn,
   SlideLeftToRight,
   SlideRightToLeft,
-} from "./components/animations";
-import { FadeWrapper } from "./animations";
+  SlideOutUp,
+} from "./animations";
 
 interface RouteParams {
   item: string;
@@ -68,9 +68,9 @@ interface PlayerData {
   };
 }
 
-interface FadeWrapperRef {
-  fadeOut: () => void;
-  fadeIn: () => void;
+interface SlideOutRef {
+  slideOut: () => void;
+  slideIn: () => void;
 }
 
 const API_URL = 'http://ddstats.tw/player/json';
@@ -80,7 +80,7 @@ export default function Info() {
   const { isDarkMode } = useContext(ThemeContext);
   const router = useRouter();
   const route = useRoute();
-  const fadeRef = useRef<FadeWrapperRef>(null);
+  const slideRef = useRef<SlideOutRef>(null);
 
   const [player, setPlayer] = useState<PlayerData | null>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -107,8 +107,8 @@ export default function Info() {
   }, [playerName, router]);
 
   const handleClosePress = () => {
-    if (fadeRef.current) {
-      fadeRef.current.fadeOut();
+    if (slideRef.current) {
+      slideRef.current.slideOut();
     }
   };
 
@@ -127,10 +127,10 @@ export default function Info() {
   );
 
   const renderContent = () => (
-    <FadeWrapper 
-      ref={fadeRef} 
-      onFadeOutComplete={handleClose}
-      duration={200}
+    <SlideOutUp 
+      ref={slideRef} 
+      onSlideOutComplete={handleClose}
+      duration={300}
     >
       <View style={styles.mainContainer}>
         <TouchableOpacity onPress={handleClosePress} style={styles.closeButton}>
@@ -159,7 +159,7 @@ export default function Info() {
           </>
         )}
       </View>
-    </FadeWrapper>
+    </SlideOutUp>
   );
 
   if (error) {

@@ -83,6 +83,7 @@ type TeeContainerStyles = {
   clanText: TextStyle;
   bgOnline: ViewStyle;
   wrapperOnline: ViewStyle;
+  wrapperOnlineBack: ViewStyle;
 } & {
   [K in StatusType]: TextStyle;
 };
@@ -154,9 +155,9 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
         flex: 1,
         alignItems: "flex-start",
 
-        backgroundColor: theme.background,
+        // backgroundColor: theme.background,
         opacity: 1,
-        zIndex: -1,
+        zIndex: 5,
         borderColor: theme.border,
         borderWidth: rw(0.4),
         borderLeftWidth: 0,
@@ -182,6 +183,14 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
         width: "100%",
         // height: "100%",
       },
+      wrapperOnlineBack: {
+        backgroundColor: isDarkMode
+          ? "rgba(255,255,255,0.4)"
+          : "rgba(39,39,39,0.4)",
+        width: "100%",
+        // height: "100%",
+      },
+
       bgOnline: {
         paddingLeft: rw(3),
         paddingVertical: rh(1),
@@ -294,7 +303,7 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
     }[online.status];
 
     return (
-      <>
+      <View style={styles.wrapperOnlineBack}>
         <Text style={[styles.regText, styles[online.status]]}>
           {statusText}
         </Text>
@@ -308,7 +317,7 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
             )}
           </>
         )}
-      </>
+      </View>
     );
   };
 

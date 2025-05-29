@@ -51,7 +51,7 @@ interface PlayerData {
 }
 
 interface OnlineData {
-  status: 'Offline' | 'Online' | 'AFK' | 'Designer' | 'Developer';
+  status: "Offline" | "Online" | "AFK" | "Designer" | "Developer";
   game?: string | null;
   server?: string | null;
   mapName?: string | null;
@@ -62,7 +62,7 @@ interface TeeContainerProps {
   online: OnlineData;
 }
 
-type StatusType = 'Offline' | 'Online' | 'AFK' | 'Designer' | 'Developer';
+type StatusType = "Offline" | "Online" | "AFK" | "Designer" | "Developer";
 
 type TeeContainerStyles = {
   mainContainer: ViewStyle;
@@ -86,14 +86,14 @@ type TeeContainerStyles = {
 };
 
 const STATUS_COLORS = {
-  Online: 'green',
-  Offline: 'red',
-  AFK: 'blue',
-  Designer: 'orange',
-  Developer: '#c9007c',
+  Online: "green",
+  Offline: "red",
+  AFK: "blue",
+  Designer: "orange",
+  Developer: "#c9007c",
 } as const;
 
-const DDNET_RANKS_URL = 'https://ddnet.org/ranks/maps/';
+const DDNET_RANKS_URL = "https://ddnet.org/ranks/maps/";
 
 const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
   const { t } = useTranslation();
@@ -103,17 +103,25 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
     return null;
   }
 
-  const theme = useMemo(() => ({
-    background: isDarkMode ? "rgba(255,255,255,0.8)" : "rgba(39,39,39,0.8)",
-    border: isDarkMode ? "black" : "white",
-    text: isDarkMode ? "black" : "white",
-  }), [isDarkMode]);
+  const theme = useMemo(
+    () => ({
+      background: isDarkMode ? "rgba(255,255,255,0.8)" : "rgba(39,39,39,0.8)",
+      border: isDarkMode ? "black" : "white",
+      text: isDarkMode ? "black" : "white",
+    }),
+    [isDarkMode]
+  );
 
   const bgUrl = useMemo(() => {
     const mapName = data.most_played_maps[0]?.map_name;
     if (!mapName) return null;
     return `${DDNET_RANKS_URL}${mapName.replace(/ /g, "_")}.png`;
   }, [data.most_played_maps]);
+  const bgUrlOnline = useMemo(() => {
+    const mapName = online?.mapName;
+    if (!mapName) return null;
+    return `${DDNET_RANKS_URL}${mapName.replace(/ /g, "_")}.png`;
+  }, [online.mapName]);
 
   const styles = useMemo(() => {
     const statusStyles = Object.entries(STATUS_COLORS).reduce(
@@ -121,7 +129,7 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
         ...acc,
         [status]: {
           color,
-          fontSize: status === 'Offline' ? rf(6) : rf(4),
+          fontSize: status === "Offline" ? rf(6) : rf(4),
         },
       }),
       {} as Record<StatusType, TextStyle>
@@ -223,7 +231,10 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
       },
       longTextLove: {
         fontSize: rf(
-          Math.max(3 - (data?.most_played_maps[0]?.map_name.length ?? 0) * 0.07, 1)
+          Math.max(
+            3 - (data?.most_played_maps[0]?.map_name.length ?? 0) * 0.07,
+            1
+          )
         ),
         color: theme.text,
         paddingLeft: rw(2.6),
@@ -266,19 +277,25 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
 
     return (
       <>
-        <Text style={[styles.regText, styles[online.status]]}>
-          {statusText}
-        </Text>
-        {online.mapName && (
-          <>
-            <Text style={styles.longText}>
-              {t("teeContainer.playingOn")}: {online.mapName}
-            </Text>
-            {online.server && (
-              <Text style={styles.longText}>{online.server}</Text>
-            )}
-          </>
-        )}
+        <ImageBackground
+          source={{ uri: bgUrlOnline }}
+          resizeMode="cover"
+          style={styles.bg}
+        >
+          <Text style={[styles.regText, styles[online.status]]}>
+            {statusText}
+          </Text>
+          {online.mapName && (
+            <>
+              <Text style={styles.longText}>
+                {t("teeContainer.playingOn")}: {online.mapName}
+              </Text>
+              {online.server && (
+                <Text style={styles.longText}>{online.server}</Text>
+              )}
+            </>
+          )}
+        </ImageBackground>
       </>
     );
   };
@@ -302,7 +319,8 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
       <Text style={styles.regText}>
         {t("teeContainer.favRegion")}:{" "}
         <Text style={styles.smallText}>
-          {data.most_played_locations[0]?.key.toUpperCase() ?? t("teeContainer.none")}
+          {data.most_played_locations[0]?.key.toUpperCase() ??
+            t("teeContainer.none")}
         </Text>
       </Text>
     </View>
@@ -337,9 +355,7 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
     <View style={styles.mainContainer}>
       <SlideLeftToRight>
         <View style={styles.rowContainer}>
-          <View style={styles.statusBlock}>
-            {renderStatus()}
-          </View>
+          <View style={styles.statusBlock}>{renderStatus()}</View>
         </View>
       </SlideLeftToRight>
 

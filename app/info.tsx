@@ -9,6 +9,8 @@ import {
 } from "react-native-responsive-dimensions";
 import Spinner from "react-native-loading-spinner-overlay";
 import axios from "axios";
+import Toast from "react-native-toast-message";
+import { useTranslation } from "react-i18next";
 import CrossDark from "../assets/svg/cross-dark.svg";
 import CrossLight from "../assets/svg/cross-light.svg";
 import MoreDark from "../assets/svg/more-dark.svg";
@@ -81,6 +83,7 @@ export default function Info() {
   const router = useRouter();
   const route = useRoute();
   const slideRef = useRef<SlideOutRef>(null);
+  const { t } = useTranslation();
 
   const [player, setPlayer] = useState<PlayerData | null>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -99,12 +102,16 @@ export default function Info() {
       } catch (err) {
         console.error('Error fetching player data:', err);
         setError(err instanceof Error ? err : new Error('Failed to fetch player data'));
+        Toast.show({
+          type: "error",
+          text1: t("toasts.unexpectedError"),
+        });
         router.replace('/');
       }
     };
 
     fetchPlayerData(playerName);
-  }, [playerName, router]);
+  }, [playerName, router, t]);
 
   const handleClosePress = () => {
     if (slideRef.current) {

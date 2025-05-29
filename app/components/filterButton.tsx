@@ -9,7 +9,7 @@ import {
 } from "react-native-responsive-dimensions";
 import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
-
+import { SlideUp } from "./animations";
 interface Player {
   name: string;
   data: {
@@ -53,20 +53,28 @@ export default function FilterButton({
   const style = StyleSheet.create({
     container: {
       flex: 1,
-      position: "absolute",
+      width: "100%",
+      height: "100%",
       backgroundColor: isDarkMode ? "white" : "#272727",
       justifyContent: "center",
       alignItems: "center",
-      width: rw(25),
-      height: rh(5),
-      bottom: 0,
+
       borderColor: isDarkMode ? "black" : "white",
-      right: rw(9),
+
       borderRadius: 14,
       borderBottomLeftRadius: 0,
       borderBottomRightRadius: 0,
       borderWidth: 4,
       borderBottomWidth: 0,
+    },
+    invContainer: {
+      position: "absolute",
+      width: rw(25),
+      height: rh(5),
+      bottom: 0,
+      right: rw(9),
+      justifyContent: "center",
+      alignItems: "center",
     },
     text: {
       fontSize: rf(1.1),
@@ -101,35 +109,36 @@ export default function FilterButton({
 
   return (
     <Fragment>
-      <TouchableOpacity
-        style={style.container}
-        onPress={() => setShowFilterMenu(!showFilterMenu)}
-      >
-        <View>
-          <TouchableOpacity>
-            <Text style={style.text}>
-              {t("filtered")}: {currentFilter}
-            </Text>
+      <View style={style.invContainer}>
+        <SlideUp duration={1200}>
+          <TouchableOpacity
+            style={style.container}
+            onPress={() => setShowFilterMenu(!showFilterMenu)}
+          >
+            <View>
+              <Text style={style.text}>
+                {t("filtered")}: {currentFilter}
+              </Text>
+            </View>
+            {showFilterMenu && (
+              <View style={style.filterContainer}>
+                {filters.map((filter) => (
+                  <TouchableOpacity
+                    key={filter}
+                    style={[
+                      style.filterButton,
+                      currentFilter === filter && style.activeFilter,
+                    ]}
+                    onPress={() => handleFilter(filter)}
+                  >
+                    <Text style={style.filterButtonText}>{filter}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
           </TouchableOpacity>
-        </View>
-
-        {showFilterMenu && (
-          <View style={style.filterContainer}>
-            {filters.map((filter) => (
-              <TouchableOpacity
-                key={filter}
-                style={[
-                  style.filterButton,
-                  currentFilter === filter && style.activeFilter,
-                ]}
-                onPress={() => handleFilter(filter)}
-              >
-                <Text style={style.filterButtonText}>{filter}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-      </TouchableOpacity>
+        </SlideUp>
+      </View>
     </Fragment>
   );
 }

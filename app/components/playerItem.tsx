@@ -226,7 +226,9 @@ const PlayerItem = React.memo(
         ) : (
           <Tee
             width={rw(4.8)}
-            source={playerData?.skin_name || player}
+            source={(playerData?.skin_name && playerData.skin_name !== "null" && playerData.skin_name !== "undefined")
+              ? playerData.skin_name 
+              : (player && player !== "null" && player !== "undefined" ? player : "default")}
             key={key}
           />
         )}

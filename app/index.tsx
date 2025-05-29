@@ -166,7 +166,7 @@ export default React.memo(function Main() {
   useEffect(() => {
     // Сбрасываем флаг анимации при монтировании компонента
     setShouldAnimate(true);
-    
+
     // Через 2 секунды отключаем анимацию
     const timer = setTimeout(() => {
       setShouldAnimate(false);
@@ -200,15 +200,15 @@ export default React.memo(function Main() {
               addName={addName}
             />
           )}
-
-          <View style={style.sliderContainer}>
-            <Slider 
-              setNames={setNames} 
-              playersArr={names} 
-              shouldAnimate={shouldAnimate}
-            />
-          </View>
-
+          <SlideUp duration={1000}>
+            <View style={style.sliderContainer}>
+              <Slider
+                setNames={setNames}
+                playersArr={names}
+                shouldAnimate={shouldAnimate}
+              />
+            </View>
+          </SlideUp>
           <AddFrBttn openModal={openModal} />
         </View>
       </View>

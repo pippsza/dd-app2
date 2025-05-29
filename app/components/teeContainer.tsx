@@ -192,8 +192,8 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
       },
       rightContainer: {
         backgroundColor: isDarkMode
-          ? "rgba(255,255,255,0.5)"
-          : "rgba(39,39,39,0.5)",
+          ? "rgba(255,255,255,0.6)"
+          : "rgba(39,39,39,0.6)",
         opacity: 1,
         borderColor: theme.border,
         paddingVertical: rh(1),
@@ -372,7 +372,7 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
                 source={bgUrlOnline ? { uri: bgUrlOnline } : undefined}
                 resizeMode="cover"
                 style={styles.bgOnline}
-                imageStyle={{ opacity: 0.3 }}
+                imageStyle={{ opacity: 0.2 }}
               />
               <View style={styles.wrapperOnlineBack}>{renderStatus()}</View>
             </View>

@@ -9,12 +9,14 @@ import {
 import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
 
-const GAMEMODE_COLORS = ["#2ebbff", "#ffdb2e", "#ff2d50"];
 const SECONDS_IN_HOUR = 3600;
 const MAX_GAMEMODES = 3;
 
 export default function GameModePie({ data }: any) {
   const { isDarkMode } = useContext(ThemeContext);
+  const GAMEMODE_COLORS = isDarkMode
+    ? ["#2ebbff", "#ffdb2e", "#ff2d50"]
+    : ["#1f81b1", "#b1991f", "#b12036"];
   const { t } = useTranslation();
 
   const bg = isDarkMode ? "rgba(255,255,255,0.8)" : "rgba(39,39,39,0.8)";

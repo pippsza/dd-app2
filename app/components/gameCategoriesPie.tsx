@@ -9,14 +9,15 @@ import {
 import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
 
-const CATEGORY_COLORS = ["#1f81b1", "#b1991f", "#b12036"];
 const SECONDS_IN_HOUR = 3600;
 const MAX_CATEGORIES = 3;
 
 export default function GameCategoryPie({ data }: any) {
   const { isDarkMode } = useContext(ThemeContext);
   const { t } = useTranslation();
-
+  const CATEGORY_COLORS = isDarkMode
+    ? ["#2ebbff", "#ffdb2e", "#ff2d50"]
+    : ["#1f81b1", "#b1991f", "#b12036"];
   const bg = isDarkMode ? "rgba(255,255,255,0.8)" : "rgba(39,39,39,0.8)";
   const border = isDarkMode ? "black" : "white";
   const text = isDarkMode ? "black" : "white";

@@ -185,7 +185,7 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
       },
       wrapperOnlineBack: {
         backgroundColor: isDarkMode
-          ? "rgba(255,255,255,0.4)"
+          ? "rgb(255, 255, 255)"
           : "rgba(39,39,39,0.4)",
         width: "100%",
         // height: "100%",

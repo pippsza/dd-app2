@@ -43,6 +43,7 @@ interface PlayerItemProps {
   player: string;
   setNames: (names: Player[]) => void;
   playerOnline: PlayerOnlineData | null;
+  index: number;
 }
 
 const ITEM_HEIGHT = rh(11.83);
@@ -51,7 +52,7 @@ const ANIMATION_DURATION = 500;
 const STORAGE_KEY = "friendsNames";
 
 const PlayerItem = React.memo(
-  ({ player, setNames, playerOnline }: PlayerItemProps) => {
+  ({ player, setNames, playerOnline, index }: PlayerItemProps) => {
     const { isDarkMode, toggleTheme } = useContext(ThemeContext);
     const [playerData, setPlayerData] = useState<PlayerData | null>(null);
     const [loading, setLoading] = useState(true);
@@ -62,6 +63,8 @@ const PlayerItem = React.memo(
     const teeRef = useRef<View>(null);
     const { t } = useTranslation();
     const navigation = useNavigation();
+    const [hasAnimated, setHasAnimated] = useState(false);
+    const animationTimeoutRef = useRef<NodeJS.Timeout>();
     const [key] = useState(() => `${player}_${Date.now()}`);
 
     const theme = {
@@ -129,7 +132,29 @@ const PlayerItem = React.memo(
       deleting: {
         opacity: 0.5,
       },
+      touchable: {
+        width: '100%',
+        height: '100%',
+      },
     });
+    useEffect(() => {
+      if (!hasAnimated) {
+        if (animationTimeoutRef.current) {
+          clearTimeout(animationTimeoutRef.current);
+        }
+        
+        animationTimeoutRef.current = setTimeout(() => {
+          setHasAnimated(true);
+        }, index * 150);
+      }
+
+      return () => {
+        if (animationTimeoutRef.current) {
+          clearTimeout(animationTimeoutRef.current);
+        }
+      };
+    }, [index, hasAnimated]);
+
     useEffect(() => {
       let isMounted = true;
 
@@ -162,7 +187,6 @@ const PlayerItem = React.memo(
     }, [playerOnline]);
     const handleDelete = async () => {
       if (teeRef.current) {
-        // Получаем позицию тишки для анимации
         teeRef.current.measure((x, y, width, height, pageX, pageY) => {
           setExplosionPosition({ x: pageX, y: pageY });
           setShowExplosion(true);
@@ -234,9 +258,30 @@ const PlayerItem = React.memo(
     );
 
     return (
-      <View style={styles.cardBox} key={key}>
-        <RandomSlide duration={ANIMATION_DURATION}>
-          <TouchableOpacity onPress={handleNavigation} disabled={isDeleting}>
+      <View style={styles.cardBox}>
+        {!hasAnimated ? (
+          <RandomSlide duration={ANIMATION_DURATION}>
+            <TouchableOpacity 
+              onPress={handleNavigation} 
+              disabled={isDeleting}
+              style={styles.touchable}
+            >
+              <View style={[styles.cardInside, isDeleting && styles.deleting]}>
+                {renderTee()}
+                <View style={styles.textContainer}>
+                  {renderStatus()}
+                  <Text style={styles.cardText}>{player}</Text>
+                </View>
+                {renderDeleteButton()}
+              </View>
+            </TouchableOpacity>
+          </RandomSlide>
+        ) : (
+          <TouchableOpacity 
+            onPress={handleNavigation} 
+            disabled={isDeleting}
+            style={styles.touchable}
+          >
             <View style={[styles.cardInside, isDeleting && styles.deleting]}>
               {renderTee()}
               <View style={styles.textContainer}>
@@ -246,7 +291,7 @@ const PlayerItem = React.memo(
               {renderDeleteButton()}
             </View>
           </TouchableOpacity>
-        </RandomSlide>
+        )}
         {showExplosion && (
           <View style={styles.explosionContainer}>
             <ExplosionAnimation
@@ -262,6 +307,7 @@ const PlayerItem = React.memo(
   (prevProps, nextProps) => {
     return (
       prevProps.player === nextProps.player &&
+      prevProps.index === nextProps.index &&
       prevProps.playerOnline?.status === nextProps.playerOnline?.status &&
       prevProps.playerOnline?.server === nextProps.playerOnline?.server &&
       prevProps.playerOnline?.mapName === nextProps.playerOnline?.mapName

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback, useMemo } from "react";
+import React, { useRef, useEffect, useCallback, useMemo, useState } from "react";
 import {
   View,
   FlatList,
@@ -38,11 +38,18 @@ export default React.memo(function Slider({
   setNames,
 }: SliderProps) {
   const listRef = useRef<FlatList<Player>>(null);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const [currentOffset, setCurrentOffset] = useState(0);
+  const [isInitialRender, setIsInitialRender] = useState(true);
 
   // Memoized data
   const data = useMemo(() => {
     if (playersArr.length > MIN_PLAYERS_FOR_INFINITE_SCROLL) {
-      return [...playersArr, ...playersArr];
+      // Добавляем уникальные ключи для дублированных элементов
+      return [
+        ...playersArr.map((item, index) => ({ ...item, _key: `first_${index}` })),
+        ...playersArr.map((item, index) => ({ ...item, _key: `second_${index}` }))
+      ];
     }
     return playersArr;
   }, [playersArr]);
@@ -58,14 +65,38 @@ export default React.memo(function Slider({
 
   // Effects
   useEffect(() => {
-    if (playersArr.length > MIN_PLAYERS_FOR_INFINITE_SCROLL) {
+    if (isInitialRender && playersArr.length > MIN_PLAYERS_FOR_INFINITE_SCROLL) {
       const initialOffset = playersArr.length * ITEM_HEIGHT;
       listRef.current?.scrollToOffset({
         offset: initialOffset,
         animated: false,
       });
+      setCurrentOffset(initialOffset);
+      setIsInitialRender(false);
     }
-  }, [playersArr.length]);
+  }, [playersArr.length, isInitialRender]);
+
+  useEffect(() => {
+    if (!isScrolling && !isInitialRender && listRef.current) {
+      const totalHeight = playersArr.length * ITEM_HEIGHT;
+      let newOffset = currentOffset;
+
+      // Проверяем, не вышли ли мы за пределы списка
+      if (currentOffset < 0) {
+        newOffset = totalHeight + currentOffset;
+      } else if (currentOffset >= totalHeight * 2) {
+        newOffset = currentOffset - totalHeight;
+      }
+
+      if (newOffset !== currentOffset) {
+        listRef.current.scrollToOffset({
+          offset: newOffset,
+          animated: false,
+        });
+        setCurrentOffset(newOffset);
+      }
+    }
+  }, [currentOffset, isScrolling, isInitialRender, playersArr.length]);
 
   // Callbacks
   const getPlayerData = useCallback(
@@ -74,36 +105,48 @@ export default React.memo(function Slider({
   );
 
   const renderItem = useCallback(
-    ({ item }: { item: Player }) => (
+    ({ item, index }: { item: Player & { _key?: string }; index: number }) => (
       <PlayerItem
         player={item.name}
         playerOnline={getPlayerData(item.name)}
         setNames={setNames}
+        index={index % playersArr.length}
       />
     ),
-    [getPlayerData, setNames]
+    [getPlayerData, setNames, playersArr.length]
   );
 
-  const handleScrollEnd = useCallback(
-    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const offsetY = e.nativeEvent.contentOffset.y;
-      let newIndex = Math.round(offsetY / ITEM_HEIGHT);
+  const handleScroll = useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    setCurrentOffset(e.nativeEvent.contentOffset.y);
+  }, []);
 
-      if (playersArr.length > MIN_PLAYERS_FOR_INFINITE_SCROLL) {
-        if (newIndex < playersArr.length) {
-          newIndex += playersArr.length;
-        } else if (newIndex >= playersArr.length * 2) {
-          newIndex -= playersArr.length;
-        }
+  const handleScrollBegin = useCallback(() => {
+    setIsScrolling(true);
+  }, []);
 
-        listRef.current?.scrollToOffset({
-          offset: newIndex * ITEM_HEIGHT,
-          animated: false,
-        });
+  const handleScrollEnd = useCallback(() => {
+    setIsScrolling(false);
+    if (listRef.current) {
+      const totalHeight = playersArr.length * ITEM_HEIGHT;
+      const newIndex = Math.round(currentOffset / ITEM_HEIGHT);
+      let newOffset = newIndex * ITEM_HEIGHT;
+
+      // Корректируем позицию для бесконечной прокрутки
+      if (newOffset < 0) {
+        newOffset = totalHeight + newOffset;
+      } else if (newOffset >= totalHeight * 2) {
+        newOffset = newOffset - totalHeight;
       }
-    },
-    [playersArr.length]
-  );
+
+      if (newOffset !== currentOffset) {
+        listRef.current.scrollToOffset({
+          offset: newOffset,
+          animated: true,
+        });
+        setCurrentOffset(newOffset);
+      }
+    }
+  }, [currentOffset, playersArr.length]);
 
   const getItemLayout = useCallback(
     (_: any, index: number) => ({
@@ -115,7 +158,7 @@ export default React.memo(function Slider({
   );
 
   const keyExtractor = useCallback(
-    (item: Player, index: number) => `${item.name}_${index}`,
+    (item: Player & { _key?: string }) => item._key || item.name,
     []
   );
 
@@ -127,7 +170,10 @@ export default React.memo(function Slider({
         keyExtractor={keyExtractor}
         renderItem={renderItem}
         getItemLayout={getItemLayout}
+        onScroll={handleScroll}
+        onScrollBeginDrag={handleScrollBegin}
         onMomentumScrollEnd={handleScrollEnd}
+        onScrollEndDrag={handleScrollEnd}
         showsVerticalScrollIndicator={false}
         snapToInterval={ITEM_HEIGHT}
         decelerationRate="fast"
@@ -150,6 +196,5 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     alignItems: "center",
-    // paddingVertical: rh(2),
   },
 });

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import {
   Pressable,
   Text,
@@ -12,7 +12,6 @@ import {
   responsiveWidth as rw,
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
-import Toast from "react-native-toast-message";
 import { useTranslation } from "react-i18next";
 import { ThemeContext } from "./themeSwitcher";
 import { FadeIn, SlideUp } from "./animations";
@@ -95,7 +94,6 @@ export default function ModalWindow({
   return (
     <Pressable onPress={closeModal} style={styles.modal}>
       <SlideUp>
-        <Toast />
         <Pressable onPress={handleModalPress} style={styles.modalWin}>
           <Text style={styles.text}>{t("modalWindow.enterName")}</Text>
           <TextInput

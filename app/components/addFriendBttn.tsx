@@ -1,35 +1,29 @@
-import { useContext } from "react";
-import { TouchableOpacity, View, StyleSheet } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
 } from "react-native-responsive-dimensions";
+import { StyleSheet } from "react-native";
 import { ThemeContext } from "./themeSwitcher";
-import { SlideUp } from "./animations";
+import { useContext } from "react";
 import PlusDark from "../../assets/svg/plus-dark.svg";
 import PlusLight from "../../assets/svg/plus-light.svg";
+import { SlideUp } from "./animations";
+type Props = { openModal: () => void };
 
-interface AddFriendButtonProps {
-  openModal: () => void;
-}
-
-export default function AddFriendButton({ openModal }: AddFriendButtonProps) {
-  const { isDarkMode } = useContext(ThemeContext);
-
-  const theme = {
-    background: isDarkMode ? "white" : "#272727",
-    border: isDarkMode ? "black" : "white",
-  };
-
-  const styles = StyleSheet.create({
+export default function AddFrBttn({ openModal }: Props) {
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const style = StyleSheet.create({
     box: {
-      backgroundColor: theme.background,
+      backgroundColor: isDarkMode ? "white" : "#272727",
+      // position: "absolute",
       justifyContent: "center",
       alignItems: "center",
+      // bottom: 0,
       width: rw(22),
-      height: rw(18),
-      borderColor: theme.border,
-      borderRadius: 20,
+      height: rw(15.8),
+      borderColor: isDarkMode ? "black" : "white",
+      borderRadius: 14,
       borderBottomLeftRadius: 0,
       borderBottomRightRadius: 0,
       borderWidth: 4,
@@ -41,7 +35,7 @@ export default function AddFriendButton({ openModal }: AddFriendButtonProps) {
       alignItems: "center",
       bottom: 0,
       width: rw(22),
-      height: rw(18),
+      height: rw(15.8),
     },
     plus: {
       width: rw(13),
@@ -49,23 +43,21 @@ export default function AddFriendButton({ openModal }: AddFriendButtonProps) {
     },
   });
 
-  const renderPlusIcon = () => (
-    <TouchableOpacity>
-      {isDarkMode ? (
-        <PlusDark style={styles.plus} />
-      ) : (
-        <PlusLight style={styles.plus} />
-      )}
-    </TouchableOpacity>
-  );
-
   return (
-    <View style={styles.fakeBox}>
-      <SlideUp>
-        <View style={styles.box} onTouchStart={openModal}>
-          {renderPlusIcon()}
-        </View>
-      </SlideUp>
-    </View>
+    <>
+      <View style={style.fakeBox}>
+        <SlideUp>
+          <View style={style.box} onTouchStart={openModal}>
+            <TouchableOpacity>
+              {isDarkMode ? (
+                <PlusDark style={style.plus}></PlusDark>
+              ) : (
+                <PlusLight style={style.plus}></PlusLight>
+              )}
+            </TouchableOpacity>
+          </View>
+        </SlideUp>
+      </View>
+    </>
   );
 }

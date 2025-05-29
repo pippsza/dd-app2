@@ -53,7 +53,13 @@ const ANIMATION_DURATION = 500;
 const STORAGE_KEY = "friendsNames";
 
 const PlayerItem = React.memo(
-  ({ player, setNames, playerOnline, index, shouldAnimate = false }: PlayerItemProps) => {
+  ({
+    player,
+    setNames,
+    playerOnline,
+    index,
+    shouldAnimate = false,
+  }: PlayerItemProps) => {
     const { isDarkMode, toggleTheme } = useContext(ThemeContext);
     const [playerData, setPlayerData] = useState<PlayerData | null>(null);
     const [loading, setLoading] = useState(true);
@@ -123,7 +129,7 @@ const PlayerItem = React.memo(
         opacity: 0.5,
       },
       explosionContainer: {
-        position: 'absolute',
+        position: "absolute",
         left: explosionPosition.x,
         top: explosionPosition.y,
         zIndex: 1000,
@@ -132,12 +138,12 @@ const PlayerItem = React.memo(
         opacity: 0.5,
       },
       slideContainer: {
-        width: '100%',
-        height: '100%',
+        width: "100%",
+        height: "100%",
       },
       touchable: {
-        width: '100%',
-        height: '100%',
+        width: "100%",
+        height: "100%",
       },
     });
 
@@ -155,9 +161,8 @@ const PlayerItem = React.memo(
             setPlayerData(response.data);
             setLoading(false);
           }
-        } catch (err) {
-          console.error("Error fetching player data:", err);
-          if (isMounted) setLoading(false);
+        } catch {
+          // Error fetching player data
         }
       };
 
@@ -172,12 +177,10 @@ const PlayerItem = React.memo(
       setPlayersObj(playerOnline);
     }, [playerOnline]);
     const handleDelete = async () => {
-      if (teeRef.current) {
-        teeRef.current.measure((x, y, width, height, pageX, pageY) => {
-          setExplosionPosition({ x: pageX, y: pageY });
-          setShowExplosion(true);
-          setIsDeleting(true);
-        });
+      try {
+        await onDelete(player);
+      } catch {
+        // Error deleting player
       }
     };
 
@@ -192,7 +195,7 @@ const PlayerItem = React.memo(
         await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
         setNames(filtered);
       } catch (error) {
-        console.error("Error deleting player:", error);
+        // Error deleting player
       } finally {
         setIsDeleting(false);
         setShowExplosion(false);
@@ -226,9 +229,15 @@ const PlayerItem = React.memo(
         ) : (
           <Tee
             width={rw(4.8)}
-            source={(playerData?.skin_name && playerData.skin_name !== "null" && playerData.skin_name !== "undefined")
-              ? playerData.skin_name 
-              : (player && player !== "null" && player !== "undefined" ? player : "default")}
+            source={
+              playerData?.skin_name &&
+              playerData.skin_name !== "null" &&
+              playerData.skin_name !== "undefined"
+                ? playerData.skin_name
+                : player && player !== "null" && player !== "undefined"
+                ? player
+                : "default"
+            }
             key={key}
           />
         )}
@@ -238,18 +247,25 @@ const PlayerItem = React.memo(
     const renderDeleteButton = () => (
       <TouchableOpacity onPress={handleDelete} disabled={isDeleting}>
         {isDarkMode ? (
-          <TrashDark style={[styles.svg, isDeleting && styles.disabledButton]} />
+          <TrashDark
+            style={[styles.svg, isDeleting && styles.disabledButton]}
+          />
         ) : (
-          <TrashLight style={[styles.svg, isDeleting && styles.disabledButton]} />
+          <TrashLight
+            style={[styles.svg, isDeleting && styles.disabledButton]}
+          />
         )}
       </TouchableOpacity>
     );
 
     return (
       <View style={styles.cardBox}>
-        <RandomSlide duration={ANIMATION_DURATION} style={styles.slideContainer}>
-          <TouchableOpacity 
-            onPress={handleNavigation} 
+        <RandomSlide
+          duration={ANIMATION_DURATION}
+          style={styles.slideContainer}
+        >
+          <TouchableOpacity
+            onPress={handleNavigation}
             disabled={isDeleting}
             style={styles.touchable}
           >

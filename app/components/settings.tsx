@@ -22,11 +22,8 @@ export default function Settings() {
     const nextIndex = (currentIndex + 1) % availableLanguages.length;
     const nextLang = availableLanguages[nextIndex];
     setLanguage(nextLang);
-    console.log(`Language changed to: ${nextLang}`);
   };
-  const toggleNotifications = () => {
-    console.log("Notifications has toggled!");
-  };
+  const toggleNotifications = () => {};
   const style = StyleSheet.create({
     box: { justifyContent: "flex-start", flex: 1, width: rw(100) },
     container: {

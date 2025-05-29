@@ -16,6 +16,7 @@ import Toast from "react-native-toast-message";
 import axios from "axios";
 import { SlideUp } from "./components/animations";
 import { FadeWrapper } from "./animations";
+import FilterButton from "./components/filterButton";
 
 export default React.memo(function Main() {
   const { t } = useTranslation();
@@ -29,7 +30,6 @@ export default React.memo(function Main() {
   const [shouldAnimate, setShouldAnimate] = useState(true);
   let params = { error: false };
   if (route.params != undefined) {
-    console.log(route.params);
     params = route.params;
   }
 
@@ -50,7 +50,6 @@ export default React.memo(function Main() {
           setNames(JSON.parse(storedNames));
         }
       } catch (error) {
-        console.error("Error loading from storage:", error);
       } finally {
         setIsInitialized(true);
       }
@@ -69,9 +68,9 @@ export default React.memo(function Main() {
   // Save names when updated, only after initialization
   useEffect(() => {
     if (!isInitialized) return;
-    AsyncStorage.setItem("friendsNames", JSON.stringify(names)).catch((err) =>
-      console.error("Error saving friendsNames:", err)
-    );
+    AsyncStorage.setItem("friendsNames", JSON.stringify(names)).catch((err) => {
+      throw new Error();
+    });
   }, [names, isInitialized]);
 
   const addName = async () => {
@@ -112,7 +111,6 @@ export default React.memo(function Main() {
       closeModal();
     } catch (error) {
       Toast.show({ type: "error", text1: t("toasts.playerNotFound") });
-      console.error(error);
     }
   };
 
@@ -153,9 +151,7 @@ export default React.memo(function Main() {
         const oldStr = JSON.stringify(names);
         const newStr = JSON.stringify(updated);
         if (oldStr !== newStr) setNames(updated);
-      } catch (err) {
-        console.error("Error updating online status:", err);
-      }
+      } catch (err) {}
     };
 
     fetchOnline();
@@ -164,21 +160,17 @@ export default React.memo(function Main() {
   }, [names]);
 
   useEffect(() => {
-    // Сбрасываем флаг анимации при монтировании компонента
     setShouldAnimate(true);
 
-    // Через 2 секунды отключаем анимацию
     const timer = setTimeout(() => {
       setShouldAnimate(false);
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, []); // Пустой массив зависимостей - эффект только при монтировании
+  }, []);
 
   const fadeRef = useRef();
   const onClose = () => {
-    console.log("close");
-    // @ts-ignore - expo-router types are not properly set up
     expoNavigation.navigate("authors");
   };
   const handleClosePress = () => {
@@ -210,6 +202,7 @@ export default React.memo(function Main() {
             </View>
           </SlideUp>
           <AddFrBttn openModal={openModal} />
+          <FilterButton names={names} setNames={setNames}></FilterButton>
         </View>
       </View>
     </FadeWrapper>

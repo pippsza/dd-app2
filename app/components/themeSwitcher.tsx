@@ -28,7 +28,7 @@ export const ThemeProvider = ({ children }: Props) => {
           setIsDarkMode(stored === "true");
         }
       } catch (e) {
-        console.error("Failed to load theme:", e);
+        throw new Error();
       } finally {
         setLoading(false);
       }
@@ -42,7 +42,7 @@ export const ThemeProvider = ({ children }: Props) => {
       setIsDarkMode(newValue);
       await AsyncStorage.setItem(THEME_KEY, newValue.toString());
     } catch (e) {
-      console.error("Failed to save theme:", e);
+      throw new Error();
     }
   };
 

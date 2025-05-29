@@ -107,7 +107,6 @@ export default function Info() {
         const [ddstatsResponse, ddnetResponse] = await Promise.all([
           axios.get<PlayerData>(`${API_URL}?player=${playername}`),
           axios.get<DDNetResponse>(`${HOURS_URL}${playername}`).catch((err) => {
-            console.warn("Failed to fetch DDNet data:", err);
             return { data: { activity: [] } };
           }),
         ]);
@@ -141,7 +140,7 @@ export default function Info() {
 
         setError(null);
       } catch (err) {
-        console.error("Error fetching player data:", err);
+        throw new Error();
         setError(
           err instanceof Error ? err : new Error("Failed to fetch player data")
         );

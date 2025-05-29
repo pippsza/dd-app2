@@ -20,6 +20,7 @@ import { Link } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { ThemeContext } from "./themeSwitcher";
 import { FadeIn, SlideLeftToRight, SlideRightToLeft } from "./animations";
+import CachedMapImage from "./cachedMapImage";
 
 interface PlayerProfile {
   name: string;
@@ -115,16 +116,22 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
     [isDarkMode]
   );
 
-  const bgUrl = useMemo(() => {
-    const mapName = data.most_played_maps[0]?.map_name;
-    if (!mapName) return null;
-    return `${DDNET_RANKS_URL}${mapName.replace(/ /g, "_")}.png`;
+  const mapName = useMemo(() => {
+    return data.most_played_maps[0]?.map_name || null;
   }, [data.most_played_maps]);
-  const bgUrlOnline = useMemo(() => {
-    const mapName = online?.mapName;
+
+  const onlineMapName = useMemo(() => {
+    return online?.mapName || null;
+  }, [online.mapName]);
+
+  const bgUrl = useMemo(() => {
     if (!mapName) return null;
     return `${DDNET_RANKS_URL}${mapName.replace(/ /g, "_")}.png`;
-  }, [online.mapName]);
+  }, [mapName]);
+  const bgUrlOnline = useMemo(() => {
+    if (!onlineMapName) return null;
+    return `${DDNET_RANKS_URL}${onlineMapName.replace(/ /g, "_")}.png`;
+  }, [onlineMapName]);
 
   const styles = useMemo(() => {
     const statusStyles = Object.entries(STATUS_COLORS).reduce(
@@ -297,10 +304,10 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
         <Text style={[styles.regText, styles[online.status]]}>
           {statusText}
         </Text>
-        {online.mapName && (
+        {onlineMapName && (
           <>
             <Text style={styles.longText}>
-              {t("teeContainer.playingOn")}: {online.mapName}
+              {t("teeContainer.playingOn")}: {onlineMapName}
             </Text>
             {online.server && (
               <Text style={styles.longText}>{online.server}</Text>
@@ -397,15 +404,9 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
 
           <SlideRightToLeft>
             <View style={styles.wrapper}>
-              {bgUrl && (
-                <ImageBackground
-                  source={{ uri: bgUrl }}
-                  resizeMode="cover"
-                  style={styles.bg}
-                >
-                  {renderFavorites()}
-                </ImageBackground>
-              )}
+              <CachedMapImage mapName={mapName} style={styles.bg}>
+                {renderFavorites()}
+              </CachedMapImage>
             </View>
           </SlideRightToLeft>
         </View>

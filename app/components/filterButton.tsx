@@ -48,7 +48,9 @@ export default function FilterButton({
     const filtered =
       filter === "all"
         ? allNames
-        : allNames.filter((player) => player.data.status.toLowerCase() === filter);
+        : allNames.filter(
+            (player) => player.data.status.toLowerCase() === filter
+          );
 
     setFilteredNames(filtered);
   };
@@ -91,7 +93,7 @@ export default function FilterButton({
     filterContainer: {
       position: "absolute",
       bottom: rh(5),
-
+      right: rw(-12.4),
       backgroundColor: isDarkMode ? "white" : "#272727",
       borderWidth: 4,
       borderColor: isDarkMode ? "black" : "white",
@@ -128,20 +130,24 @@ export default function FilterButton({
               </Text>
             </View>
             {showFilterMenu && (
-              <View style={style.filterContainer}>
-                {filters.map((filter) => (
-                  <TouchableOpacity
-                    key={filter}
-                    style={[
-                      style.filterButton,
-                      currentFilter === filter && style.activeFilter,
-                    ]}
-                    onPress={() => handleFilter(filter)}
-                  >
-                    <Text style={style.filterButtonText}>{getDisplayFilter(filter)}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
+              <SlideUp duration={260}>
+                <View style={style.filterContainer}>
+                  {filters.map((filter) => (
+                    <TouchableOpacity
+                      key={filter}
+                      style={[
+                        style.filterButton,
+                        currentFilter === filter && style.activeFilter,
+                      ]}
+                      onPress={() => handleFilter(filter)}
+                    >
+                      <Text style={style.filterButtonText}>
+                        {getDisplayFilter(filter)}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </SlideUp>
             )}
           </TouchableOpacity>
         </SlideUp>

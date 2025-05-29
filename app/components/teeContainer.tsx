@@ -154,8 +154,6 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
       statusBlock: {
         flex: 1,
         alignItems: "flex-start",
-
-        // backgroundColor: theme.background,
         opacity: 1,
         zIndex: 5,
         borderColor: theme.border,
@@ -164,6 +162,7 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
         borderRadius: rw(6),
         borderTopLeftRadius: 0,
         borderBottomLeftRadius: 0,
+        overflow: "hidden",
       },
       bg: {
         borderTopLeftRadius: rw(4),
@@ -176,29 +175,19 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
         overflow: "hidden",
       },
       wrapperOnline: {
-        borderTopRightRadius: rw(5.4),
-        borderBottomRightRadius: rw(5.4),
-        overflow: "hidden",
-
         width: "100%",
-        // height: "100%",
+        position: "relative",
       },
       wrapperOnlineBack: {
-        backgroundColor: isDarkMode
-          ? "rgb(255, 255, 255)"
-          : "rgba(39,39,39,0.4)",
-        width: "100%",
-        // height: "100%",
+        padding: rw(2),
       },
-
       bgOnline: {
-        paddingLeft: rw(3),
-        paddingVertical: rh(1),
-        borderTopLeftRadius: rw(4),
-        borderBottomLeftRadius: rw(4),
-        // width: "100%",
-        // height: "100%",
-        borderRadius: 100,
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: -1,
       },
       rightContainer: {
         backgroundColor: isDarkMode
@@ -379,12 +368,12 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
           <View style={styles.statusBlock}>
             <View style={styles.wrapperOnline}>
               <ImageBackground
-                source={{ uri: bgUrlOnline }}
+                source={bgUrlOnline ? { uri: bgUrlOnline } : undefined}
                 resizeMode="cover"
                 style={styles.bgOnline}
-              >
-                {renderStatus()}
-              </ImageBackground>
+                imageStyle={{ opacity: 0.3 }}
+              />
+              <View style={styles.wrapperOnlineBack}>{renderStatus()}</View>
             </View>
           </View>
         </View>

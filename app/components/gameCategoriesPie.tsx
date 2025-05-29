@@ -9,7 +9,7 @@ import {
 import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
 
-const CATEGORY_COLORS = ["#009589", "#001e87", "#920a3d"];
+const CATEGORY_COLORS = ["#1f81b1", "#b1991f", "#b12036"];
 const SECONDS_IN_HOUR = 3600;
 const MAX_CATEGORIES = 3;
 
@@ -41,24 +41,25 @@ export default function GameCategoryPie({ data }: any) {
       borderColor: border,
       borderWidth: rw(0.4),
       borderRightWidth: 0,
-      marginLeft: rw(2),
+      marginLeft: rw(5),
       borderBottomLeftRadius: rw(3),
       borderTopLeftRadius: rw(3),
     },
   });
 
-  const getColorForCategory = (index: number) => 
+  const getColorForCategory = (index: number) =>
     CATEGORY_COLORS[index % CATEGORY_COLORS.length];
 
-  const pieData = data?.most_played_categories
-    ?.slice(0, MAX_CATEGORIES)
-    .map((item: any, idx: number) => ({
-      name: `${t("hours")} - ${item.key}`,
-      population: Math.round(item.seconds_played / SECONDS_IN_HOUR),
-      color: getColorForCategory(idx),
-      legendFontColor: text,
-      legendFontSize: rf(1.9),
-    })) ?? [];
+  const pieData =
+    data?.most_played_categories
+      ?.slice(0, MAX_CATEGORIES)
+      .map((item: any, idx: number) => ({
+        name: `${t("hours")} - ${item.key}`,
+        population: Math.round(item.seconds_played / SECONDS_IN_HOUR),
+        color: getColorForCategory(idx),
+        legendFontColor: text,
+        legendFontSize: rf(1.9),
+      })) ?? [];
 
   const renderChart = () => (
     <View>
@@ -67,7 +68,7 @@ export default function GameCategoryPie({ data }: any) {
         <PieChart
           {...({
             data: pieData,
-            width: rw(100),
+            width: rw(97),
             height: rw(40),
             chartConfig: {
               color: () => text,
@@ -91,7 +92,9 @@ export default function GameCategoryPie({ data }: any) {
 
   return (
     <View style={style.container}>
-      {data?.most_played_categories?.length > 0 ? renderChart() : renderNoData()}
+      {data?.most_played_categories?.length > 0
+        ? renderChart()
+        : renderNoData()}
     </View>
   );
 }

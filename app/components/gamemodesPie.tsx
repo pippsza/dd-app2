@@ -9,7 +9,7 @@ import {
 import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
 
-const GAMEMODE_COLORS = ["#ff6a76", "#ffe178", "#6df5c2"];
+const GAMEMODE_COLORS = ["#2ebbff", "#ffdb2e", "#ff2d50"];
 const SECONDS_IN_HOUR = 3600;
 const MAX_GAMEMODES = 3;
 
@@ -41,24 +41,25 @@ export default function GameModePie({ data }: any) {
       borderColor: border,
       borderWidth: rw(0.4),
       borderLeftWidth: 0,
-      marginRight: rw(2),
+      marginRight: rw(5),
       borderBottomRightRadius: rw(3),
       borderTopRightRadius: rw(3),
     },
   });
 
-  const getColorForGamemode = (index: number) => 
+  const getColorForGamemode = (index: number) =>
     GAMEMODE_COLORS[index % GAMEMODE_COLORS.length];
 
-  const pieData = data?.most_played_gametypes
-    ?.slice(0, MAX_GAMEMODES)
-    .map((item: any, idx: number) => ({
-      name: `${t("hours")} - ${item.key}`,
-      population: Math.round(item.seconds_played / SECONDS_IN_HOUR),
-      color: getColorForGamemode(idx),
-      legendFontColor: text,
-      legendFontSize: rf(1.7),
-    })) ?? [];
+  const pieData =
+    data?.most_played_gametypes
+      ?.slice(0, MAX_GAMEMODES)
+      .map((item: any, idx: number) => ({
+        name: `${t("hours")} - ${item.key}`,
+        population: Math.round(item.seconds_played / SECONDS_IN_HOUR),
+        color: getColorForGamemode(idx),
+        legendFontColor: text,
+        legendFontSize: rf(1.7),
+      })) ?? [];
 
   const renderChart = () => (
     <View>
@@ -67,7 +68,7 @@ export default function GameModePie({ data }: any) {
         <PieChart
           {...({
             data: pieData,
-            width: rw(100),
+            width: rw(97),
             height: rw(40),
             chartConfig: {
               color: () => text,

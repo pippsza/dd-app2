@@ -372,7 +372,7 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
                 source={bgUrlOnline ? { uri: bgUrlOnline } : undefined}
                 resizeMode="cover"
                 style={styles.bgOnline}
-                imageStyle={{ opacity: 0.5 }}
+                imageStyle={{ opacity: 0.3 }}
               />
               <View style={styles.wrapperOnlineBack}>{renderStatus()}</View>
             </View>
@@ -383,11 +383,15 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
       <View style={styles.rowContainer}>
         <View style={styles.teeBlock}>
           <FadeIn>
-            <Tee 
-              width={rh(4)} 
-              source={data.profile.skin_name && data.profile.skin_name !== "null" && data.profile.skin_name !== "undefined" 
-                ? data.profile.skin_name 
-                : "default"} 
+            <Tee
+              width={rh(4)}
+              source={
+                data.profile.skin_name &&
+                data.profile.skin_name !== "null" &&
+                data.profile.skin_name !== "undefined"
+                  ? data.profile.skin_name
+                  : "default"
+              }
             />
           </FadeIn>
 

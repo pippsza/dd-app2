@@ -90,6 +90,25 @@ export function SlideRightToLeft({ children, duration = ANIMATION_DURATION, styl
   );
 }
 
+export function SlideDown({ children, duration = ANIMATION_DURATION, style }: AnimationProps) {
+  const translateY = useRef(new Animated.Value(-height)).current;
+
+  useEffect(() => {
+    Animated.timing(translateY, {
+      toValue: 0,
+      duration,
+      easing: ANIMATION_EASING,
+      useNativeDriver: true,
+    }).start();
+  }, [duration]);
+
+  return (
+    <Animated.View style={[{ transform: [{ translateY }] }, style]}>
+      {children}
+    </Animated.View>
+  );
+}
+
 export function FadeIn({ children, duration = ANIMATION_DURATION, style }: AnimationProps) {
   const opacity = useRef(new Animated.Value(0)).current;
 

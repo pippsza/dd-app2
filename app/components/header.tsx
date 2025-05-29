@@ -10,6 +10,7 @@ import SunDark from "../../assets/svg/sun-dark.svg";
 import BurgeDark from "../../assets/svg/burger-dark.svg";
 import BurgerLight from "../../assets/svg/burger-light.svg";
 import SunLight from "../../assets/svg/sun-light.svg";
+import { SlideDown } from "./animations";
 
 interface HeaderProps {
   onClose: () => void;
@@ -19,23 +20,27 @@ export default function Header({ onClose }: HeaderProps) {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
 
   const renderThemeButton = () => (
-    <TouchableOpacity onPress={toggleTheme}>
-      {isDarkMode ? (
-        <SunDark style={styles.svg} />
-      ) : (
-        <SunLight style={styles.svg} />
-      )}
-    </TouchableOpacity>
+    <SlideDown duration={700}>
+      <TouchableOpacity onPress={toggleTheme}>
+        {isDarkMode ? (
+          <SunDark style={styles.svg} />
+        ) : (
+          <SunLight style={styles.svg} />
+        )}
+      </TouchableOpacity>
+    </SlideDown>
   );
 
   const renderMenuButton = () => (
-    <TouchableOpacity onPress={onClose}>
-      {isDarkMode ? (
-        <BurgeDark style={styles.svg} />
-      ) : (
-        <BurgerLight style={styles.svg} />
-      )}
-    </TouchableOpacity>
+    <SlideDown duration={1000}>
+      <TouchableOpacity onPress={onClose}>
+        {isDarkMode ? (
+          <BurgeDark style={styles.svg} />
+        ) : (
+          <BurgerLight style={styles.svg} />
+        )}
+      </TouchableOpacity>
+    </SlideDown>
   );
 
   return (

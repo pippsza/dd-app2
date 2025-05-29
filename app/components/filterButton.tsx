@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, Fragment } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -106,7 +106,11 @@ export default function FilterButton({ names, setNames }: FilterButtonProps) {
           filter === "ALL"
             ? allNames
             : allNames.filter((player) => player.data.status === filter);
-        setNames(filteredNames);
+        // Проверяем, что у всех игроков есть данные перед установкой
+        const validNames = filteredNames.filter(
+          (player) => player && player.name && player.data
+        );
+        setNames(validNames);
       }
     } catch (error) {
       console.error("Error applying filter:", error);
@@ -139,7 +143,7 @@ export default function FilterButton({ names, setNames }: FilterButtonProps) {
     filterContainer: {
       position: "absolute",
       bottom: rh(5),
-      right: rw(-0.8),
+      right: rw(9),
       backgroundColor: isDarkMode ? "white" : "#272727",
       borderWidth: 4,
       borderColor: isDarkMode ? "black" : "white",
@@ -163,27 +167,31 @@ export default function FilterButton({ names, setNames }: FilterButtonProps) {
   });
 
   return (
-    <View style={style.container}>
-      <TouchableOpacity onPress={() => setShowFilterMenu(!showFilterMenu)}>
-        <Text style={style.text}>
-          {t("filtered")}: {currentFilter}
-        </Text>
-      </TouchableOpacity>
-
-      <View style={style.filterContainer}>
-        {filters.map((filter) => (
-          <TouchableOpacity
-            key={filter}
-            style={[
-              style.filterButton,
-              currentFilter === filter && style.activeFilter,
-            ]}
-            onPress={() => handleFilter(filter)}
-          >
-            <Text style={style.filterButtonText}>{filter}</Text>
-          </TouchableOpacity>
-        ))}
+    <Fragment>
+      <View style={style.container}>
+        <TouchableOpacity onPress={() => setShowFilterMenu(!showFilterMenu)}>
+          <Text style={style.text}>
+            {t("filtered")}: {currentFilter}
+          </Text>
+        </TouchableOpacity>
       </View>
-    </View>
+
+      {showFilterMenu && (
+        <View style={style.filterContainer}>
+          {filters.map((filter) => (
+            <TouchableOpacity
+              key={filter}
+              style={[
+                style.filterButton,
+                currentFilter === filter && style.activeFilter,
+              ]}
+              onPress={() => handleFilter(filter)}
+            >
+              <Text style={style.filterButtonText}>{filter}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+    </Fragment>
   );
 }

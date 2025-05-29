@@ -141,19 +141,23 @@ export default function Info() {
           )}
         </TouchableOpacity>
 
-        <TeeContainer online={online} data={player} />
-        
-        <FadeIn>
-          <TotalPlayed data={player} />
-        </FadeIn>
+        {player && (
+          <>
+            <TeeContainer online={online} data={player} />
+            
+            <FadeIn>
+              <TotalPlayed data={player} />
+            </FadeIn>
 
-        <SlideLeftToRight>
-          <GameModePie data={player} />
-        </SlideLeftToRight>
+            <SlideLeftToRight>
+              <GameModePie data={player} />
+            </SlideLeftToRight>
 
-        <SlideRightToLeft>
-          <GameCategoryPie data={player} />
-        </SlideRightToLeft>
+            <SlideRightToLeft>
+              <GameCategoryPie data={player} />
+            </SlideRightToLeft>
+          </>
+        )}
       </View>
     </FadeWrapper>
   );
@@ -162,7 +166,7 @@ export default function Info() {
     return renderLoadingState();
   }
 
-  return player ? renderContent() : renderLoadingState();
+  return renderContent();
 }
 
 const styles = StyleSheet.create({

@@ -81,6 +81,8 @@ type TeeContainerStyles = {
   bigText: TextStyle;
   smallText: TextStyle;
   clanText: TextStyle;
+  bgOnline: ViewStyle;
+  wrapperOnline: ViewStyle;
 } & {
   [K in StatusType]: TextStyle;
 };
@@ -151,8 +153,7 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
       statusBlock: {
         flex: 1,
         alignItems: "flex-start",
-        paddingLeft: rw(3),
-        paddingVertical: rh(1),
+
         backgroundColor: theme.background,
         opacity: 1,
         zIndex: -1,
@@ -172,6 +173,23 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
         borderTopLeftRadius: rw(4),
         borderBottomLeftRadius: rw(4),
         overflow: "hidden",
+      },
+      wrapperOnline: {
+        borderTopRightRadius: rw(5.4),
+        borderBottomRightRadius: rw(5.4),
+        overflow: "hidden",
+
+        width: "100%",
+        // height: "100%",
+      },
+      bgOnline: {
+        paddingLeft: rw(3),
+        paddingVertical: rh(1),
+        borderTopLeftRadius: rw(4),
+        borderBottomLeftRadius: rw(4),
+        // width: "100%",
+        // height: "100%",
+        borderRadius: 100,
       },
       rightContainer: {
         backgroundColor: isDarkMode
@@ -277,25 +295,19 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
 
     return (
       <>
-        <ImageBackground
-          source={{ uri: bgUrlOnline }}
-          resizeMode="cover"
-          style={styles.bg}
-        >
-          <Text style={[styles.regText, styles[online.status]]}>
-            {statusText}
-          </Text>
-          {online.mapName && (
-            <>
-              <Text style={styles.longText}>
-                {t("teeContainer.playingOn")}: {online.mapName}
-              </Text>
-              {online.server && (
-                <Text style={styles.longText}>{online.server}</Text>
-              )}
-            </>
-          )}
-        </ImageBackground>
+        <Text style={[styles.regText, styles[online.status]]}>
+          {statusText}
+        </Text>
+        {online.mapName && (
+          <>
+            <Text style={styles.longText}>
+              {t("teeContainer.playingOn")}: {online.mapName}
+            </Text>
+            {online.server && (
+              <Text style={styles.longText}>{online.server}</Text>
+            )}
+          </>
+        )}
       </>
     );
   };
@@ -355,7 +367,17 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
     <View style={styles.mainContainer}>
       <SlideLeftToRight>
         <View style={styles.rowContainer}>
-          <View style={styles.statusBlock}>{renderStatus()}</View>
+          <View style={styles.statusBlock}>
+            <View style={styles.wrapperOnline}>
+              <ImageBackground
+                source={{ uri: bgUrlOnline }}
+                resizeMode="cover"
+                style={styles.bgOnline}
+              >
+                {renderStatus()}
+              </ImageBackground>
+            </View>
+          </View>
         </View>
       </SlideLeftToRight>
 

@@ -26,6 +26,7 @@ export default React.memo(function Main() {
   const [names, setNames] = useState<any>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
+  const [shouldAnimate, setShouldAnimate] = useState(true);
   let params = { error: false };
   if (route.params != undefined) {
     console.log(route.params);
@@ -161,6 +162,19 @@ export default React.memo(function Main() {
     const id = setInterval(fetchOnline, 30000);
     return () => clearInterval(id);
   }, [names]);
+
+  useEffect(() => {
+    // Сбрасываем флаг анимации при монтировании компонента
+    setShouldAnimate(true);
+    
+    // Через 2 секунды отключаем анимацию
+    const timer = setTimeout(() => {
+      setShouldAnimate(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []); // Пустой массив зависимостей - эффект только при монтировании
+
   const fadeRef = useRef();
   const onClose = () => {
     console.log("close");
@@ -188,7 +202,11 @@ export default React.memo(function Main() {
           )}
 
           <View style={style.sliderContainer}>
-            <Slider setNames={setNames} playersArr={names} />
+            <Slider 
+              setNames={setNames} 
+              playersArr={names} 
+              shouldAnimate={shouldAnimate}
+            />
           </View>
 
           <AddFrBttn openModal={openModal} />

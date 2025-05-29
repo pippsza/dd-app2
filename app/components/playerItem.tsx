@@ -44,6 +44,7 @@ interface PlayerItemProps {
   setNames: (names: Player[]) => void;
   playerOnline: PlayerOnlineData | null;
   index: number;
+  shouldAnimate?: boolean;
 }
 
 const ITEM_HEIGHT = rh(11.83);
@@ -52,7 +53,7 @@ const ANIMATION_DURATION = 500;
 const STORAGE_KEY = "friendsNames";
 
 const PlayerItem = React.memo(
-  ({ player, setNames, playerOnline, index }: PlayerItemProps) => {
+  ({ player, setNames, playerOnline, index, shouldAnimate = false }: PlayerItemProps) => {
     const { isDarkMode, toggleTheme } = useContext(ThemeContext);
     const [playerData, setPlayerData] = useState<PlayerData | null>(null);
     const [loading, setLoading] = useState(true);
@@ -63,8 +64,6 @@ const PlayerItem = React.memo(
     const teeRef = useRef<View>(null);
     const { t } = useTranslation();
     const navigation = useNavigation();
-    const [hasAnimated, setHasAnimated] = useState(false);
-    const animationTimeoutRef = useRef<NodeJS.Timeout>();
     const [key] = useState(() => `${player}_${Date.now()}`);
 
     const theme = {
@@ -132,28 +131,15 @@ const PlayerItem = React.memo(
       deleting: {
         opacity: 0.5,
       },
+      slideContainer: {
+        width: '100%',
+        height: '100%',
+      },
       touchable: {
         width: '100%',
         height: '100%',
       },
     });
-    useEffect(() => {
-      if (!hasAnimated) {
-        if (animationTimeoutRef.current) {
-          clearTimeout(animationTimeoutRef.current);
-        }
-        
-        animationTimeoutRef.current = setTimeout(() => {
-          setHasAnimated(true);
-        }, index * 150);
-      }
-
-      return () => {
-        if (animationTimeoutRef.current) {
-          clearTimeout(animationTimeoutRef.current);
-        }
-      };
-    }, [index, hasAnimated]);
 
     useEffect(() => {
       let isMounted = true;
@@ -239,7 +225,7 @@ const PlayerItem = React.memo(
           <ActivityIndicator size="small" color={theme.text} />
         ) : (
           <Tee
-            width={rw(5)}
+            width={rw(4.8)}
             source={playerData?.skin_name || player}
             key={key}
           />
@@ -259,24 +245,7 @@ const PlayerItem = React.memo(
 
     return (
       <View style={styles.cardBox}>
-        {!hasAnimated ? (
-          <RandomSlide duration={ANIMATION_DURATION}>
-            <TouchableOpacity 
-              onPress={handleNavigation} 
-              disabled={isDeleting}
-              style={styles.touchable}
-            >
-              <View style={[styles.cardInside, isDeleting && styles.deleting]}>
-                {renderTee()}
-                <View style={styles.textContainer}>
-                  {renderStatus()}
-                  <Text style={styles.cardText}>{player}</Text>
-                </View>
-                {renderDeleteButton()}
-              </View>
-            </TouchableOpacity>
-          </RandomSlide>
-        ) : (
+        <RandomSlide duration={ANIMATION_DURATION} style={styles.slideContainer}>
           <TouchableOpacity 
             onPress={handleNavigation} 
             disabled={isDeleting}
@@ -291,7 +260,7 @@ const PlayerItem = React.memo(
               {renderDeleteButton()}
             </View>
           </TouchableOpacity>
-        )}
+        </RandomSlide>
         {showExplosion && (
           <View style={styles.explosionContainer}>
             <ExplosionAnimation

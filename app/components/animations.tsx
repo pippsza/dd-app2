@@ -120,23 +120,43 @@ function useFirstRender() {
 
 // Новый компонент RandomSlide
 export function RandomSlide({ children, duration = ANIMATION_DURATION, style }: AnimationProps) {
-  const isFirstRender = useFirstRender();
+  const translateX = useRef(new Animated.Value(0)).current;
   const random = useRef(Math.random()).current; // Сохраняем случайное значение между рендерами
+  const isFirstRender = useFirstRender();
   
+  useEffect(() => {
+    if (isFirstRender) {
+      // Устанавливаем начальное значение в зависимости от случайного направления
+      translateX.setValue(random < RANDOM_THRESHOLD ? -width : width);
+      
+      // Запускаем анимацию
+      Animated.timing(translateX, {
+        toValue: 0,
+        duration,
+        easing: ANIMATION_EASING,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [duration, isFirstRender, random]);
+
   // Если это не первый рендер, просто возвращаем детей без анимации
   if (!isFirstRender) {
     return <View style={style}>{children}</View>;
   }
-  
-  // При первом рендере используем сохраненное случайное значение
-  return random < RANDOM_THRESHOLD ? (
-    <SlideLeftToRight duration={duration} style={style}>
+
+  return (
+    <Animated.View 
+      style={[
+        style,
+        {
+          transform: [{ translateX }],
+          width: '100%',
+          height: '100%',
+        }
+      ]}
+    >
       {children}
-    </SlideLeftToRight>
-  ) : (
-    <SlideRightToLeft duration={duration} style={style}>
-      {children}
-    </SlideRightToLeft>
+    </Animated.View>
   );
 }
 

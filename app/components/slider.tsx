@@ -25,6 +25,7 @@ interface Player {
 interface SliderProps {
   playersArr: Player[];
   setNames: (names: Player[]) => void;
+  shouldAnimate?: boolean;
 }
 
 const ITEM_HEIGHT = rh(11.83);
@@ -36,6 +37,7 @@ const WINDOW_SIZE = 15;
 export default React.memo(function Slider({
   playersArr,
   setNames,
+  shouldAnimate = false,
 }: SliderProps) {
   const listRef = useRef<FlatList<Player>>(null);
   const [isScrolling, setIsScrolling] = useState(false);
@@ -111,9 +113,10 @@ export default React.memo(function Slider({
         playerOnline={getPlayerData(item.name)}
         setNames={setNames}
         index={index % playersArr.length}
+        shouldAnimate={shouldAnimate}
       />
     ),
-    [getPlayerData, setNames, playersArr.length]
+    [getPlayerData, setNames, playersArr.length, shouldAnimate]
   );
 
   const handleScroll = useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {

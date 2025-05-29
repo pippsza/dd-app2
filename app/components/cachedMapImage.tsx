@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { ImageBackground, ActivityIndicator, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -11,21 +11,35 @@ interface CachedMapImageProps {
   children?: React.ReactNode;
 }
 
-export default function CachedMapImage({ mapName, style, children }: CachedMapImageProps) {
+export default function CachedMapImage({
+  mapName,
+  style,
+  children,
+}: CachedMapImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [cachedImage, setCachedImage] = useState<string | null>(null);
   const [useDefault, setUseDefault] = useState(false);
 
+  const mapNameWithoutDots = useMemo(() => {
+    if (!mapName) return null;
+    const result = mapName.replace(/\./g, "_");
+
+    return result;
+  }, [mapName]);
+
   useEffect(() => {
     const loadImage = async () => {
-      if (!mapName) {
+      if (!mapName || !mapNameWithoutDots) {
         setIsLoaded(true);
         return;
       }
 
       try {
         const cacheKey = `${CACHE_KEY_PREFIX}${mapName}`;
-        const src = `${DDNET_RANKS_URL}${mapName.replace(/ /g, "_")}.png`;
+        const src = `${DDNET_RANKS_URL}${mapNameWithoutDots.replace(
+          / /g,
+          "_"
+        )}.png`;
 
         // Пытаемся получить изображение из кэша
         const cached = await AsyncStorage.getItem(cacheKey);
@@ -89,17 +103,28 @@ export default function CachedMapImage({ mapName, style, children }: CachedMapIm
     );
   }
 
-  if (!mapName || useDefault) {
+  if (!mapName || !mapNameWithoutDots || useDefault) {
     return <View style={style}>{children}</View>;
   }
 
   return (
     <ImageBackground
-      source={{ uri: cachedImage || `${DDNET_RANKS_URL}${mapName.replace(/ /g, "_")}.png` }}
+      source={{
+        uri:
+          cachedImage ||
+          (() => {
+            const url = `${DDNET_RANKS_URL}${mapNameWithoutDots.replace(
+              / /g,
+              "_"
+            )}.png`;
+
+            return url;
+          })(),
+      }}
       resizeMode="cover"
       style={style}
     >
       {children}
     </ImageBackground>
   );
-} 
+}

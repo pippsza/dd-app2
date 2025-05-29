@@ -130,7 +130,13 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
   }, [mapName]);
   const bgUrlOnline = useMemo(() => {
     if (!onlineMapName) return null;
-    return `${DDNET_RANKS_URL}${onlineMapName.replace(/ /g, "_")}.png`;
+    const mapNameWithoutDots = onlineMapName.replace(/\./g, "_");
+    const url = `${DDNET_RANKS_URL}${mapNameWithoutDots.replace(
+      / /g,
+      "_"
+    )}.png`;
+
+    return url;
   }, [onlineMapName]);
 
   const styles = useMemo(() => {

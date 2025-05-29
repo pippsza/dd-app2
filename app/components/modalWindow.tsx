@@ -12,6 +12,13 @@ import {
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
 
+import { StyleSheet } from "react-native";
+import Toast from "react-native-toast-message";
+import { useTranslation } from "react-i18next";
+import { useContext } from "react";
+import { ThemeContext } from "./themeSwitcher";
+import { FadeIn, SlideUp } from "./animations";
+
 type Props = {
   closeModal: () => void;
   inputValue: any;
@@ -29,6 +36,7 @@ export default function ModalWindow({
   const bg = isDarkMode ? "rgba(255,255,255,1)" : "rgba(39,39,39,1)";
   const border = isDarkMode ? "black" : "white";
   const text = isDarkMode ? "black" : "white";
+  const { t } = useTranslation();
   const style = StyleSheet.create({
     modal: {
       flex: 1,
@@ -80,7 +88,6 @@ export default function ModalWindow({
     },
   });
 
-  const { t } = useTranslation();
   return (
     <Pressable onPress={closeModal} style={style.modal}>
       <SlideUp>
@@ -101,10 +108,3 @@ export default function ModalWindow({
     </Pressable>
   );
 }
-
-import { StyleSheet } from "react-native";
-import Toast from "react-native-toast-message";
-import { useTranslation } from "react-i18next";
-import { useContext } from "react";
-import { ThemeContext } from "./themeSwitcher";
-import { FadeIn, SlideUp } from "./animations";

@@ -46,11 +46,11 @@ export default function GameModePie({ data }: any) {
     .slice(0, 3)
     .map((item, idx) => {
       return {
-        name: "hours - " + item.key,
+        name: `${t("hours")} - ` + item.key,
         population: Math.round(item.seconds_played / 3600),
         color: getColorGametypes(idx),
         legendFontColor: isDarkMode ? "black" : "white",
-        legendFontSize: rf(1.9),
+        legendFontSize: rf(1.7),
       };
     });
 

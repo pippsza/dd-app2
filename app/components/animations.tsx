@@ -64,7 +64,7 @@ export function SlideRightToLeft({ children, duration = ANIMATION_DURATION }) {
   );
 }
 
-export function FadeIn({ children, duration = ANIMATION_DURATION }) {
+export function FadeIn({ children, duration = ANIMATION_DURATION }: any) {
   const opacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -80,7 +80,7 @@ export function FadeIn({ children, duration = ANIMATION_DURATION }) {
 }
 
 // Новый компонент RandomSlide
-export function RandomSlide({ children, duration = ANIMATION_DURATION }) {
+export function RandomSlide({ children, duration = ANIMATION_DURATION }: any) {
   const random = Math.random();
   // console.log(random);
   if (random < 0.5) {

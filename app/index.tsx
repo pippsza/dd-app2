@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
@@ -28,6 +28,13 @@ interface Player {
   };
 }
 
+interface SliderProps {
+  playersArr: Player[];
+  setNames: (names: Player[]) => void;
+  setFilteredNames: (names: Player[]) => void;
+  shouldAnimate?: boolean;
+}
+
 export default React.memo(function Main() {
   const { t } = useTranslation();
   const route: any = useRoute();
@@ -39,6 +46,7 @@ export default React.memo(function Main() {
   const [inputValue, setInputValue] = useState<string>("");
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const [shouldAnimate, setShouldAnimate] = useState(false);
+  const [currentFilter, setCurrentFilter] = useState<string>("all");
   let params = { error: false };
   if (route.params != undefined) {
     params = route.params;
@@ -87,6 +95,27 @@ export default React.memo(function Main() {
     });
   }, [names, isInitialized]);
 
+  const updateFilteredNames = useCallback((newNames: Player[]) => {
+    const filterPlayers = (players: Player[]) => {
+      switch (currentFilter) {
+        case "online":
+          return players.filter(p => p.data.status === "Online");
+        case "offline":
+          return players.filter(p => p.data.status === "Offline");
+        case "afk":
+          return players.filter(p => p.data.status === "AFK");
+        default:
+          return players;
+      }
+    };
+    setFilteredNames(filterPlayers(newNames));
+  }, [currentFilter]);
+
+  // Update filtered names when filter changes
+  useEffect(() => {
+    updateFilteredNames(names);
+  }, [currentFilter, names, updateFilteredNames]);
+
   const addName = async () => {
     const trimmed = inputValue.trim();
 
@@ -114,13 +143,13 @@ export default React.memo(function Main() {
         `http://ddstats.tw/profile/json?player=${encodeURIComponent(trimmed)}`
       );
 
-      setNames((prev: any) => [
-        ...prev,
-        {
-          name: trimmed,
-          data: { status: "Offline", game: null, server: null, mapName: null },
-        },
-      ]);
+      const newPlayer: Player = {
+        name: trimmed,
+        data: { status: "Offline" as const, game: null, server: null, mapName: null },
+      };
+      const newNames = [...names, newPlayer];
+      setNames(newNames);
+      updateFilteredNames(newNames);
       setInputValue("");
       closeModal();
     } catch (error) {
@@ -213,6 +242,7 @@ export default React.memo(function Main() {
             <View style={style.sliderContainer}>
               <Slider
                 setNames={setNames}
+                updateFilteredNames={updateFilteredNames}
                 playersArr={filteredNames}
                 shouldAnimate={shouldAnimate}
               />
@@ -223,6 +253,8 @@ export default React.memo(function Main() {
             allNames={names}
             filteredNames={filteredNames}
             setFilteredNames={setFilteredNames}
+            currentFilter={currentFilter}
+            setCurrentFilter={setCurrentFilter}
           />
         </View>
       </View>

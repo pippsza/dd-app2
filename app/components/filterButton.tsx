@@ -24,15 +24,18 @@ interface FilterButtonProps {
   allNames: Player[];
   filteredNames: Player[];
   setFilteredNames: (names: Player[]) => void;
+  currentFilter: string;
+  setCurrentFilter: (filter: string) => void;
 }
 
 export default function FilterButton({
   allNames,
   filteredNames,
   setFilteredNames,
+  currentFilter,
+  setCurrentFilter,
 }: FilterButtonProps) {
-  const filters = ["Online", "Offline", "AFK", "ALL"];
-  const [currentFilter, setCurrentFilter] = useState("ALL");
+  const filters = ["online", "offline", "afk", "all"];
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const { t } = useTranslation();
   const { isDarkMode } = useContext(ThemeContext);
@@ -43,11 +46,15 @@ export default function FilterButton({
 
     // Всегда фильтруем из полного списка allNames
     const filtered =
-      filter === "ALL"
+      filter === "all"
         ? allNames
-        : allNames.filter((player) => player.data.status === filter);
+        : allNames.filter((player) => player.data.status.toLowerCase() === filter);
 
     setFilteredNames(filtered);
+  };
+
+  const getDisplayFilter = (filter: string) => {
+    return filter.charAt(0).toUpperCase() + filter.slice(1);
   };
 
   const style = StyleSheet.create({
@@ -117,7 +124,7 @@ export default function FilterButton({
           >
             <View>
               <Text style={style.text}>
-                {t("filtered")}: {currentFilter}
+                {t("filtered")}: {getDisplayFilter(currentFilter)}
               </Text>
             </View>
             {showFilterMenu && (
@@ -131,7 +138,7 @@ export default function FilterButton({
                     ]}
                     onPress={() => handleFilter(filter)}
                   >
-                    <Text style={style.filterButtonText}>{filter}</Text>
+                    <Text style={style.filterButtonText}>{getDisplayFilter(filter)}</Text>
                   </TouchableOpacity>
                 ))}
               </View>

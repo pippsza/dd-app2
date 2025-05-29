@@ -42,6 +42,7 @@ interface Player {
 interface PlayerItemProps {
   player: string;
   setNames: (names: Player[]) => void;
+  updateFilteredNames: (names: Player[]) => void;
   playerOnline: PlayerOnlineData | null;
   index: number;
   shouldAnimate?: boolean;
@@ -56,6 +57,7 @@ const PlayerItem = React.memo(
   ({
     player,
     setNames,
+    updateFilteredNames,
     playerOnline,
     index,
     shouldAnimate = false,
@@ -198,6 +200,7 @@ const PlayerItem = React.memo(
 
         await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
         setNames(filtered);
+        updateFilteredNames(filtered);
       } catch (error) {
         console.error("Error deleting player:", error);
       } finally {

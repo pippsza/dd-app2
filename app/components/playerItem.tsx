@@ -21,28 +21,47 @@ import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
 import { RandomSlide } from "./animations";
 
-const ITEM_HEIGHT = rh(11.83);
+interface PlayerData {
+  skin_name: string;
+  // Add other fields as needed
+}
 
-type Props = {
-  player: any;
-  setNames: any;
-  playerOnline: any;
-};
-const PlayerItem = React.memo(({ player, setNames, playerOnline }: Props) => {
+interface PlayerOnlineData {
+  status: 'Offline' | 'Online' | 'AFK';
+  game: string | null;
+  server: string | null;
+  mapName: string | null;
+}
+
+interface Player {
+  name: string;
+  data: PlayerOnlineData;
+}
+
+interface PlayerItemProps {
+  player: string;
+  setNames: (names: Player[]) => void;
+  playerOnline: PlayerOnlineData | null;
+}
+
+const ITEM_HEIGHT = rh(11.83);
+const API_URL = 'http://ddstats.tw/profile/json';
+const ANIMATION_DURATION = 500;
+const STORAGE_KEY = 'friendsNames';
+
+const PlayerItem = React.memo(({ player, setNames, playerOnline }: PlayerItemProps) => {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
-  const [playerData, setPlayerData]: any = useState(null);
+  const [playerData, setPlayerData] = useState<PlayerData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [playersObj, setPlayersObj]: any = useState({});
+  const [playersObj, setPlayersObj] = useState<PlayerOnlineData | null>(null);
 
   const navigation = useNavigation();
   const { t } = useTranslation();
-  const navigateHandle = () => {
-    navigation.navigate("info", {
-      item: player,
-      onlineData: playerOnline,
-    });
+  const theme = {
+    background: isDarkMode ? "rgba(255, 255, 255, 0.4)" : "rgba(39,39,39,0.4)",
+    text: isDarkMode ? "black" : "white",
+    border: isDarkMode ? "black" : "white",
   };
-  const bg = isDarkMode ? "rgba(255, 255, 255, 0.4)" : "rgba(39,39,39,0.4)";
   const styles = StyleSheet.create({
     listContainer: {
       alignItems: "center",
@@ -55,23 +74,17 @@ const PlayerItem = React.memo(({ player, setNames, playerOnline }: Props) => {
     },
     cardText: {
       fontSize: rf(2),
-      color: isDarkMode ? "black" : "white",
+      color: theme.text,
       fontWeight: "600",
     },
     cardInside: {
-      borderColor: isDarkMode ? "black" : "white",
+      borderColor: theme.border,
       borderWidth: 2,
-
       flexDirection: "row",
       padding: rw(8),
       alignItems: "center",
-      // shadowColor: "#000",
-      // shadowOpacity: 0.2,
-      // shadowOffset: { width: 0, height: 2 },
-      // shadowRadius: 4,
-      // elevation: 3,
       borderRadius: rw(4),
-      backgroundColor: bg,
+      backgroundColor: theme.background,
       height: "100%",
       width: rw(89),
       justifyContent: "space-between",
@@ -92,11 +105,11 @@ const PlayerItem = React.memo(({ player, setNames, playerOnline }: Props) => {
   useEffect(() => {
     let isMounted = true;
 
-    const fetch = async (playername: string) => {
+    const fetchPlayerData = async (playername: string) => {
       try {
         setLoading(true);
-        const response = await axios.get(
-          `http://ddstats.tw/profile/json?player=${playername}`
+        const response = await axios.get<PlayerData>(
+          `${API_URL}?player=${playername}`
         );
 
         if (isMounted) {
@@ -104,12 +117,12 @@ const PlayerItem = React.memo(({ player, setNames, playerOnline }: Props) => {
           setLoading(false);
         }
       } catch (err) {
-        console.log(err);
+        console.error('Error fetching player data:', err);
         if (isMounted) setLoading(false);
       }
     };
 
-    fetch(player);
+    fetchPlayerData(player);
 
     return () => {
       isMounted = false;
@@ -119,50 +132,74 @@ const PlayerItem = React.memo(({ player, setNames, playerOnline }: Props) => {
   useEffect(() => {
     setPlayersObj(playerOnline);
   }, [playerOnline]);
-  const deletePlayer = async () => {
+  const handleDelete = async () => {
     try {
-      const stored = await AsyncStorage.getItem("friendsNames");
+      const stored = await AsyncStorage.getItem(STORAGE_KEY);
       if (!stored) return;
 
-      const names: any = JSON.parse(stored);
+      const names: Player[] = JSON.parse(stored);
+      const filtered = names.filter(name => name.name !== player);
 
-      const filtered = names.filter((name: any) => name.name !== player);
-
-      await AsyncStorage.setItem("friendsNames", JSON.stringify(filtered));
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
       setNames(filtered);
     } catch (error) {
-      console.error("Ошибка при удалении:", error);
+      console.error("Error deleting player:", error);
     }
   };
 
+  const handleNavigation = () => {
+    // @ts-ignore - expo-router types are not properly set up
+    navigation.navigate("info", {
+      item: player,
+      onlineData: playerOnline,
+    });
+  };
+
+  const renderStatus = () => {
+    if (!playersObj?.status) return null;
+
+    const statusText = {
+      Offline: t("playerItem.offline"),
+      Online: t("playerItem.online"),
+      AFK: t("playerItem.AFK"),
+    }[playersObj.status];
+
+    return (
+      <Text style={styles[playersObj.status]}>
+        {statusText}
+      </Text>
+    );
+  };
+
+  const renderTee = () => (
+    playerData ? (
+      <Tee source={playerData.skin_name} width={rw(4)} />
+    ) : (
+      <ActivityIndicator size="small" />
+    )
+  );
+
+  const renderDeleteButton = () => (
+    <TouchableOpacity onPress={handleDelete}>
+      {isDarkMode ? (
+        <TrashDark style={styles.svg} />
+      ) : (
+        <TrashLight style={styles.svg} />
+      )}
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.cardBox}>
-      <RandomSlide duration={500}>
-        <TouchableOpacity onPress={navigateHandle}>
+      <RandomSlide duration={ANIMATION_DURATION}>
+        <TouchableOpacity onPress={handleNavigation}>
           <View style={styles.cardInside}>
-            {playerData ? (
-              <Tee source={playerData.skin_name} width={rw(4)} />
-            ) : (
-              <ActivityIndicator size="small" />
-            )}
+            {renderTee()}
             <View style={styles.textContainer}>
-              <Text style={styles[playersObj.status]}>
-                {playersObj?.status === "Offline"
-                  ? t("playerItem.offline")
-                  : playersObj?.status === "Online"
-                  ? t("playerItem.online")
-                  : t("playerItem.AFK")}
-              </Text>
-
+              {renderStatus()}
               <Text style={styles.cardText}>{player}</Text>
             </View>
-            <TouchableOpacity onPress={deletePlayer}>
-              {isDarkMode ? (
-                <TrashDark style={styles.svg}></TrashDark>
-              ) : (
-                <TrashLight style={styles.svg}></TrashLight>
-              )}
-            </TouchableOpacity>
+            {renderDeleteButton()}
           </View>
         </TouchableOpacity>
       </RandomSlide>

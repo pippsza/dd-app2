@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { useRoute, useNavigation } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
+import { useNavigation as useExpoNavigation } from "expo-router";
 import Header from "./components/header";
 import ModalWindow from "./components/modalWindow";
 import AddFrBttn from "./components/addFriendBttn";
@@ -11,20 +14,18 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import axios from "axios";
-import { useRoute } from "@react-navigation/native";
-import { useTranslation } from "react-i18next";
 import { SlideUp } from "./components/animations";
 import { FadeWrapper } from "./animations";
-import { useNavigation } from "expo-router";
 
 export default React.memo(function Main() {
   const { t } = useTranslation();
+  const route: any = useRoute();
+  const navigation = useNavigation();
+  const expoNavigation = useExpoNavigation();
   const [modal, setModal] = useState<boolean>(false);
-
   const [names, setNames] = useState<any>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
-  const route: any = useRoute();
   let params = { error: false };
   if (route.params != undefined) {
     console.log(route.params);
@@ -161,10 +162,10 @@ export default React.memo(function Main() {
     return () => clearInterval(id);
   }, [names]);
   const fadeRef = useRef();
-  const navigation = useNavigation();
   const onClose = () => {
     console.log("close");
-    navigation.navigate("authors");
+    // @ts-ignore - expo-router types are not properly set up
+    expoNavigation.navigate("authors");
   };
   const handleClosePress = () => {
     if (fadeRef.current) {

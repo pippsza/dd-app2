@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Image as RNImage } from "react-native";
-import Canvas, { Image } from "react-native-canvas";
+import Canvas, { Image as CanvasImage } from "react-native-canvas";
 import { responsiveWidth as rw } from "react-native-responsive-dimensions";
 import FastImage from "react-native-fast-image";
 
-type Props = { source: string; width: number };
-type CanvasFunc = (
+interface TeeProps {
+  source: string;
+  width: number;
+}
+
+interface CanvasSetup {
+  ctx: any;
+  size: number;
+  scale: number;
+}
+
+type DrawCommand = [
   sx: number,
   sy: number,
   sW: number,
@@ -14,7 +24,9 @@ type CanvasFunc = (
   dy: number,
   dW: number,
   dH: number
-) => void;
+];
+
+type CanvasFunc = (...args: DrawCommand) => void;
 
 const COLORS = {
   overlayBody: "rgba(0, 140, 255, 0.3)",
@@ -23,14 +35,35 @@ const COLORS = {
 
 const CANVAS_BASE_SIZE = 100;
 const DEFAULT_URI = require("../../assets/images/default.png");
+const SKIN_BASE_URL = "https://skins.ddnet.org/skin/community/";
 
-// Глобальний кеш для зображень
-const imageCache = new Map<string, Image>();
+const DRAW_COMMANDS = {
+  main: [
+    [192, 64, 64, 30, -7, 52, 90, 38],
+    [96, 0, 96, 96, 0, 0, 96, 96],
+    [192, 64, 64, 30, 17, 52, 87, 38],
+  ] as DrawCommand[],
+  leftLeg: [[192, 40, 70, 30, -13, 58, 110, 50]] as DrawCommand[],
+  rightLeg: [[192, 40, 70, 30, 11, 58, 108, 50]] as DrawCommand[],
+  full: [
+    [192, 40, 70, 30, -13, 58, 110, 50],
+    [0, 0, 96, 96, -2, -2, 100, 100],
+    [64, 100, 30, 40, 38, 27, 34, 50],
+    [192, 40, 70, 30, 11, 58, 108, 50],
+  ] as DrawCommand[],
+  body: [
+    [0, 0, 96, 96, -2, -2, 100, 100],
+    [64, 100, 30, 40, 38, 27, 34, 50],
+  ] as DrawCommand[],
+};
 
-const Tee = ({ source, width }: Props) => {
-  const rawSrc = `https://skins.ddnet.org/skin/community/${source}.png`;
-  const src = encodeURI(rawSrc);
+const imageCache = new Map<string, CanvasImage>();
+
+const Tee = ({ source, width }: TeeProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
+
+  const rawSrc = `${SKIN_BASE_URL}${source}.png`;
+  const src = encodeURI(rawSrc);
 
   useEffect(() => {
     setIsLoaded(false);
@@ -39,7 +72,7 @@ const Tee = ({ source, width }: Props) => {
       .catch(() => setIsLoaded(false));
   }, [src]);
 
-  const setupCanvas = (canvas: any) => {
+  const setupCanvas = (canvas: Canvas | null): CanvasSetup | null => {
     if (!canvas) return null;
     const size = rw(width);
     canvas.width = size;
@@ -49,11 +82,12 @@ const Tee = ({ source, width }: Props) => {
   };
 
   const createDrawFunc = (
-    ctx: CanvasRenderingContext2D,
-    img: Image,
+    ctx: any,
+    img: CanvasImage,
     scale: number
   ): CanvasFunc => {
     return (sx, sy, sW, sH, dx, dy, dW, dH) => {
+      // @ts-ignore - react-native-canvas uses its own implementation of Canvas
       ctx.drawImage(
         img,
         sx,
@@ -68,36 +102,35 @@ const Tee = ({ source, width }: Props) => {
     };
   };
 
-  const loadImage = (canvas: any, src: string): Promise<Image> => {
+  const loadImage = (canvas: Canvas, src: string): Promise<CanvasImage> => {
     return new Promise((resolve, reject) => {
-      const img = new Image(canvas);
+      const img = new CanvasImage(canvas);
+      
       img.addEventListener("load", () => {
-        // Перевірка: чи має зображення розмір
         if (img.width === 0 || img.height === 0) {
-          reject("Image has zero size");
+          reject(new Error("Image has zero size"));
         } else {
           resolve(img);
         }
       });
+
       img.addEventListener("error", () => {
-        const defImg = new Image(canvas);
+        const defImg = new CanvasImage(canvas);
         defImg.src = DEFAULT_URI;
         defImg.addEventListener("load", () => resolve(defImg));
-        defImg.addEventListener("error", () =>
-          reject("Default image failed too")
-        );
+        defImg.addEventListener("error", () => reject(new Error("Default image failed too")));
       });
+
       img.src = src;
     });
   };
 
   const drawLayer = async (
-    canvas: any,
+    canvas: Canvas,
     src: string,
-    drawCommands: Array<Parameters<CanvasFunc>>,
+    drawCommands: DrawCommand[],
     overlayColor?: string
   ) => {
-    if (!canvas) return;
     const setup = setupCanvas(canvas);
     if (!setup) return;
     const { ctx, size, scale } = setup;
@@ -112,32 +145,7 @@ const Tee = ({ source, width }: Props) => {
     }
   };
 
-  const handleMainCanvas = async (canvas: any) => {
-    const setup = setupCanvas(canvas);
-    if (!setup) return;
-    const { ctx, size, scale } = setup;
-
-    try {
-      const img = await loadImage(canvas, src);
-      ctx.clearRect(0, 0, size, size);
-      const draw = createDrawFunc(ctx, img, scale);
-      draw(192, 64, 64, 30, -7, 52, 90, 38);
-      draw(96, 0, 96, 96, 0, 0, 96, 96);
-      draw(192, 64, 64, 30, 17, 52, 87, 38);
-    } catch (error) {
-      console.error("Image loading failed:", error);
-    }
-  };
-
-  const handleLeftLeg = (canvas: any) => {
-    drawLayer(canvas, src, [[192, 40, 70, 30, -13, 58, 110, 50]]);
-  };
-
-  const handleRightLeg = (canvas: any) => {
-    drawLayer(canvas, src, [[192, 40, 70, 30, 11, 58, 108, 50]]);
-  };
-
-  const handleFullRenderCanvas = async (canvas: any) => {
+  const handleFullRenderCanvas = async (canvas: Canvas) => {
     const setup = setupCanvas(canvas);
     if (!setup) return;
     const { ctx, size, scale } = setup;
@@ -147,10 +155,7 @@ const Tee = ({ source, width }: Props) => {
       ctx.clearRect(0, 0, size, size);
       const draw = createDrawFunc(ctx, img, scale);
 
-      draw(192, 40, 70, 30, -13, 58, 110, 50);
-      draw(0, 0, 96, 96, -2, -2, 100, 100);
-      draw(64, 100, 30, 40, 38, 27, 34, 50);
-      draw(192, 40, 70, 30, 11, 58, 108, 50);
+      DRAW_COMMANDS.full.forEach((params) => draw(...params));
 
       ctx.save();
       ctx.translate((38 + 34) * scale, 27 * scale);
@@ -172,60 +177,24 @@ const Tee = ({ source, width }: Props) => {
     }
   };
 
-  const handleBody = async (canvas: any) => {
-    const setup = setupCanvas(canvas);
-    if (!setup) return;
-    const { ctx, size, scale } = setup;
+  const renderLoadingState = () => (
+    <RNImage
+      source={DEFAULT_URI}
+      style={{ width: rw(width), height: rw(width) }}
+      resizeMode="contain"
+    />
+  );
 
-    try {
-      const img = await loadImage(canvas, src);
-      ctx.clearRect(0, 0, size, size);
-      const draw = createDrawFunc(ctx, img, scale);
-      draw(0, 0, 96, 96, -2, -2, 100, 100);
-      draw(64, 100, 30, 40, 38, 27, 34, 50);
-
-      ctx.save();
-      ctx.translate((38 + 34) * scale, 27 * scale);
-      ctx.scale(-1, 1);
-      ctx.drawImage(
-        img,
-        64,
-        100,
-        30,
-        40,
-        -17 * scale,
-        0,
-        34 * scale,
-        50 * scale
-      );
-      ctx.restore();
-    } catch (error) {
-      console.error("Body render failed:", error);
-    }
-  };
-
-  if (!isLoaded) {
-    return (
-      <RNImage
-        source={DEFAULT_URI}
-        style={{ width: rw(width), height: rw(width) }}
-        resizeMode="contain"
-      />
-    );
-  }
-
-  return (
+  const renderTee = () => (
     <View style={{ width: rw(width), height: rw(width) }}>
-      {/* <Canvas style={style.tee} ref={handleMainCanvas} />
-      <Canvas style={style.tee} ref={handleLeftLeg} />
-      <Canvas style={style.tee} ref={handleBody} />
-      <Canvas style={style.tee} ref={handleRightLeg} /> */}
-      <Canvas style={style.tee} ref={handleFullRenderCanvas} />
+      <Canvas style={styles.tee} ref={handleFullRenderCanvas} />
     </View>
   );
+
+  return isLoaded ? renderTee() : renderLoadingState();
 };
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   tee: {
     position: "absolute",
     top: 0,

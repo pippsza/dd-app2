@@ -1,13 +1,21 @@
-import React, { useEffect, useRef } from "react";
-import { Animated, Dimensions, Easing } from "react-native";
+import React, { useEffect, useRef, ReactNode } from "react";
+import { Animated, Dimensions, Easing, StyleProp, ViewStyle } from "react-native";
 
 const { width, height } = Dimensions.get("window");
 
 // Глобальные настройки анимации
 const ANIMATION_DURATION = 800;
 const ANIMATION_EASING = Easing.bezier(0.42, 0, 0.58, 1); // плавная дуговая кривая
+const RANDOM_THRESHOLD = 0.5;
 
-export function SlideUp({ children, duration = ANIMATION_DURATION }) {
+// Types
+interface AnimationProps {
+  children: ReactNode;
+  duration?: number;
+  style?: StyleProp<ViewStyle>;
+}
+
+export function SlideUp({ children, duration = ANIMATION_DURATION, style }: AnimationProps) {
   const translateY = useRef(new Animated.Value(height)).current;
 
   useEffect(() => {
@@ -17,16 +25,16 @@ export function SlideUp({ children, duration = ANIMATION_DURATION }) {
       easing: ANIMATION_EASING,
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [duration]);
 
   return (
-    <Animated.View style={{ transform: [{ translateY }] }}>
+    <Animated.View style={[{ transform: [{ translateY }] }, style]}>
       {children}
     </Animated.View>
   );
 }
 
-export function SlideLeftToRight({ children, duration = ANIMATION_DURATION }) {
+export function SlideLeftToRight({ children, duration = ANIMATION_DURATION, style }: AnimationProps) {
   const translateX = useRef(new Animated.Value(-width)).current;
 
   useEffect(() => {
@@ -36,16 +44,16 @@ export function SlideLeftToRight({ children, duration = ANIMATION_DURATION }) {
       easing: ANIMATION_EASING,
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [duration]);
 
   return (
-    <Animated.View style={{ transform: [{ translateX }] }}>
+    <Animated.View style={[{ transform: [{ translateX }] }, style]}>
       {children}
     </Animated.View>
   );
 }
 
-export function SlideRightToLeft({ children, duration = ANIMATION_DURATION }) {
+export function SlideRightToLeft({ children, duration = ANIMATION_DURATION, style }: AnimationProps) {
   const translateX = useRef(new Animated.Value(width)).current;
 
   useEffect(() => {
@@ -55,16 +63,16 @@ export function SlideRightToLeft({ children, duration = ANIMATION_DURATION }) {
       easing: ANIMATION_EASING,
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [duration]);
 
   return (
-    <Animated.View style={{ transform: [{ translateX }] }}>
+    <Animated.View style={[{ transform: [{ translateX }] }, style]}>
       {children}
     </Animated.View>
   );
 }
 
-export function FadeIn({ children, duration = ANIMATION_DURATION }: any) {
+export function FadeIn({ children, duration = ANIMATION_DURATION, style }: AnimationProps) {
   const opacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -74,18 +82,26 @@ export function FadeIn({ children, duration = ANIMATION_DURATION }: any) {
       easing: ANIMATION_EASING,
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [duration]);
 
-  return <Animated.View style={{ opacity }}>{children}</Animated.View>;
+  return (
+    <Animated.View style={[{ opacity }, style]}>
+      {children}
+    </Animated.View>
+  );
 }
 
 // Новый компонент RandomSlide
-export function RandomSlide({ children, duration = ANIMATION_DURATION }: any) {
+export function RandomSlide({ children, duration = ANIMATION_DURATION, style }: AnimationProps) {
   const random = Math.random();
-  // console.log(random);
-  if (random < 0.5) {
-    return <SlideLeftToRight duration={duration}>{children}</SlideLeftToRight>;
-  } else {
-    return <SlideRightToLeft duration={duration}>{children}</SlideRightToLeft>;
-  }
+  
+  return random < RANDOM_THRESHOLD ? (
+    <SlideLeftToRight duration={duration} style={style}>
+      {children}
+    </SlideLeftToRight>
+  ) : (
+    <SlideRightToLeft duration={duration} style={style}>
+      {children}
+    </SlideRightToLeft>
+  );
 }

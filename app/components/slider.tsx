@@ -1,49 +1,64 @@
 import React, { useRef, useEffect, useCallback, useMemo } from "react";
-import { View, FlatList, StyleSheet } from "react-native";
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+} from "react-native";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
 } from "react-native-responsive-dimensions";
 import PlayerItem from "./playerItem";
 
+interface Player {
+  name: string;
+  data: {
+    status: 'Offline' | 'Online' | 'AFK';
+    game: string | null;
+    server: string | null;
+    mapName: string | null;
+  };
+}
+
+interface SliderProps {
+  playersArr: Player[];
+  setNames: (names: Player[]) => void;
+}
+
 const ITEM_HEIGHT = rh(11.83);
+const MIN_PLAYERS_FOR_INFINITE_SCROLL = 7;
+const INITIAL_RENDER_COUNT = 10;
+const MAX_RENDER_PER_BATCH = 5;
+const WINDOW_SIZE = 21;
 
-type SliderProps = {
-  playersArr: Array<{ name: string; data: any }>;
-  setNames: (names: any) => void;
-};
-
-/**
- * Компонент слайдера для отображения списка игроков с бесконечной прокруткой
- * Оптимизированная версия с исправлением проблемы устаревших данных
- */
 export default React.memo(function Slider({
   playersArr,
   setNames,
 }: SliderProps) {
-  const listRef = useRef<FlatList>(null);
+  const listRef = useRef<FlatList<Player>>(null);
 
-  // Мемоизированный массив данных для бесконечной прокрутки
+  // Memoized data
   const data = useMemo(() => {
-    if (playersArr.length > 7) {
+    if (playersArr.length > MIN_PLAYERS_FOR_INFINITE_SCROLL) {
       return [...playersArr, ...playersArr, ...playersArr];
     }
     return playersArr;
   }, [playersArr]);
 
-  // Создаем хеш-карту для мгновенного доступа к данным игроков
   const playersMap = useMemo(
     () =>
       playersArr.reduce((acc, player) => {
         acc[player.name] = player.data;
         return acc;
-      }, {} as Record<string, any>),
+      }, {} as Record<string, Player["data"]>),
     [playersArr]
   );
 
-  // Устанавливаем начальную позицию прокрутки при монтировании
+  // Effects
   useEffect(() => {
-    if (playersArr.length > 7) {
+    if (playersArr.length > MIN_PLAYERS_FOR_INFINITE_SCROLL) {
       const initialOffset = playersArr.length * ITEM_HEIGHT;
       listRef.current?.scrollToOffset({
         offset: initialOffset,
@@ -52,23 +67,14 @@ export default React.memo(function Slider({
     }
   }, [playersArr.length]);
 
-  /**
-   * Получение данных игрока по имени
-   * Использует мемоизированную карту игроков для мгновенного доступа
-   */
+  // Callbacks
   const getPlayerData = useCallback(
-    (playerName: string) => {
-      return playersMap[playerName] || null;
-    },
+    (playerName: string) => playersMap[playerName] || null,
     [playersMap]
   );
 
-  /**
-   * Рендер-функция для элементов списка
-   * Мемоизирована с зависимостью от getPlayerData
-   */
   const renderItem = useCallback(
-    ({ item }: { item: { name: string } }) => (
+    ({ item }: { item: Player }) => (
       <PlayerItem
         player={item.name}
         playerOnline={getPlayerData(item.name)}
@@ -78,15 +84,12 @@ export default React.memo(function Slider({
     [getPlayerData, setNames]
   );
 
-  /**
-   * Обработчик завершения прокрутки с логикой бесконечного скролла
-   */
   const handleScrollEnd = useCallback(
-    (e: { nativeEvent: { contentOffset: { y: number } } }) => {
+    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
       const offsetY = e.nativeEvent.contentOffset.y;
       let newIndex = Math.round(offsetY / ITEM_HEIGHT);
 
-      if (playersArr.length > 7) {
+      if (playersArr.length > MIN_PLAYERS_FOR_INFINITE_SCROLL) {
         if (newIndex < playersArr.length) {
           newIndex += playersArr.length;
         } else if (newIndex >= playersArr.length * 2) {
@@ -102,10 +105,6 @@ export default React.memo(function Slider({
     [playersArr.length]
   );
 
-  /**
-   * Функция для расчета layout элементов списка
-   * Обязательна для корректной работы скролла
-   */
   const getItemLayout = useCallback(
     (_: any, index: number) => ({
       length: ITEM_HEIGHT,
@@ -115,21 +114,26 @@ export default React.memo(function Slider({
     []
   );
 
+  const keyExtractor = useCallback(
+    (item: Player, index: number) => `${item.name}_${index}`,
+    []
+  );
+
   return (
     <View style={styles.container}>
       <FlatList
         ref={listRef}
         data={data}
-        keyExtractor={(item, index) => `${item.name}_${index}`}
+        keyExtractor={keyExtractor}
         renderItem={renderItem}
         getItemLayout={getItemLayout}
         onMomentumScrollEnd={handleScrollEnd}
         showsVerticalScrollIndicator={false}
         snapToInterval={ITEM_HEIGHT}
         decelerationRate="fast"
-        initialNumToRender={10}
-        maxToRenderPerBatch={5}
-        windowSize={21}
+        initialNumToRender={INITIAL_RENDER_COUNT}
+        maxToRenderPerBatch={MAX_RENDER_PER_BATCH}
+        windowSize={WINDOW_SIZE}
         extraData={playersMap}
         contentContainerStyle={styles.listContainer}
       />

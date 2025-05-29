@@ -18,16 +18,27 @@ import { SlideUp } from "./components/animations";
 import { FadeWrapper } from "./animations";
 import FilterButton from "./components/filterButton";
 
+interface Player {
+  name: string;
+  data: {
+    status: "Offline" | "Online" | "AFK";
+    game: string | null;
+    server: string | null;
+    mapName: string | null;
+  };
+}
+
 export default React.memo(function Main() {
   const { t } = useTranslation();
   const route: any = useRoute();
   const navigation = useNavigation();
   const expoNavigation = useExpoNavigation();
   const [modal, setModal] = useState<boolean>(false);
-  const [names, setNames] = useState<any>([]);
+  const [names, setNames] = useState<Player[]>([]);
+  const [filteredNames, setFilteredNames] = useState<Player[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
-  const [shouldAnimate, setShouldAnimate] = useState(true);
+  const [shouldAnimate, setShouldAnimate] = useState(false);
   let params = { error: false };
   if (route.params != undefined) {
     params = route.params;
@@ -42,18 +53,21 @@ export default React.memo(function Main() {
   };
 
   useEffect(() => {
-    (async () => {
+    const loadNames = async () => {
       try {
-        const storedNames = await AsyncStorage.getItem("friendsNames");
-
-        if (storedNames) {
-          setNames(JSON.parse(storedNames));
+        const stored = await AsyncStorage.getItem("friendsNames");
+        if (stored) {
+          const loadedNames: Player[] = JSON.parse(stored);
+          setNames(loadedNames);
+          setFilteredNames(loadedNames);
         }
       } catch (error) {
+        console.error("Error loading names:", error);
       } finally {
         setIsInitialized(true);
       }
-    })();
+    };
+    loadNames();
 
     if (Object.keys(params).length > 0) {
       if (params.error == true) {
@@ -150,7 +164,10 @@ export default React.memo(function Main() {
 
         const oldStr = JSON.stringify(names);
         const newStr = JSON.stringify(updated);
-        if (oldStr !== newStr) setNames(updated);
+        if (oldStr !== newStr) {
+          setNames(updated);
+          setFilteredNames(updated);
+        }
       } catch (err) {}
     };
 
@@ -169,7 +186,7 @@ export default React.memo(function Main() {
     return () => clearTimeout(timer);
   }, []);
 
-  const fadeRef = useRef();
+  const fadeRef = useRef(null);
   const onClose = () => {
     expoNavigation.navigate("authors");
   };
@@ -196,13 +213,17 @@ export default React.memo(function Main() {
             <View style={style.sliderContainer}>
               <Slider
                 setNames={setNames}
-                playersArr={names}
+                playersArr={filteredNames}
                 shouldAnimate={shouldAnimate}
               />
             </View>
           </SlideUp>
           <AddFrBttn openModal={openModal} />
-          <FilterButton names={names} setNames={setNames}></FilterButton>
+          <FilterButton
+            allNames={names}
+            filteredNames={filteredNames}
+            setFilteredNames={setFilteredNames}
+          />
         </View>
       </View>
     </FadeWrapper>

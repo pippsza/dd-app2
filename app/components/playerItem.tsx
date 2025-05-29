@@ -177,10 +177,14 @@ const PlayerItem = React.memo(
       setPlayersObj(playerOnline);
     }, [playerOnline]);
     const handleDelete = async () => {
-      try {
-        await onDelete(player);
-      } catch {
-        // Error deleting player
+      if (isDeleting) return;
+      
+      setIsDeleting(true);
+      if (teeRef.current) {
+        teeRef.current.measure((x, y, width, height, pageX, pageY) => {
+          setExplosionPosition({ x: pageX, y: pageY });
+          setShowExplosion(true);
+        });
       }
     };
 
@@ -195,7 +199,7 @@ const PlayerItem = React.memo(
         await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
         setNames(filtered);
       } catch (error) {
-        // Error deleting player
+        console.error("Error deleting player:", error);
       } finally {
         setIsDeleting(false);
         setShowExplosion(false);

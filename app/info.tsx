@@ -30,7 +30,7 @@ import {
 interface RouteParams {
   item: string;
   onlineData: {
-    status: 'Offline' | 'Online' | 'AFK' | 'Designer' | 'Developer';
+    status: "Offline" | "Online" | "AFK" | "Designer" | "Developer";
     game?: string | null;
     server?: string | null;
     mapName?: string | null;
@@ -66,17 +66,25 @@ interface PlayerData {
   }>;
   general_activity?: {
     total_seconds_played: number;
-    start_of_playtime: string;
+    start_of_playtime?: string;
   };
+}
+
+interface DDNetActivity {
+  hours_played: number;
+}
+
+interface DDNetResponse {
+  activity: DDNetActivity[];
 }
 
 interface SlideOutRef {
   slideOut: () => void;
   slideIn: () => void;
 }
-
-const API_URL = 'http://ddstats.tw/player/json';
-const LOADING_TEXT = 'Loading...';
+const HOURS_URL = "https://ddnet.org/players/?json2=";
+const API_URL = "http://ddstats.tw/player/json";
+const LOADING_TEXT = "Loading...";
 
 export default function Info() {
   const { isDarkMode } = useContext(ThemeContext);
@@ -94,19 +102,52 @@ export default function Info() {
   useEffect(() => {
     const fetchPlayerData = async (playername: string) => {
       try {
-        const response = await axios.get<PlayerData>(
-          `${API_URL}?player=${playername}`
+        const [ddstatsResponse, ddnetResponse] = await Promise.all([
+          axios.get<PlayerData>(`${API_URL}?player=${playername}`),
+          axios.get<DDNetResponse>(`${HOURS_URL}${playername}`).catch((err) => {
+            console.warn("Failed to fetch DDNet data:", err);
+            return { data: { activity: [] } };
+          }),
+        ]);
+
+        const ddstatsData = ddstatsResponse.data;
+
+        const ddnetHours = ddnetResponse.data.activity.reduce(
+          (total, activity) => total + activity.hours_played,
+          0
         );
-        setPlayer(response.data);
+        const ddnetSeconds = ddnetHours * 3600;
+
+        const ddstatsSeconds =
+          ddstatsData.general_activity?.total_seconds_played || 0;
+
+        const finalSeconds = Math.max(ddnetSeconds, ddstatsSeconds);
+
+        const updatedGeneralActivity = ddstatsData.general_activity
+          ? {
+              ...ddstatsData.general_activity,
+              total_seconds_played: finalSeconds,
+            }
+          : {
+              total_seconds_played: finalSeconds,
+            };
+
+        setPlayer({
+          ...ddstatsData,
+          general_activity: updatedGeneralActivity,
+        });
+
         setError(null);
       } catch (err) {
-        console.error('Error fetching player data:', err);
-        setError(err instanceof Error ? err : new Error('Failed to fetch player data'));
+        console.error("Error fetching player data:", err);
+        setError(
+          err instanceof Error ? err : new Error("Failed to fetch player data")
+        );
         Toast.show({
           type: "error",
           text1: t("toasts.unexpectedError"),
         });
-        router.replace('/');
+        router.replace("/");
       }
     };
 
@@ -120,7 +161,7 @@ export default function Info() {
   };
 
   const handleClose = () => {
-    router.replace('/');
+    router.replace("/");
   };
 
   const renderLoadingState = () => (
@@ -134,11 +175,7 @@ export default function Info() {
   );
 
   const renderContent = () => (
-    <SlideOutUp 
-      ref={slideRef} 
-      onSlideOutComplete={handleClose}
-      duration={300}
-    >
+    <SlideOutUp ref={slideRef} onSlideOutComplete={handleClose} duration={300}>
       <View style={styles.mainContainer}>
         <TouchableOpacity onPress={handleClosePress} style={styles.closeButton}>
           {isDarkMode ? (
@@ -151,7 +188,7 @@ export default function Info() {
         {player && (
           <>
             <TeeContainer online={online} data={player} />
-            
+
             <FadeIn>
               <TotalPlayed data={player} />
             </FadeIn>

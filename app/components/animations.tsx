@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, ReactNode } from "react";
-import { Animated, Dimensions, Easing, StyleProp, ViewStyle } from "react-native";
+import { Animated, Dimensions, Easing, StyleProp, ViewStyle, View } from "react-native";
 
 const { width, height } = Dimensions.get("window");
 
@@ -13,6 +13,24 @@ interface AnimationProps {
   children: ReactNode;
   duration?: number;
   style?: StyleProp<ViewStyle>;
+}
+
+interface Particle {
+  x: number;
+  y: number;
+  size: number;
+  color: string;
+  rotation: number;
+  opacity: Animated.Value;
+  translateX: Animated.Value;
+  translateY: Animated.Value;
+  rotate: Animated.Value;
+}
+
+interface ExplosionAnimationProps {
+  onComplete?: () => void;
+  color?: string;
+  size?: number;
 }
 
 export function SlideUp({ children, duration = ANIMATION_DURATION, style }: AnimationProps) {
@@ -91,10 +109,26 @@ export function FadeIn({ children, duration = ANIMATION_DURATION, style }: Anima
   );
 }
 
+// Добавляем новый компонент для отслеживания первого рендера
+function useFirstRender() {
+  const isFirst = useRef(true);
+  useEffect(() => {
+    isFirst.current = false;
+  }, []);
+  return isFirst.current;
+}
+
 // Новый компонент RandomSlide
 export function RandomSlide({ children, duration = ANIMATION_DURATION, style }: AnimationProps) {
-  const random = Math.random();
+  const isFirstRender = useFirstRender();
+  const random = useRef(Math.random()).current; // Сохраняем случайное значение между рендерами
   
+  // Если это не первый рендер, просто возвращаем детей без анимации
+  if (!isFirstRender) {
+    return <View style={style}>{children}</View>;
+  }
+  
+  // При первом рендере используем сохраненное случайное значение
   return random < RANDOM_THRESHOLD ? (
     <SlideLeftToRight duration={duration} style={style}>
       {children}
@@ -103,5 +137,115 @@ export function RandomSlide({ children, duration = ANIMATION_DURATION, style }: 
     <SlideRightToLeft duration={duration} style={style}>
       {children}
     </SlideRightToLeft>
+  );
+}
+
+export function ExplosionAnimation({ 
+  onComplete, 
+  color = "#ffffff", 
+  size = 50 
+}: ExplosionAnimationProps) {
+  const particles = useRef<Particle[]>([]);
+  const animations = useRef<Animated.CompositeAnimation[]>([]);
+
+  useEffect(() => {
+    // Создаем частицы
+    const particleCount = 12;
+    const newParticles: Particle[] = [];
+
+    for (let i = 0; i < particleCount; i++) {
+      const angle = (i / particleCount) * Math.PI * 2;
+      const particleSize = Math.random() * 4 + 2; // Размер частицы от 2 до 6
+
+      newParticles.push({
+        x: size / 2,
+        y: size / 2,
+        size: particleSize,
+        color,
+        rotation: angle,
+        opacity: new Animated.Value(1),
+        translateX: new Animated.Value(0),
+        translateY: new Animated.Value(0),
+        rotate: new Animated.Value(0),
+      });
+    }
+
+    particles.current = newParticles;
+
+    // Запускаем анимации для каждой частицы
+    animations.current = newParticles.map((particle) => {
+      const distance = Math.random() * 100 + 50; // Расстояние разлета от 50 до 150
+      const angle = particle.rotation;
+      const duration = Math.random() * 500 + 500; // Длительность от 500 до 1000 мс
+
+      const translateX = Animated.timing(particle.translateX, {
+        toValue: Math.cos(angle) * distance,
+        duration,
+        useNativeDriver: true,
+        easing: Easing.out(Easing.cubic),
+      });
+
+      const translateY = Animated.timing(particle.translateY, {
+        toValue: Math.sin(angle) * distance,
+        duration,
+        useNativeDriver: true,
+        easing: Easing.out(Easing.cubic),
+      });
+
+      const rotate = Animated.timing(particle.rotate, {
+        toValue: Math.random() * 360,
+        duration,
+        useNativeDriver: true,
+        easing: Easing.out(Easing.cubic),
+      });
+
+      const opacity = Animated.timing(particle.opacity, {
+        toValue: 0,
+        duration: duration * 0.8,
+        useNativeDriver: true,
+        easing: Easing.out(Easing.cubic),
+      });
+
+      return Animated.parallel([translateX, translateY, rotate, opacity]);
+    });
+
+    // Запускаем все анимации
+    Animated.parallel(animations.current).start(() => {
+      onComplete?.();
+    });
+
+    return () => {
+      // Очищаем анимации при размонтировании
+      animations.current.forEach(animation => animation.stop());
+    };
+  }, []);
+
+  return (
+    <View style={{ position: 'absolute', width: size, height: size }}>
+      {particles.current.map((particle, index) => (
+        <Animated.View
+          key={index}
+          style={{
+            position: 'absolute',
+            left: particle.x - particle.size / 2,
+            top: particle.y - particle.size / 2,
+            width: particle.size,
+            height: particle.size,
+            backgroundColor: particle.color,
+            borderRadius: particle.size / 2,
+            opacity: particle.opacity,
+            transform: [
+              { translateX: particle.translateX },
+              { translateY: particle.translateY },
+              { rotate: particle.rotate.interpolate({
+                  inputRange: [0, 360],
+                  outputRange: ['0deg', '360deg']
+                })
+              },
+            ],
+          }}
+        />
+      ))}
+    </View>
   );
 }

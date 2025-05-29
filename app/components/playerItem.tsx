@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import {
   TouchableOpacity,
   StyleSheet,
   Text,
   View,
   ActivityIndicator,
+  Animated,
 } from "react-native";
 import TrashDark from "../../assets/svg/trash-dark.svg";
 import {
@@ -19,7 +20,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import TrashLight from "../../assets/svg/trash-light.svg";
 import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
-import { RandomSlide } from "./animations";
+import { RandomSlide, ExplosionAnimation } from "./animations";
 
 interface PlayerData {
   skin_name: string;
@@ -55,6 +56,10 @@ const PlayerItem = React.memo(
     const [playerData, setPlayerData] = useState<PlayerData | null>(null);
     const [loading, setLoading] = useState(true);
     const [playersObj, setPlayersObj] = useState<PlayerOnlineData | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [showExplosion, setShowExplosion] = useState(false);
+    const [explosionPosition, setExplosionPosition] = useState({ x: 0, y: 0 });
+    const teeRef = useRef<View>(null);
     const { t } = useTranslation();
     const navigation = useNavigation();
     const [key] = useState(() => `${player}_${Date.now()}`);
@@ -112,6 +117,18 @@ const PlayerItem = React.memo(
         alignItems: "center",
         marginRight: rw(2),
       },
+      disabledButton: {
+        opacity: 0.5,
+      },
+      explosionContainer: {
+        position: 'absolute',
+        left: explosionPosition.x,
+        top: explosionPosition.y,
+        zIndex: 1000,
+      },
+      deleting: {
+        opacity: 0.5,
+      },
     });
     useEffect(() => {
       let isMounted = true;
@@ -144,6 +161,17 @@ const PlayerItem = React.memo(
       setPlayersObj(playerOnline);
     }, [playerOnline]);
     const handleDelete = async () => {
+      if (teeRef.current) {
+        // Получаем позицию тишки для анимации
+        teeRef.current.measure((x, y, width, height, pageX, pageY) => {
+          setExplosionPosition({ x: pageX, y: pageY });
+          setShowExplosion(true);
+          setIsDeleting(true);
+        });
+      }
+    };
+
+    const handleExplosionComplete = async () => {
       try {
         const stored = await AsyncStorage.getItem(STORAGE_KEY);
         if (!stored) return;
@@ -155,6 +183,9 @@ const PlayerItem = React.memo(
         setNames(filtered);
       } catch (error) {
         console.error("Error deleting player:", error);
+      } finally {
+        setIsDeleting(false);
+        setShowExplosion(false);
       }
     };
 
@@ -179,7 +210,7 @@ const PlayerItem = React.memo(
     };
 
     const renderTee = () => (
-      <View style={styles.teeContainer}>
+      <View style={styles.teeContainer} ref={teeRef}>
         {loading ? (
           <ActivityIndicator size="small" color={theme.text} />
         ) : (
@@ -193,11 +224,11 @@ const PlayerItem = React.memo(
     );
 
     const renderDeleteButton = () => (
-      <TouchableOpacity onPress={handleDelete}>
+      <TouchableOpacity onPress={handleDelete} disabled={isDeleting}>
         {isDarkMode ? (
-          <TrashDark style={styles.svg} />
+          <TrashDark style={[styles.svg, isDeleting && styles.disabledButton]} />
         ) : (
-          <TrashLight style={styles.svg} />
+          <TrashLight style={[styles.svg, isDeleting && styles.disabledButton]} />
         )}
       </TouchableOpacity>
     );
@@ -205,8 +236,8 @@ const PlayerItem = React.memo(
     return (
       <View style={styles.cardBox} key={key}>
         <RandomSlide duration={ANIMATION_DURATION}>
-          <TouchableOpacity onPress={handleNavigation}>
-            <View style={styles.cardInside}>
+          <TouchableOpacity onPress={handleNavigation} disabled={isDeleting}>
+            <View style={[styles.cardInside, isDeleting && styles.deleting]}>
               {renderTee()}
               <View style={styles.textContainer}>
                 {renderStatus()}
@@ -216,6 +247,15 @@ const PlayerItem = React.memo(
             </View>
           </TouchableOpacity>
         </RandomSlide>
+        {showExplosion && (
+          <View style={styles.explosionContainer}>
+            <ExplosionAnimation
+              onComplete={handleExplosionComplete}
+              color={isDarkMode ? "#ffffff" : "#000000"}
+              size={rw(10)}
+            />
+          </View>
+        )}
       </View>
     );
   },

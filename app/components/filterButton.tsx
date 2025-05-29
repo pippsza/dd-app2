@@ -62,7 +62,7 @@ export default function FilterButton({
   const style = StyleSheet.create({
     container: {
       flex: 1,
-      width: "100%",
+      width: rw(25),
       height: "100%",
       backgroundColor: isDarkMode ? "white" : "#272727",
       justifyContent: "center",

@@ -69,7 +69,7 @@ export default function GameModePie({ data }: any) {
           {...({
             data: pieData,
             width: rw(97),
-            height: rw(40),
+            height: rw(36),
             chartConfig: {
               color: () => text,
             },

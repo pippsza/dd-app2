@@ -95,12 +95,14 @@ export default function Info() {
 
   const [player, setPlayer] = useState<PlayerData | null>(null);
   const [error, setError] = useState<Error | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const routeParams = route.params as RouteParams;
   const { item: playerName, onlineData: online } = routeParams;
 
   useEffect(() => {
     const fetchPlayerData = async (playername: string) => {
+      setIsLoading(true);
       try {
         const [ddstatsResponse, ddnetResponse] = await Promise.all([
           axios.get<PlayerData>(`${API_URL}?player=${playername}`),
@@ -148,6 +150,8 @@ export default function Info() {
           text1: t("toasts.unexpectedError"),
         });
         router.replace("/");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -205,6 +209,10 @@ export default function Info() {
       </View>
     </SlideOutUp>
   );
+
+  if (isLoading) {
+    return renderLoadingState();
+  }
 
   if (error) {
     return renderLoadingState();

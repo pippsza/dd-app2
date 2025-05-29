@@ -29,9 +29,9 @@ interface SliderProps {
 
 const ITEM_HEIGHT = rh(11.83);
 const MIN_PLAYERS_FOR_INFINITE_SCROLL = 7;
-const INITIAL_RENDER_COUNT = 10;
-const MAX_RENDER_PER_BATCH = 5;
-const WINDOW_SIZE = 21;
+const INITIAL_RENDER_COUNT = 5;
+const MAX_RENDER_PER_BATCH = 3;
+const WINDOW_SIZE = 15;
 
 export default React.memo(function Slider({
   playersArr,
@@ -42,7 +42,7 @@ export default React.memo(function Slider({
   // Memoized data
   const data = useMemo(() => {
     if (playersArr.length > MIN_PLAYERS_FOR_INFINITE_SCROLL) {
-      return [...playersArr, ...playersArr, ...playersArr];
+      return [...playersArr, ...playersArr];
     }
     return playersArr;
   }, [playersArr]);
@@ -136,6 +136,8 @@ export default React.memo(function Slider({
         windowSize={WINDOW_SIZE}
         extraData={playersMap}
         contentContainerStyle={styles.listContainer}
+        removeClippedSubviews={true}
+        updateCellsBatchingPeriod={50}
       />
     </View>
   );

@@ -27,7 +27,7 @@ interface PlayerData {
 }
 
 interface PlayerOnlineData {
-  status: 'Offline' | 'Online' | 'AFK';
+  status: "Offline" | "Online" | "AFK";
   game: string | null;
   server: string | null;
   mapName: string | null;
@@ -45,166 +45,188 @@ interface PlayerItemProps {
 }
 
 const ITEM_HEIGHT = rh(11.83);
-const API_URL = 'http://ddstats.tw/profile/json';
+const API_URL = "http://ddstats.tw/profile/json";
 const ANIMATION_DURATION = 500;
-const STORAGE_KEY = 'friendsNames';
+const STORAGE_KEY = "friendsNames";
 
-const PlayerItem = React.memo(({ player, setNames, playerOnline }: PlayerItemProps) => {
-  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
-  const [playerData, setPlayerData] = useState<PlayerData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [playersObj, setPlayersObj] = useState<PlayerOnlineData | null>(null);
+const PlayerItem = React.memo(
+  ({ player, setNames, playerOnline }: PlayerItemProps) => {
+    const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+    const [playerData, setPlayerData] = useState<PlayerData | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [playersObj, setPlayersObj] = useState<PlayerOnlineData | null>(null);
+    const { t } = useTranslation();
+    const navigation = useNavigation();
+    const [key] = useState(() => `${player}_${Date.now()}`);
 
-  const navigation = useNavigation();
-  const { t } = useTranslation();
-  const theme = {
-    background: isDarkMode ? "rgba(255, 255, 255, 0.4)" : "rgba(39,39,39,0.4)",
-    text: isDarkMode ? "black" : "white",
-    border: isDarkMode ? "black" : "white",
-  };
-  const styles = StyleSheet.create({
-    listContainer: {
-      alignItems: "center",
-    },
-    cardBox: {
-      height: ITEM_HEIGHT,
-      width: rw(90),
-      paddingVertical: 4,
-      marginBottom: 0,
-    },
-    cardText: {
-      fontSize: rf(2),
-      color: theme.text,
-      fontWeight: "600",
-    },
-    cardInside: {
-      borderColor: theme.border,
-      borderWidth: 2,
-      flexDirection: "row",
-      padding: rw(8),
-      alignItems: "center",
-      borderRadius: rw(4),
-      backgroundColor: theme.background,
-      height: "100%",
-      width: rw(89),
-      justifyContent: "space-between",
-    },
-    svg: {
-      width: 30,
-      height: 30,
-    },
-    textContainer: {
-      flex: 1,
-      gap: rh(1),
-      textAlign: "center",
-    },
-    Offline: { fontSize: rf(2), color: "red" },
-    Online: { fontSize: rf(2), color: "green" },
-    AFK: { fontSize: rf(2), color: "blue" },
-  });
-  useEffect(() => {
-    let isMounted = true;
+    const theme = {
+      background: isDarkMode
+        ? "rgba(255, 255, 255, 0.4)"
+        : "rgba(39,39,39,0.4)",
+      text: isDarkMode ? "black" : "white",
+      border: isDarkMode ? "black" : "white",
+    };
+    const styles = StyleSheet.create({
+      listContainer: {
+        alignItems: "center",
+      },
+      cardBox: {
+        height: ITEM_HEIGHT,
+        width: rw(90),
+        paddingVertical: 4,
+        marginBottom: 0,
+      },
+      cardText: {
+        fontSize: rf(2),
+        color: theme.text,
+        fontWeight: "600",
+      },
+      cardInside: {
+        borderColor: theme.border,
+        borderWidth: 2,
+        flexDirection: "row",
+        padding: rw(8),
+        alignItems: "center",
+        borderRadius: rw(4),
+        backgroundColor: theme.background,
+        height: "100%",
+        width: rw(89),
+        justifyContent: "space-between",
+      },
+      svg: {
+        width: 30,
+        height: 30,
+      },
+      textContainer: {
+        flex: 1,
+        gap: rh(1),
+        textAlign: "center",
+      },
+      Offline: { fontSize: rf(2), color: "red" },
+      Online: { fontSize: rf(2), color: "green" },
+      AFK: { fontSize: rf(2), color: "blue" },
+      teeContainer: {
+        width: rw(15),
+        height: rw(15),
+        justifyContent: "center",
+        alignItems: "center",
+        marginRight: rw(2),
+      },
+    });
+    useEffect(() => {
+      let isMounted = true;
 
-    const fetchPlayerData = async (playername: string) => {
-      try {
-        setLoading(true);
-        const response = await axios.get<PlayerData>(
-          `${API_URL}?player=${playername}`
-        );
+      const fetchPlayerData = async (playername: string) => {
+        try {
+          setLoading(true);
+          const response = await axios.get<PlayerData>(
+            `${API_URL}?player=${playername}`
+          );
 
-        if (isMounted) {
-          setPlayerData(response.data);
-          setLoading(false);
+          if (isMounted) {
+            setPlayerData(response.data);
+            setLoading(false);
+          }
+        } catch (err) {
+          console.error("Error fetching player data:", err);
+          if (isMounted) setLoading(false);
         }
-      } catch (err) {
-        console.error('Error fetching player data:', err);
-        if (isMounted) setLoading(false);
+      };
+
+      fetchPlayerData(player);
+
+      return () => {
+        isMounted = false;
+      };
+    }, [player]);
+
+    useEffect(() => {
+      setPlayersObj(playerOnline);
+    }, [playerOnline]);
+    const handleDelete = async () => {
+      try {
+        const stored = await AsyncStorage.getItem(STORAGE_KEY);
+        if (!stored) return;
+
+        const names: Player[] = JSON.parse(stored);
+        const filtered = names.filter((name) => name.name !== player);
+
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+        setNames(filtered);
+      } catch (error) {
+        console.error("Error deleting player:", error);
       }
     };
 
-    fetchPlayerData(player);
-
-    return () => {
-      isMounted = false;
+    const handleNavigation = () => {
+      // @ts-ignore - expo-router types are not properly set up
+      navigation.navigate("info", {
+        item: player,
+        onlineData: playerOnline,
+      });
     };
-  }, [player]);
 
-  useEffect(() => {
-    setPlayersObj(playerOnline);
-  }, [playerOnline]);
-  const handleDelete = async () => {
-    try {
-      const stored = await AsyncStorage.getItem(STORAGE_KEY);
-      if (!stored) return;
+    const renderStatus = () => {
+      if (!playersObj?.status) return null;
 
-      const names: Player[] = JSON.parse(stored);
-      const filtered = names.filter(name => name.name !== player);
+      const statusText = {
+        Offline: t("playerItem.offline"),
+        Online: t("playerItem.online"),
+        AFK: t("playerItem.AFK"),
+      }[playersObj.status];
 
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
-      setNames(filtered);
-    } catch (error) {
-      console.error("Error deleting player:", error);
-    }
-  };
+      return <Text style={styles[playersObj.status]}>{statusText}</Text>;
+    };
 
-  const handleNavigation = () => {
-    // @ts-ignore - expo-router types are not properly set up
-    navigation.navigate("info", {
-      item: player,
-      onlineData: playerOnline,
-    });
-  };
+    const renderTee = () => (
+      <View style={styles.teeContainer}>
+        {loading ? (
+          <ActivityIndicator size="small" color={theme.text} />
+        ) : (
+          <Tee
+            width={rw(5)}
+            source={playerData?.skin_name || player}
+            key={key}
+          />
+        )}
+      </View>
+    );
 
-  const renderStatus = () => {
-    if (!playersObj?.status) return null;
-
-    const statusText = {
-      Offline: t("playerItem.offline"),
-      Online: t("playerItem.online"),
-      AFK: t("playerItem.AFK"),
-    }[playersObj.status];
+    const renderDeleteButton = () => (
+      <TouchableOpacity onPress={handleDelete}>
+        {isDarkMode ? (
+          <TrashDark style={styles.svg} />
+        ) : (
+          <TrashLight style={styles.svg} />
+        )}
+      </TouchableOpacity>
+    );
 
     return (
-      <Text style={styles[playersObj.status]}>
-        {statusText}
-      </Text>
-    );
-  };
-
-  const renderTee = () => (
-    playerData ? (
-      <Tee source={playerData.skin_name} width={rw(4)} />
-    ) : (
-      <ActivityIndicator size="small" />
-    )
-  );
-
-  const renderDeleteButton = () => (
-    <TouchableOpacity onPress={handleDelete}>
-      {isDarkMode ? (
-        <TrashDark style={styles.svg} />
-      ) : (
-        <TrashLight style={styles.svg} />
-      )}
-    </TouchableOpacity>
-  );
-
-  return (
-    <View style={styles.cardBox}>
-      <RandomSlide duration={ANIMATION_DURATION}>
-        <TouchableOpacity onPress={handleNavigation}>
-          <View style={styles.cardInside}>
-            {renderTee()}
-            <View style={styles.textContainer}>
-              {renderStatus()}
-              <Text style={styles.cardText}>{player}</Text>
+      <View style={styles.cardBox} key={key}>
+        <RandomSlide duration={ANIMATION_DURATION}>
+          <TouchableOpacity onPress={handleNavigation}>
+            <View style={styles.cardInside}>
+              {renderTee()}
+              <View style={styles.textContainer}>
+                {renderStatus()}
+                <Text style={styles.cardText}>{player}</Text>
+              </View>
+              {renderDeleteButton()}
             </View>
-            {renderDeleteButton()}
-          </View>
-        </TouchableOpacity>
-      </RandomSlide>
-    </View>
-  );
-});
+          </TouchableOpacity>
+        </RandomSlide>
+      </View>
+    );
+  },
+  (prevProps, nextProps) => {
+    return (
+      prevProps.player === nextProps.player &&
+      prevProps.playerOnline?.status === nextProps.playerOnline?.status &&
+      prevProps.playerOnline?.server === nextProps.playerOnline?.server &&
+      prevProps.playerOnline?.mapName === nextProps.playerOnline?.mapName
+    );
+  }
+);
 
 export default PlayerItem;

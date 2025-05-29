@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Image as RNImage } from "react-native";
+import { View, StyleSheet, Image as RNImage, ActivityIndicator } from "react-native";
 import Canvas, { Image as CanvasImage } from "react-native-canvas";
 import { responsiveWidth as rw } from "react-native-responsive-dimensions";
 import FastImage from "react-native-fast-image";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface TeeProps {
   source: string;
@@ -36,6 +37,7 @@ const COLORS = {
 const CANVAS_BASE_SIZE = 100;
 const DEFAULT_URI = require("../../assets/images/default.png");
 const SKIN_BASE_URL = "https://skins.ddnet.org/skin/community/";
+const CACHE_KEY_PREFIX = "@tee_cache:";
 
 const DRAW_COMMANDS = {
   main: [
@@ -61,16 +63,88 @@ const imageCache = new Map<string, CanvasImage>();
 
 const Tee = ({ source, width }: TeeProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [cachedImage, setCachedImage] = useState<string | null>(null);
+  const [useDefault, setUseDefault] = useState(false);
+  const [renderSource, setRenderSource] = useState<'LOCALSTORAGE' | 'SERVER' | 'DEFAULT'>('SERVER');
+  const [key] = useState(() => `${source}_${Date.now()}`);
 
   const rawSrc = `${SKIN_BASE_URL}${source}.png`;
   const src = encodeURI(rawSrc);
+  const cacheKey = `${CACHE_KEY_PREFIX}${source}`;
 
   useEffect(() => {
+    const loadImage = async () => {
+      console.log(`[Tee] Starting to load skin: ${source}`);
+      try {
+        // Пытаемся получить изображение из кэша
+        const cached = await AsyncStorage.getItem(cacheKey);
+        if (cached) {
+          console.log(`[Tee] Skin ${source} was loaded from LOCALSTORAGE`);
+          setCachedImage(cached);
+          setRenderSource('LOCALSTORAGE');
+          setIsLoaded(true);
+          return;
+        }
+
+        // Проверяем существование скина на сервере
+        const checkResponse = await fetch(src, { method: 'HEAD' });
+        if (!checkResponse.ok) {
+          console.log(`[Tee] Skin ${source} not found on server, using default`);
+          setUseDefault(true);
+          setRenderSource('DEFAULT');
+          setIsLoaded(true);
+          return;
+        }
+
+        console.log(`[Tee] Skin ${source} found on server, loading...`);
+        const response = await fetch(src);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const blob = await response.blob();
+        const reader = new FileReader();
+        
+        reader.onload = async () => {
+          try {
+            const base64 = reader.result as string;
+            // Сохраняем в кэш только если это не дефолтный тишка
+            if (source !== 'default') {
+              await AsyncStorage.setItem(cacheKey, base64);
+            }
+            setCachedImage(base64);
+            setRenderSource('SERVER');
+            console.log(`[Tee] Skin ${source} was loaded from SERVER and cached`);
+            setIsLoaded(true);
+          } catch (error) {
+            console.error(`[Tee] Error saving skin ${source} to cache:`, error);
+            setUseDefault(true);
+            setRenderSource('DEFAULT');
+            setIsLoaded(true);
+          }
+        };
+
+        reader.onerror = () => {
+          console.error(`[Tee] Error reading blob for skin ${source}`);
+          setUseDefault(true);
+          setRenderSource('DEFAULT');
+          setIsLoaded(true);
+        };
+
+        reader.readAsDataURL(blob);
+      } catch (error) {
+        console.error(`[Tee] Error loading skin ${source}:`, error);
+        setUseDefault(true);
+        setRenderSource('DEFAULT');
+        setIsLoaded(true);
+      }
+    };
+
     setIsLoaded(false);
-    RNImage.prefetch(src)
-      .then(() => setIsLoaded(true))
-      .catch(() => setIsLoaded(false));
-  }, [src]);
+    setUseDefault(false);
+    setRenderSource('SERVER');
+    loadImage();
+  }, [src, cacheKey, source]);
 
   const setupCanvas = (canvas: Canvas | null): CanvasSetup | null => {
     if (!canvas) return null;
@@ -106,22 +180,44 @@ const Tee = ({ source, width }: TeeProps) => {
     return new Promise((resolve, reject) => {
       const img = new CanvasImage(canvas);
       
-      img.addEventListener("load", () => {
+      const handleLoad = () => {
         if (img.width === 0 || img.height === 0) {
+          console.error(`[Tee] Skin ${source} has zero size`);
           reject(new Error("Image has zero size"));
         } else {
+          console.log(`[Tee] Skin ${source} was rendered by: ${renderSource}`);
           resolve(img);
         }
-      });
+      };
 
-      img.addEventListener("error", () => {
+      const handleError = () => {
+        console.error(`[Tee] Failed to load skin ${source} from ${renderSource}`);
+        if (useDefault) {
+          reject(new Error("Both main and default images failed"));
+          return;
+        }
+        
         const defImg = new CanvasImage(canvas);
+        defImg.addEventListener("load", () => {
+          console.log(`[Tee] Using default image for skin ${source}`);
+          setUseDefault(true);
+          setRenderSource('DEFAULT');
+          resolve(defImg);
+        });
+        defImg.addEventListener("error", () => {
+          console.error(`[Tee] Default image failed for skin ${source}`);
+          reject(new Error("Default image failed too"));
+        });
         defImg.src = DEFAULT_URI;
-        defImg.addEventListener("load", () => resolve(defImg));
-        defImg.addEventListener("error", () => reject(new Error("Default image failed too")));
-      });
+      };
 
-      img.src = src;
+      img.addEventListener("load", handleLoad);
+      img.addEventListener("error", handleError);
+
+      // Используем кэшированное изображение или дефолтное
+      const imageSrc = useDefault ? DEFAULT_URI : (cachedImage || src);
+      console.log(`[Tee] Setting image source for ${source} from ${renderSource}`);
+      img.src = imageSrc;
     });
   };
 
@@ -173,7 +269,10 @@ const Tee = ({ source, width }: TeeProps) => {
       );
       ctx.restore();
     } catch (error) {
-      console.error("Full render failed:", error);
+      console.error(`[Tee] Full render failed for skin ${source}:`, error);
+      setUseDefault(true);
+      setRenderSource('DEFAULT');
+      setIsLoaded(true);
     }
   };
 
@@ -185,13 +284,31 @@ const Tee = ({ source, width }: TeeProps) => {
     />
   );
 
-  const renderTee = () => (
-    <View style={{ width: rw(width), height: rw(width) }}>
-      <Canvas style={styles.tee} ref={handleFullRenderCanvas} />
+  const renderTee = () => {
+    console.log(`[Tee] Rendering skin ${source} from ${renderSource} with key ${key}`);
+    return (
+      <View style={{ width: rw(width), height: rw(width) }} key={key}>
+        {useDefault ? (
+          <RNImage
+            source={DEFAULT_URI}
+            style={{ 
+              width: rw(width), 
+              height: rw(width),
+              resizeMode: "contain"
+            }}
+          />
+        ) : (
+          <Canvas style={styles.tee} ref={handleFullRenderCanvas} />
+        )}
+      </View>
+    );
+  };
+
+  return isLoaded ? renderTee() : (
+    <View style={{ width: rw(width), height: rw(width), justifyContent: 'center', alignItems: 'center' }}>
+      <ActivityIndicator size="small" />
     </View>
   );
-
-  return isLoaded ? renderTee() : renderLoadingState();
 };
 
 const styles = StyleSheet.create({

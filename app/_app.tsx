@@ -1,3 +1,4 @@
+import React from 'react';
 import { ImageBackground, StatusBar, View } from "react-native";
 import { Slot } from "expo-router";
 import { enableLayoutAnimations, FadeInRight } from "react-native-reanimated";
@@ -7,6 +8,7 @@ import { useContext, useEffect, useState } from "react";
 import NetInfo from "@react-native-community/netinfo";
 import { StyleSheet } from "react-native";
 import { ThemeContext } from "./components/themeSwitcher";
+import OnlinePlayersMonitor from "./components/OnlinePlayersMonitor";
 
 import { BlinkingBackground } from "./components/blinkingBackground";
 
@@ -55,7 +57,14 @@ export default function App() {
             <Toast></Toast>
           </View>
 
-          {isConnected ? <Slot /> : <NotFoundPage />}
+          {isConnected ? (
+            <>
+              <Slot />
+              <OnlinePlayersMonitor />
+            </>
+          ) : (
+            <NotFoundPage />
+          )}
         </BlinkingBackground>
         {/* </ImageBackground> */}
       </View>

@@ -140,7 +140,7 @@ export default React.memo(function Main() {
 
     try {
       await axios.get(
-        `http://ddstats.tw/profile/json?player=${encodeURIComponent(trimmed)}`
+        `https://ddstats.tw/profile/json?player=${encodeURIComponent(trimmed)}`
       );
 
       const newPlayer: Player = {

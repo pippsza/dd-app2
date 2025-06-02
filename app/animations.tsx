@@ -23,7 +23,7 @@ interface FadeWrapperRef {
   fadeIn: () => void;
 }
 
-interface SlideOutRef {
+export interface SlideOutRef {
   slideOut: () => void;
   slideIn: () => void;
 }

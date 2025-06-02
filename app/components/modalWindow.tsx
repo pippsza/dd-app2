@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef } from "react";
 import {
   Pressable,
   Text,
@@ -15,7 +15,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { ThemeContext } from "./themeSwitcher";
 import { FadeIn, SlideUp } from "./animations";
-import { SlideOutUp } from "../animations";
+import { SlideOutUp, SlideOutRef } from "../animations";
 
 interface ModalWindowProps {
   closeModal: () => void;
@@ -32,6 +32,7 @@ export default function ModalWindow({
 }: ModalWindowProps) {
   const { isDarkMode } = useContext(ThemeContext);
   const { t } = useTranslation();
+  const modalAnimationRef = useRef<SlideOutRef>(null);
 
   const theme = {
     background: isDarkMode ? "rgba(255,255,255,1)" : "rgba(39,39,39,1)",
@@ -98,10 +99,21 @@ export default function ModalWindow({
 
   const handleModalPress = (e: any) => e.stopPropagation();
 
+  const handleCloseAnimation = () => {
+    if (modalAnimationRef.current) {
+      modalAnimationRef.current.slideOut();
+    }
+  };
+
+  const handleAddNameAndClose = () => {
+    addName();
+    handleCloseAnimation();
+  };
+
   return (
-    <Pressable onPress={closeModal} style={styles.modal}>
+    <Pressable onPress={handleCloseAnimation} style={styles.modal}>
       <SlideUp>
-        <SlideOutUp>
+        <SlideOutUp ref={modalAnimationRef} onSlideOutComplete={closeModal}>
           <View style={styles.fakeContainer}>
             <Pressable onPress={handleModalPress} style={styles.modalWin}>
               <Text style={styles.text}>{t("modalWindow.enterName")}</Text>
@@ -112,7 +124,7 @@ export default function ModalWindow({
                 placeholder="nameless tee"
                 placeholderTextColor={theme.text}
               />
-              <TouchableOpacity onPress={addName} style={styles.button}>
+              <TouchableOpacity onPress={handleAddNameAndClose} style={styles.button}>
                 <Text style={styles.text}>{t("modalWindow.add")}</Text>
               </TouchableOpacity>
             </Pressable>

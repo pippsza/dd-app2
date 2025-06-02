@@ -15,6 +15,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { ThemeContext } from "./themeSwitcher";
 import { FadeIn, SlideUp } from "./animations";
+import { SlideOutUp } from "../animations";
 
 interface ModalWindowProps {
   closeModal: () => void;
@@ -87,6 +88,12 @@ export default function ModalWindow({
       width: rw(60),
       color: theme.text,
     },
+    fakeContainer: {
+      justifyContent: "center",
+      alignItems: "center",
+      width: rw(100),
+      height: rh(100),
+    },
   });
 
   const handleModalPress = (e: any) => e.stopPropagation();
@@ -94,19 +101,23 @@ export default function ModalWindow({
   return (
     <Pressable onPress={closeModal} style={styles.modal}>
       <SlideUp>
-        <Pressable onPress={handleModalPress} style={styles.modalWin}>
-          <Text style={styles.text}>{t("modalWindow.enterName")}</Text>
-          <TextInput
-            value={inputValue}
-            onChangeText={setInputValue}
-            style={styles.input}
-            placeholder="nameless tee"
-            placeholderTextColor={theme.text}
-          />
-          <TouchableOpacity onPress={addName} style={styles.button}>
-            <Text style={styles.text}>{t("modalWindow.add")}</Text>
-          </TouchableOpacity>
-        </Pressable>
+        <SlideOutUp>
+          <View style={styles.fakeContainer}>
+            <Pressable onPress={handleModalPress} style={styles.modalWin}>
+              <Text style={styles.text}>{t("modalWindow.enterName")}</Text>
+              <TextInput
+                value={inputValue}
+                onChangeText={setInputValue}
+                style={styles.input}
+                placeholder="nameless tee"
+                placeholderTextColor={theme.text}
+              />
+              <TouchableOpacity onPress={addName} style={styles.button}>
+                <Text style={styles.text}>{t("modalWindow.add")}</Text>
+              </TouchableOpacity>
+            </Pressable>
+          </View>
+        </SlideOutUp>
       </SlideUp>
     </Pressable>
   );

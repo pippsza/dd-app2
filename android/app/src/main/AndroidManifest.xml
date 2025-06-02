@@ -7,6 +7,9 @@
   <uses-permission android:name="android.permission.VIBRATE"/>
   <uses-permission android:name="android.permission.WAKE_LOCK"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
+  <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
   <queries>
     <intent>
       <action android:name="android.intent.action.VIEW"/>
@@ -31,5 +34,15 @@
         <data android:scheme="com.pippsza.ddonline"/>
       </intent-filter>
     </activity>
+    <service
+      android:name=".NotificationService"
+      android:enabled="true"
+      android:exported="false"
+      android:foregroundServiceType="specialUse" />
+    <receiver android:name=".ServiceRestartReceiver" android:enabled="true" android:exported="false">
+      <intent-filter>
+        <action android:name="com.ddapp.RestartService" />
+      </intent-filter>
+    </receiver>
   </application>
 </manifest>

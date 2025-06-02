@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { ImageBackground, StatusBar, View } from "react-native";
 import { Slot } from "expo-router";
 import { enableLayoutAnimations, FadeInRight } from "react-native-reanimated";
@@ -8,13 +8,36 @@ import { useContext, useEffect, useState } from "react";
 import NetInfo from "@react-native-community/netinfo";
 import { StyleSheet } from "react-native";
 import { ThemeContext } from "./components/themeSwitcher";
-import OnlinePlayersMonitor from "./components/OnlinePlayersMonitor";
+import OnlinePlayersMonitor, {
+  NotificationSettings,
+  DEFAULT_NOTIFICATION_SETTINGS,
+} from "./components/OnlinePlayersMonitor";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { BlinkingBackground } from "./components/blinkingBackground";
+
+const NOTIFICATION_SETTINGS_KEY = "notificationSettings";
 
 export default function App() {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const [isConnected, setIsConnected] = useState(true);
+  const [notificationSettings, setNotificationSettings] =
+    useState<NotificationSettings>(DEFAULT_NOTIFICATION_SETTINGS);
+
+  useEffect(() => {
+    // Загружаем настройки уведомлений при старте
+    const loadSettings = async () => {
+      try {
+        const stored = await AsyncStorage.getItem(NOTIFICATION_SETTINGS_KEY);
+        if (stored) {
+          setNotificationSettings(JSON.parse(stored));
+        }
+      } catch (error) {
+        console.error("Failed to load notification settings:", error);
+      }
+    };
+    loadSettings();
+  }, []);
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
@@ -27,6 +50,19 @@ export default function App() {
 
     return () => unsubscribe();
   }, []);
+
+  const handleSettingsChange = async (newSettings: NotificationSettings) => {
+    try {
+      await AsyncStorage.setItem(
+        NOTIFICATION_SETTINGS_KEY,
+        JSON.stringify(newSettings)
+      );
+      setNotificationSettings(newSettings);
+    } catch (error) {
+      console.error("Failed to save notification settings:", error);
+    }
+  };
+
   const style = StyleSheet.create({
     bg: {
       flex: 1,
@@ -60,7 +96,10 @@ export default function App() {
           {isConnected ? (
             <>
               <Slot />
-              <OnlinePlayersMonitor />
+              <OnlinePlayersMonitor
+                settings={notificationSettings}
+                onSettingsChange={handleSettingsChange}
+              />
             </>
           ) : (
             <NotFoundPage />

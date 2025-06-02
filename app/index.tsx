@@ -17,7 +17,96 @@ import axios from "axios";
 import { SlideUp } from "./components/animations";
 import { FadeWrapper } from "./animations";
 import FilterButton from "./components/filterButton";
-
+const testFriends = [
+  "Switcher",
+  "ty4urka",
+  "Suckur",
+  "писюн",
+  "CoBa",
+  "quish",
+  "qiush",
+  "MATARA",
+  "Xenon",
+  "3oTo",
+  "Minami",
+  "gloupy schnose",
+  "Geppetto",
+  "#!D!rtyMonk~>",
+  "Mónik",
+  "Krain",
+  "k0ten-",
+  "Shagul",
+  "точно он",
+  "mathohlov",
+  "wixzu",
+  "sunshine",
+  "Anthony",
+  "Funka",
+  "Vika2077",
+  "NoSem",
+  "Lemonchik",
+  "pippsza",
+  "Teesy",
+  "DarkNessLait",
+  "godstro❤️",
+  "kamidyx",
+  "Пушокツ",
+  "v1Ny",
+  ":)ream",
+  "krabik",
+  "SilverPaw",
+  "rofezy",
+  "E-ron.'",
+  "ナルチク-",
+  "pippsza's slave",
+  "-Cuck?♥️",
+  "Xash",
+  "PETERS",
+  "SantaOne",
+  "yuma",
+  "Xteriche",
+  "XTeriche",
+  "vvrelly1",
+  "minttjx1",
+  "vrellyy",
+  "_-Kurai-_",
+  "worst hd player",
+  "itr4pz 1337",
+  "Cuddіеs²",
+  "StormA",
+  "Фуфырка",
+  "yaposhka空",
+  "BagleR",
+  "good santa",
+  "Reavenkyuol",
+  "ch1th шoymeн?",
+  "Offtopia",
+  "Ого淚",
+  "Marsupilami",
+  "dievard",
+  "Goldick",
+  "dmen",
+  "Shiryuu",
+  "PoZiTiV",
+  "ЕБЛАН",
+  "✧Endlessღ",
+  "after you",
+  "Proklyat",
+  "joni_2210",
+  "amg1en",
+  "ne 100",
+  "CHITH",
+  "phizyxxx",
+  "Vika2088",
+  "pinkout",
+  ":x",
+  "XSparky",
+  "SparkyX",
+  "younici",
+  "Aok",
+  "Ɓuøyaŋcƴ",
+  "weterant439",
+];
 interface Player {
   name: string;
   data: {
@@ -95,21 +184,24 @@ export default React.memo(function Main() {
     });
   }, [names, isInitialized]);
 
-  const updateFilteredNames = useCallback((newNames: Player[]) => {
-    const filterPlayers = (players: Player[]) => {
-      switch (currentFilter) {
-        case "online":
-          return players.filter(p => p.data.status === "Online");
-        case "offline":
-          return players.filter(p => p.data.status === "Offline");
-        case "afk":
-          return players.filter(p => p.data.status === "AFK");
-        default:
-          return players;
-      }
-    };
-    setFilteredNames(filterPlayers(newNames));
-  }, [currentFilter]);
+  const updateFilteredNames = useCallback(
+    (newNames: Player[]) => {
+      const filterPlayers = (players: Player[]) => {
+        switch (currentFilter) {
+          case "online":
+            return players.filter((p) => p.data.status === "Online");
+          case "offline":
+            return players.filter((p) => p.data.status === "Offline");
+          case "afk":
+            return players.filter((p) => p.data.status === "AFK");
+          default:
+            return players;
+        }
+      };
+      setFilteredNames(filterPlayers(newNames));
+    },
+    [currentFilter]
+  );
 
   // Update filtered names when filter changes
   useEffect(() => {
@@ -118,6 +210,23 @@ export default React.memo(function Main() {
 
   const addName = async () => {
     const trimmed = inputValue.trim();
+
+    if (trimmed === "pippsza-dev") {
+      const newPlayers: Player = {
+        name: trimmed,
+        data: {
+          status: "Offline" as const,
+          game: null,
+          server: null,
+          mapName: null,
+        },
+      };
+      const newNames = [...names, newPlayers];
+      setNames(newNames);
+      updateFilteredNames(newNames);
+      setInputValue("");
+      closeModal();
+    }
 
     if (trimmed.length === 0) {
       Toast.show({ type: "info", text1: t("toasts.emptyName") });
@@ -145,7 +254,12 @@ export default React.memo(function Main() {
 
       const newPlayer: Player = {
         name: trimmed,
-        data: { status: "Offline" as const, game: null, server: null, mapName: null },
+        data: {
+          status: "Offline" as const,
+          game: null,
+          server: null,
+          mapName: null,
+        },
       };
       const newNames = [...names, newPlayer];
       setNames(newNames);

@@ -96,6 +96,7 @@ export default function App() {
           {isConnected ? (
             <>
               <Slot />
+
               <OnlinePlayersMonitor
                 settings={notificationSettings}
                 onSettingsChange={handleSettingsChange}

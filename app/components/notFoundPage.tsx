@@ -1,6 +1,10 @@
 import React, { useContext, useEffect, useRef } from "react";
 import { StyleSheet, Text, View, Animated, Easing } from "react-native";
-import { responsiveFontSize as rf, responsiveHeight as rh, responsiveWidth as rw } from "react-native-responsive-dimensions";
+import {
+  responsiveFontSize as rf,
+  responsiveHeight as rh,
+  responsiveWidth as rw,
+} from "react-native-responsive-dimensions";
 import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
 import Tee from "./tee";
@@ -43,7 +47,7 @@ export default function NotFoundPage() {
 
   const spin = rotateAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'],
+    outputRange: ["0deg", "360deg"],
   });
 
   const theme = {
@@ -71,9 +75,10 @@ export default function NotFoundPage() {
     },
     teesContainer: {
       flexDirection: "row",
+      flexWrap: "wrap",
       justifyContent: "center",
       alignItems: "center",
-      gap: rw(4),
+      gap: rw(1),
     },
     teeWrapper: {
       alignItems: "center",
@@ -89,50 +94,48 @@ export default function NotFoundPage() {
     <View style={styles.container}>
       <Text style={styles.big}>404</Text>
       <Text style={styles.small}>{t("playerItem.offline")}</Text>
-      
+
       <View style={styles.teesContainer}>
-        <Animated.View 
+        <Animated.View
           style={[
             styles.teeWrapper,
-            { transform: [{ translateY: bounceAnim }] }
+            { transform: [{ translateY: bounceAnim }] },
           ]}
         >
-          <Tee width={rh(8)} source="default" />
+          <Tee width={rh(5)} source="default" />
           <Text style={styles.teeLabel}>No internet connection</Text>
         </Animated.View>
 
-        <Animated.View 
+        <Animated.View
           style={[
             styles.teeWrapper,
-            { 
-              transform: [
-                { translateY: bounceAnim },
-                { rotate: spin }
-              ]
-            }
+            {
+              transform: [{ translateY: bounceAnim }, { rotate: spin }],
+            },
           ]}
         >
-          <Tee width={rh(8)} source="monik" />
+          <Tee width={rh(5)} source="monik" />
           <Text style={styles.teeLabel}>No internet connection</Text>
         </Animated.View>
 
-        <Animated.View 
+        <Animated.View
           style={[
             styles.teeWrapper,
-            { 
+            {
               transform: [
                 { translateY: bounceAnim },
-                { rotate: rotateAnim.interpolate({
+                {
+                  rotate: rotateAnim.interpolate({
                     inputRange: [0, 1],
-                    outputRange: ['360deg', '0deg']
-                  })
-                }
-              ]
-            }
+                    outputRange: ["360deg", "0deg"],
+                  }),
+                },
+              ],
+            },
           ]}
         >
-          <Tee width={rh(8)} source="pippsza" />
-          <Text style={styles.teeLabel}>Tee 3</Text>
+          <Tee width={rh(5)} source="pippsza" />
+          <Text style={styles.teeLabel}>No internet connection</Text>
         </Animated.View>
       </View>
     </View>

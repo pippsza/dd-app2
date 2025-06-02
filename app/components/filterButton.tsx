@@ -56,7 +56,7 @@ export default function FilterButton({
   };
 
   const getDisplayFilter = (filter: string) => {
-    return filter.charAt(0).toUpperCase() + filter.slice(1);
+    return t(`filterButton.${filter}`);
   };
 
   const style = StyleSheet.create({
@@ -142,7 +142,7 @@ export default function FilterButton({
                       onPress={() => handleFilter(filter)}
                     >
                       <Text style={style.filterButtonText}>
-                        {getDisplayFilter(filter)}
+                        {t(`filterButton.${filter}`)}
                       </Text>
                     </TouchableOpacity>
                   ))}

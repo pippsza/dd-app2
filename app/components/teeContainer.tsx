@@ -294,7 +294,7 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
     if (online.status === "Designer" || online.status === "Developer") {
       return (
         <Text style={[styles.regText, styles[online.status]]}>
-          {online.status}
+          {t(`playerItem.${online.status.toLowerCase()}`)}
         </Text>
       );
     }

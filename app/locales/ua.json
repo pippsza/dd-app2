@@ -54,5 +54,11 @@
     "alreadyFriend": "Цей гравець вже у вас в друзях!",
     "playerNotFound": "Гравця не знайдено",
     "unexpectedError": "Упс, щось пішло не так :("
+  },
+  "filterButton": {
+    "online": "В мережі",
+    "offline": "Не в мережі",
+    "afk": "Відсутній",
+    "all": "Всі"
   }
 }

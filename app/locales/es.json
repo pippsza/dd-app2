@@ -13,7 +13,9 @@
     "author": "Autores",
     "github": "Github",
     "telegram": "Telegram",
-    "youtube": "Youtube"
+    "youtube": "Youtube",
+    "roleDeveloper": "Desarrollador",
+    "roleDesigner": "Diseñador"
   },
   "modalWindow": {
     "enterName": "Introduce el nombre del amigo:",
@@ -22,7 +24,9 @@
   "playerItem": {
     "offline": "Desconectado",
     "online": "En línea",
-    "AFK": "Ausente"
+    "AFK": "Ausente",
+    "designer": "Diseñador",
+    "developer": "Desarrollador"
   },
   "teeContainer": {
     "offline": "Desconectado",
@@ -54,5 +58,14 @@
     "alreadyFriend": "¡Este jugador ya es tu amigo!",
     "playerNotFound": "Jugador no encontrado",
     "unexpectedError": "Ups, algo salió mal :("
+  },
+  "filterButton": {
+    "online": "En línea",
+    "offline": "Desconectado",
+    "afk": "Ausente",
+    "all": "Todos"
+  },
+  "testing": {
+    "title": "Prueba"
   }
 }

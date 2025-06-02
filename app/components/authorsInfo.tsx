@@ -5,6 +5,11 @@ import {
   responsiveWidth as rw,
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
+import { useTranslation } from "react-i18next";
+import { StyleSheet } from "react-native";
+import { ThemeContext } from "./themeSwitcher";
+import { useContext } from "react";
+
 export default function AuthorsInfo() {
   const { t } = useTranslation();
   const navigation = useNavigation();
@@ -56,7 +61,7 @@ export default function AuthorsInfo() {
         <View style={style.bigContainer}>
           <View style={style.container}>
             <View>
-              <Text style={style.name}>Developer</Text>
+              <Text style={style.name}>{t("authorsInfo.roleDeveloper")}</Text>
               <TouchableOpacity
                 onPress={() => {
                   authorsInfo("pippsza", "Developer");
@@ -88,7 +93,7 @@ export default function AuthorsInfo() {
               </Link>
             </View>
             <View>
-              <Text style={style.name}>Designer</Text>
+              <Text style={style.name}>{t("authorsInfo.roleDesigner")}</Text>
               <TouchableOpacity
                 onPress={() => {
                   authorsInfo("MonikFox", "Designer");
@@ -121,7 +126,3 @@ export default function AuthorsInfo() {
     </>
   );
 }
-import { StyleSheet } from "react-native";
-import { ThemeContext } from "./themeSwitcher";
-import { useContext } from "react";
-import { useTranslation } from "react-i18next";

@@ -54,5 +54,11 @@
     "alreadyFriend": "Этот игрок уже у вас в друзьях!",
     "playerNotFound": "Игрок не найден",
     "unexpectedError": "Упс, что-то пошло не так :("
+  },
+  "filterButton": {
+    "online": "В сети",
+    "offline": "Не в сети",
+    "afk": "Отошёл",
+    "all": "Все"
   }
 }

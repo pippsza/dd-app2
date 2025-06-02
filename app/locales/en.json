@@ -13,7 +13,9 @@
     "author": "Authors",
     "github": "Github",
     "telegram": "Telegram",
-    "youtube": "Youtube"
+    "youtube": "Youtube",
+    "roleDeveloper": "Developer",
+    "roleDesigner": "Designer"
   },
   "modalWindow": {
     "enterName": "Enter friend name:",
@@ -22,7 +24,9 @@
   "playerItem": {
     "offline": "Offline",
     "online": "Online",
-    "AFK": "AFK"
+    "AFK": "AFK",
+    "designer": "Designer",
+    "developer": "Developer"
   },
   "teeContainer": {
     "offline": "Offline",
@@ -54,5 +58,14 @@
     "alreadyFriend": "This player is already your friend!",
     "playerNotFound": "Player doesn't exist",
     "unexpectedError": "Oops, something went wrong :("
+  },
+  "filterButton": {
+    "online": "Online",
+    "offline": "Offline",
+    "afk": "AFK",
+    "all": "All"
+  },
+  "testing": {
+    "title": "Testing"
   }
 }

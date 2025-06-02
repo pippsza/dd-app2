@@ -54,5 +54,11 @@
     "alreadyFriend": "Este jogador já é seu amigo!",
     "playerNotFound": "Jogador não encontrado",
     "unexpectedError": "Ops, algo deu errado :("
+  },
+  "filterButton": {
+    "online": "Online",
+    "offline": "Offline",
+    "afk": "AFK",
+    "all": "Todos"
   }
 }

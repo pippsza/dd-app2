@@ -25,6 +25,7 @@ import {
   SlideLeftToRight,
   SlideRightToLeft,
   SlideOutUp,
+  SlideOutRef,
 } from "./animations";
 
 interface RouteParams {
@@ -78,13 +79,8 @@ interface DDNetResponse {
   activity: DDNetActivity[];
 }
 
-interface SlideOutRef {
-  slideOut: () => void;
-  slideIn: () => void;
-}
 const HOURS_URL = "https://ddnet.org/players/?json2=";
 const API_URL = "https://ddstats.tw/player/json";
-const LOADING_TEXT = "Loading...";
 
 export default function Info() {
   const { isDarkMode } = useContext(ThemeContext);
@@ -170,7 +166,7 @@ export default function Info() {
     <View style={styles.mainContainer}>
       <Spinner
         visible={true}
-        textContent={LOADING_TEXT}
+        textContent={t("loading")}
         textStyle={styles.loadingText}
       />
     </View>

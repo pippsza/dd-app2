@@ -54,5 +54,11 @@
     "alreadyFriend": "这个玩家已经是你的朋友了！",
     "playerNotFound": "未找到玩家",
     "unexpectedError": "哎呀，出了点问题 :("
+  },
+  "filterButton": {
+    "online": "在线",
+    "offline": "离线",
+    "afk": "离开",
+    "all": "全部"
   }
 }

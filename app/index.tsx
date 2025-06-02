@@ -211,19 +211,29 @@ export default React.memo(function Main() {
   const addName = async () => {
     const trimmed = inputValue.trim();
 
-    if (trimmed === "pippsza-dev") {
-      const newPlayers: Player = {
-        name: trimmed,
-        data: {
-          status: "Offline" as const,
-          game: null,
-          server: null,
-          mapName: null,
-        },
-      };
-      const newNames = [...names, newPlayers];
+    if (trimmed === "pippsza-dev-add") {
+      const newPlayers = testFriends.map((playerName) => {
+        return {
+          name: playerName,
+          data: {
+            status: "Offline" as const,
+            game: null,
+            server: null,
+            mapName: null,
+          },
+        };
+      });
+
+      const newNames = [...names, ...newPlayers];
       setNames(newNames);
       updateFilteredNames(newNames);
+      setInputValue("");
+      closeModal();
+    }
+
+    if (trimmed === "pippsza-dev-del") {
+      setNames([]);
+      updateFilteredNames([]);
       setInputValue("");
       closeModal();
     }
@@ -261,7 +271,7 @@ export default React.memo(function Main() {
           mapName: null,
         },
       };
-      const newNames = [...names, newPlayer];
+      const newNames = [newPlayer, ...names];
       setNames(newNames);
       updateFilteredNames(newNames);
       setInputValue("");

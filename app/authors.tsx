@@ -74,6 +74,7 @@ export default function Authors() {
           </View>
           <Text style={style.text}>{t("mainSettings")}</Text>
         </View>
+        <Text style={{ textAlign: "right", fontSize: rf(1.2), paddingRight: rh(1), color: isDarkMode ? "black" : "white" }}>v.1.0.1</Text>
       </FadeWrapper>
     </>
   );

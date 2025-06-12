@@ -24,6 +24,7 @@ export default function Settings() {
     setLanguage(nextLang);
   };
   const toggleNotifications = () => {};
+  const toggleSounds = () => {};
   const style = StyleSheet.create({
     box: { justifyContent: "flex-start", flex: 1, width: rw(100) },
     container: {
@@ -80,6 +81,10 @@ export default function Settings() {
           </TouchableOpacity>
           <TouchableOpacity onPress={toggleNotifications} style={style.option}>
             <Text style={style.text}>{t("settings.notifications")}</Text>
+            <View style={style.checkBox}></View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={toggleSounds} style={style.option}>
+            <Text style={style.text}>{t("settings.sounds")}</Text>
             <View style={style.checkBox}></View>
           </TouchableOpacity>
         </View>

@@ -1,3 +1,4 @@
+import React, { useContext } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import {
   responsiveHeight as rh,
@@ -8,23 +9,26 @@ import SunLight from "../../assets/svg/sun-light.svg";
 import SunDark from "../../assets/svg/sun-dark.svg";
 import { StyleSheet } from "react-native";
 import { ThemeContext } from "./themeSwitcher";
-import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "./languageProvide";
+import { useSettings } from "./settingsProvider";
+import Checkbox from "./checkbox";
 
 export default function Settings() {
   const { t } = useTranslation();
   const { language, setLanguage } = useLanguage();
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const { settings, toggleSounds, toggleNotifications } = useSettings();
+  
   const availableLanguages = ["en", "ru", "es", "pt", "zh", "ua"];
+  
   const changeLanguage = () => {
     const currentIndex = availableLanguages.indexOf(language);
     const nextIndex = (currentIndex + 1) % availableLanguages.length;
     const nextLang = availableLanguages[nextIndex];
     setLanguage(nextLang);
   };
-  const toggleNotifications = () => {};
-  const toggleSounds = () => {};
+
   const style = StyleSheet.create({
     box: { justifyContent: "flex-start", flex: 1, width: rw(100) },
     container: {
@@ -47,16 +51,9 @@ export default function Settings() {
       width: rw(70),
       flexDirection: "row",
       justifyContent: "space-between",
+      alignItems: "center",
     },
     svg: { width: rw(10), height: rw(10) },
-    checkBox: {
-      height: rw(10),
-      width: rw(10),
-      borderColor: "black",
-      borderRadius: 12,
-      borderWidth: 2,
-      backgroundColor: "white",
-    },
   });
 
   return (
@@ -71,6 +68,7 @@ export default function Settings() {
               <Text style={style.text}>{t("settings.lang")}</Text>
             </View>
           </TouchableOpacity>
+          
           <TouchableOpacity onPress={toggleTheme} style={style.option}>
             <Text style={style.text}>{t("settings.theme")}</Text>
             {isDarkMode ? (
@@ -79,14 +77,22 @@ export default function Settings() {
               <SunLight style={style.svg}></SunLight>
             )}
           </TouchableOpacity>
-          <TouchableOpacity onPress={toggleNotifications} style={style.option}>
+          
+          <View style={style.option}>
             <Text style={style.text}>{t("settings.notifications")}</Text>
-            <View style={style.checkBox}></View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={toggleSounds} style={style.option}>
+            <Checkbox 
+              checked={settings.notificationsEnabled} 
+              onPress={toggleNotifications} 
+            />
+          </View>
+          
+          <View style={style.option}>
             <Text style={style.text}>{t("settings.sounds")}</Text>
-            <View style={style.checkBox}></View>
-          </TouchableOpacity>
+            <Checkbox 
+              checked={settings.soundsEnabled} 
+              onPress={toggleSounds} 
+            />
+          </View>
         </View>
       </View>
     </>

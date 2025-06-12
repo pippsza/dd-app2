@@ -18,9 +18,10 @@ import {
 import Tee from "./tee";
 import { Link } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { ThemeContext } from "./themeSwitcher";
+import { useTheme } from "../hooks/useTheme";
 import { FadeIn, SlideLeftToRight, SlideRightToLeft } from "./animations";
 import CachedMapImage from "./cachedMapImage";
+import { ThemeContext } from "./themeSwitcher";
 
 interface PlayerProfile {
   name: string;
@@ -85,6 +86,8 @@ type TeeContainerStyles = {
   bgOnline: ViewStyle;
   wrapperOnline: ViewStyle;
   wrapperOnlineBack: ViewStyle;
+  overlayLight: ViewStyle;
+  overlayDark: ViewStyle;
 } & {
   [K in StatusType]: TextStyle;
 };
@@ -101,20 +104,12 @@ const DDNET_RANKS_URL = "https://ddnet.org/ranks/maps/";
 
 const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
   const { t } = useTranslation();
+  const { theme } = useTheme();
   const { isDarkMode } = useContext(ThemeContext);
 
   if (!data) {
     return null;
   }
-
-  const theme = useMemo(
-    () => ({
-      background: isDarkMode ? "rgba(255,255,255,0.8)" : "rgba(39,39,39,0.8)",
-      border: isDarkMode ? "black" : "white",
-      text: isDarkMode ? "black" : "white",
-    }),
-    [isDarkMode]
-  );
 
   const mapName = useMemo(() => {
     return data.most_played_maps[0]?.map_name || null;
@@ -140,16 +135,28 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
   }, [onlineMapName]);
 
   const styles = useMemo(() => {
-    const statusStyles = Object.entries(STATUS_COLORS).reduce(
-      (acc, [status, color]) => ({
-        ...acc,
-        [status]: {
-          color,
-          fontSize: status === "Offline" ? rf(6) : rf(4),
-        },
-      }),
-      {} as Record<StatusType, TextStyle>
-    );
+    const statusStyles = {
+      Online: {
+        color: theme.status.online,
+        fontSize: rf(4),
+      },
+      Offline: {
+        color: theme.status.offline,
+        fontSize: rf(6),
+      },
+      AFK: {
+        color: theme.status.afk,
+        fontSize: rf(4),
+      },
+      Designer: {
+        color: theme.status.designer,
+        fontSize: rf(4),
+      },
+      Developer: {
+        color: theme.status.developer,
+        fontSize: rf(4),
+      },
+    } as Record<StatusType, TextStyle>;
 
     return StyleSheet.create<TeeContainerStyles>({
       mainContainer: {
@@ -169,7 +176,7 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
         alignItems: "flex-start",
         opacity: 1,
         zIndex: 5,
-        borderColor: theme.border,
+        borderColor: theme.border.primary,
         borderWidth: rw(0.4),
         borderLeftWidth: 0,
         borderRadius: rw(6),
@@ -195,7 +202,7 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
         padding: rw(2),
       },
       bgOnline: {
-        backgroundColor: isDarkMode ? "rgba(255,255,255,1" : "rgba(39,39,39,1)",
+        backgroundColor: theme.card.background,
         position: "absolute",
         top: 0,
         left: 0,
@@ -203,12 +210,28 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
         bottom: 0,
         zIndex: -1,
       },
+      overlayLight: {
+        backgroundColor: theme.overlay.light,
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 0,
+      },
+      overlayDark: {
+        backgroundColor: theme.overlay.dark,
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 0,
+      },
       rightContainer: {
-        backgroundColor: isDarkMode
-          ? "rgba(255,255,255,0.5)"
-          : "rgba(39,39,39,0.5)",
+        backgroundColor: theme.card.background,
         opacity: 1,
-        borderColor: theme.border,
+        borderColor: theme.border.primary,
         paddingVertical: rh(1),
         paddingLeft: rw(6),
         paddingRight: rw(4),
@@ -232,7 +255,7 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
       },
       name: {
         opacity: 1,
-        borderColor: theme.border,
+        borderColor: theme.border.primary,
         borderBottomWidth: rw(0.6),
         borderLeftWidth: 0,
         borderRadius: rw(3),
@@ -242,9 +265,9 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
         paddingHorizontal: rw(4),
       },
       pts: {
-        backgroundColor: theme.background,
+        backgroundColor: theme.card.background,
         opacity: 1,
-        borderColor: theme.border,
+        borderColor: theme.border.primary,
         borderWidth: rw(0.4),
         borderRightWidth: 0,
         alignItems: "center",
@@ -256,7 +279,7 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
       },
       longText: {
         fontSize: rf(Math.max(3 - (online.server?.length ?? 0) * 0.03, 1.5)),
-        color: theme.text,
+        color: theme.text.primary,
         paddingLeft: rw(2.6),
       },
       longTextLove: {
@@ -266,25 +289,25 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
             1
           )
         ),
-        color: theme.text,
+        color: theme.text.primary,
         paddingLeft: rw(2.6),
       },
       regText: {
         fontSize: rf(2),
-        color: theme.text,
+        color: theme.text.primary,
       },
       bigText: {
         fontSize: rf(3.7),
-        color: theme.text,
+        color: theme.text.primary,
       },
       smallText: {
         fontSize: rf(2),
-        color: theme.text,
+        color: theme.text.primary,
       },
       clanText: {
         fontSize: rf(2.3),
         paddingLeft: rw(4),
-        color: theme.text,
+        color: theme.text.primary,
       },
       ...statusStyles,
     });
@@ -387,6 +410,7 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
                 style={styles.bgOnline}
                 imageStyle={{ opacity: 0.4 }}
               />
+              <View style={isDarkMode ? styles.overlayLight : styles.overlayDark} />
               <View style={styles.wrapperOnlineBack}>{renderStatus()}</View>
             </View>
           </View>
@@ -411,6 +435,7 @@ const TeeContainer = React.memo(({ data, online }: TeeContainerProps) => {
           <SlideRightToLeft>
             <View style={styles.wrapper}>
               <CachedMapImage mapName={mapName} style={styles.bg}>
+                <View style={isDarkMode ? styles.overlayLight : styles.overlayDark} />
                 {renderFavorites()}
               </CachedMapImage>
             </View>

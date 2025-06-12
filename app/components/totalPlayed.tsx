@@ -1,41 +1,37 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Text, StyleSheet } from "react-native";
 import { responsiveFontSize as rf } from "react-native-responsive-dimensions";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
 } from "react-native-responsive-dimensions";
-import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "../hooks/useTheme";
 
 export default function TotalPlayed({ data }: any) {
-  const { isDarkMode } = useContext(ThemeContext);
+  const { theme } = useTheme();
   const { t } = useTranslation();
-
-  const bg = isDarkMode ? "rgba(255,255,255,0.8)" : "rgba(39,39,39,0.8)";
-  const border = isDarkMode ? "black" : "white";
-  const text = isDarkMode ? "black" : "white";
 
   const style = StyleSheet.create({
     text: {
       paddingVertical: rh(1),
       fontSize: rf(2),
-      backgroundColor: bg,
-      borderColor: border,
+      backgroundColor: theme.card.background,
+      borderColor: theme.card.border,
       borderWidth: rw(0.4),
       borderRadius: rw(2),
       marginHorizontal: rw(7),
       textAlign: "center",
-      color: text,
+      color: theme.text.primary,
     },
     fakeText: {
-      backgroundColor: bg,
+      backgroundColor: theme.card.background,
       paddingVertical: rh(1),
-      borderColor: border,
+      borderColor: theme.card.border,
       borderWidth: rw(0.4),
       borderLeftWidth: 0,
       borderRightWidth: 0,
-      color: "red",
+      color: theme.text.error,
       textAlign: "center",
       fontSize: rf(3),
     },

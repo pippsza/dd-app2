@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import {
   responsiveHeight as rh,
@@ -6,18 +6,18 @@ import {
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
 import { StyleSheet } from "react-native";
-import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "./languageProvide";
 import { useSettings } from "./settingsProvider";
 import Checkbox from "./checkbox";
 import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
 import LoadSvg from "./loadSvg";
+import { useTheme } from "../hooks/useTheme";
 
 export default function Settings() {
   const { t } = useTranslation();
   const { language, setLanguage } = useLanguage();
-  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const { theme, toggleTheme } = useTheme();
   const { settings, toggleSounds, toggleNotifications } = useSettings();
   const { playButtonSound } = useSoundWithSettings();
   
@@ -57,12 +57,12 @@ export default function Settings() {
       fontSize: rf(4),
       textAlign: "center",
       marginBottom: rh(4),
-      color: isDarkMode ? "black" : "white",
+      color: theme.text.primary,
     },
     text: {
       fontSize: rf(3),
       textAlign: "left",
-      color: isDarkMode ? "black" : "white",
+      color: theme.text.primary,
     },
     option: {
       width: rw(70),

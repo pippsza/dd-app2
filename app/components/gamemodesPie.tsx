@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Text, View, StyleSheet } from "react-native";
 import { PieChart } from "react-native-chart-kit";
 import {
@@ -6,41 +6,36 @@ import {
   responsiveWidth as rw,
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
-import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "../hooks/useTheme";
 
 const SECONDS_IN_HOUR = 3600;
 const MAX_GAMEMODES = 3;
 
 export default function GameModePie({ data }: any) {
-  const { isDarkMode } = useContext(ThemeContext);
-  const GAMEMODE_COLORS = isDarkMode
-    ? ["#2ebbff", "#ffdb2e", "#ff2d50"]
-    : ["#1f81b1", "#b1991f", "#b12036"];
+  const { theme } = useTheme();
   const { t } = useTranslation();
 
-  const bg = isDarkMode ? "rgba(255,255,255,0.8)" : "rgba(39,39,39,0.8)";
-  const border = isDarkMode ? "black" : "white";
-  const text = isDarkMode ? "black" : "white";
+  const GAMEMODE_COLORS = theme.chart.gamemodes;
 
   const style = StyleSheet.create({
     bigText: {
       textAlign: "center",
       fontSize: rf(3),
-      color: text,
+      color: theme.text.primary,
     },
     fakeContainer: {
       height: rh(20),
       justifyContent: "center",
     },
     fakeText: {
-      color: "red",
+      color: theme.text.error,
       textAlign: "center",
       fontSize: rf(2.5),
     },
     container: {
-      backgroundColor: bg,
-      borderColor: border,
+      backgroundColor: theme.card.background,
+      borderColor: theme.card.border,
       borderWidth: rw(0.4),
       borderLeftWidth: 0,
       marginRight: rw(5),
@@ -59,7 +54,7 @@ export default function GameModePie({ data }: any) {
         name: `${t("hours")} - ${item.key}`,
         population: Math.round(item.seconds_played / SECONDS_IN_HOUR),
         color: getColorForGamemode(idx),
-        legendFontColor: text,
+        legendFontColor: theme.chart.legendText,
         legendFontSize: rf(1.7),
       })) ?? [];
 
@@ -73,7 +68,7 @@ export default function GameModePie({ data }: any) {
             width: rw(97),
             height: rw(36),
             chartConfig: {
-              color: () => text,
+              color: () => theme.text.primary,
             },
             accessor: "population",
             backgroundColor: "transparent",

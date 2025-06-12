@@ -1,19 +1,19 @@
-import React, { useContext } from "react";
+import React from "react";
 import { TouchableOpacity, View } from "react-native";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
 } from "react-native-responsive-dimensions";
 import { StyleSheet } from "react-native";
-import { ThemeContext } from "./themeSwitcher";
 import { SlideUp } from "./animations";
 import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
 import LoadSvg from "./loadSvg";
+import { useTheme } from "../hooks/useTheme";
 
 type Props = { openModal: () => void };
 
 export default function AddFrBttn({ openModal }: Props) {
-  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const { theme } = useTheme();
   const { playButtonSound } = useSoundWithSettings();
 
   const handlePress = () => {
@@ -23,14 +23,12 @@ export default function AddFrBttn({ openModal }: Props) {
 
   const style = StyleSheet.create({
     box: {
-      backgroundColor: isDarkMode ? "white" : "#272727",
-      // position: "absolute",
+      backgroundColor: theme.primary,
       justifyContent: "center",
       alignItems: "center",
-      // bottom: 0,
       width: rw(22),
       height: rw(15.8),
-      borderColor: isDarkMode ? "black" : "white",
+      borderColor: theme.border.primary,
       borderRadius: 14,
       borderBottomLeftRadius: 0,
       borderBottomRightRadius: 0,

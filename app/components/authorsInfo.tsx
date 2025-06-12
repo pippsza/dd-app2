@@ -6,15 +6,14 @@ import {
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
 import { StyleSheet } from "react-native";
-import { ThemeContext } from "./themeSwitcher";
-import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
+import { useTheme } from "../hooks/useTheme";
 
 export default function AuthorsInfo() {
   const { t } = useTranslation();
   const navigation = useNavigation();
-  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const { theme } = useTheme();
   const { playButtonSound } = useSoundWithSettings();
   
   const authorsInfo = (player: any, role: any) => {
@@ -33,13 +32,13 @@ export default function AuthorsInfo() {
     name: {
       textAlign: "center",
       fontSize: rf(3),
-      color: isDarkMode ? "black" : "white",
+      color: theme.text.primary,
     },
     text: {
       textAlign: "center",
       fontSize: rf(2),
       textDecorationLine: "underline",
-      color: isDarkMode ? "black" : "white",
+      color: theme.text.primary,
     },
     container: { flexDirection: "row", gap: rw(5) },
     img: {
@@ -53,13 +52,12 @@ export default function AuthorsInfo() {
     },
     box: {
       flex: 1,
-
       width: rw(100),
     },
     head: {
       fontSize: rf(4),
       textAlign: "center",
-      color: isDarkMode ? "black" : "white",
+      color: theme.text.primary,
     },
   });
 

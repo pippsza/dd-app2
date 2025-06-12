@@ -1,16 +1,15 @@
-import { useContext, useState, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { StyleSheet } from "react-native";
-
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
-import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
 import { SlideUp } from "./animations";
 import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
+import { useTheme } from "../hooks/useTheme";
 
 interface Player {
   name: string;
@@ -39,8 +38,8 @@ export default function FilterButton({
 }: FilterButtonProps) {
   const filters = ["online", "offline", "afk", "all"];
   const [showFilterMenu, setShowFilterMenu] = useState(false);
+  const { theme } = useTheme();
   const { t } = useTranslation();
-  const { isDarkMode } = useContext(ThemeContext);
   const { playButtonSound } = useSoundWithSettings();
 
   const handleFilter = (filter: string) => {
@@ -73,12 +72,10 @@ export default function FilterButton({
       flex: 1,
       width: rw(25),
       height: "100%",
-      backgroundColor: isDarkMode ? "white" : "#272727",
+      backgroundColor: theme.primary,
       justifyContent: "center",
       alignItems: "center",
-
-      borderColor: isDarkMode ? "black" : "white",
-
+      borderColor: theme.border.primary,
       borderRadius: 14,
       borderBottomLeftRadius: 0,
       borderBottomRightRadius: 0,
@@ -96,16 +93,16 @@ export default function FilterButton({
     },
     text: {
       fontSize: rf(1.1),
-      color: isDarkMode ? "black" : "white",
+      color: theme.text.primary,
       textAlign: "center",
     },
     filterContainer: {
       position: "absolute",
       bottom: rh(5),
       right: rw(-12.4),
-      backgroundColor: isDarkMode ? "white" : "#272727",
+      backgroundColor: theme.primary,
       borderWidth: 4,
-      borderColor: isDarkMode ? "black" : "white",
+      borderColor: theme.border.primary,
       borderRadius: 14,
       padding: rw(2),
       width: rw(25),
@@ -117,10 +114,10 @@ export default function FilterButton({
     },
     filterButtonText: {
       fontSize: rf(1.1),
-      color: isDarkMode ? "black" : "white",
+      color: theme.text.primary,
     },
     activeFilter: {
-      backgroundColor: isDarkMode ? "#e0e0e0" : "#404040",
+      backgroundColor: theme.surface,
       borderRadius: 8,
     },
   });

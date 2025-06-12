@@ -3,8 +3,7 @@ import { Link, useNavigation } from "expo-router";
 import Settings from "./components/settings";
 import AuthorsInfo from "./components/authorsInfo";
 import { StyleSheet } from "react-native";
-import { useContext, useRef } from "react";
-import { ThemeContext } from "./components/themeSwitcher";
+import { useRef } from "react";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
@@ -15,11 +14,12 @@ import { useLanguage } from "./components/languageProvide";
 import { FadeWrapper } from "./animations";
 import { useSoundWithSettings } from "./hooks/useSoundWithSettings";
 import LoadSvg from "./components/loadSvg";
+import { useTheme } from "./hooks/useTheme";
 
 export default function Authors() {
   const { t } = useTranslation();
   const { language, setLanguage } = useLanguage();
-  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const { theme } = useTheme();
   const { playButtonSound } = useSoundWithSettings();
   
   const style = StyleSheet.create({
@@ -36,7 +36,7 @@ export default function Authors() {
       textAlign: "center",
       fontSize: rf(1.5),
       padding: rh(1),
-      color: isDarkMode ? "black" : "white",
+      color: theme.text.primary,
     },
     svg: {
       width: rw(14),
@@ -74,7 +74,7 @@ export default function Authors() {
           </View>
           <Text style={style.text}>{t("mainSettings")}</Text>
         </View>
-        <Text style={{ textAlign: "right", fontSize: rf(1.2), paddingRight: rh(1), color: isDarkMode ? "black" : "white" }}>v.1.0.1</Text>
+        <Text style={{ textAlign: "right", fontSize: rf(1.2), paddingRight: rh(1), color: theme.text.primary }}>v.1.0.1</Text>
       </FadeWrapper>
     </>
   );

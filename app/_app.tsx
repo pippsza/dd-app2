@@ -1,18 +1,18 @@
+import React from "react";
 import { ImageBackground, StatusBar, View } from "react-native";
 import { Slot } from "expo-router";
 import { enableLayoutAnimations, FadeInRight } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import NotFoundPage from "./components/notFoundPage";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import NetInfo from "@react-native-community/netinfo";
 import { StyleSheet } from "react-native";
-import { ThemeContext } from "./components/themeSwitcher";
 import { useSoundEffects } from "./utils/soundEffects";
-
+import { useTheme } from "./hooks/useTheme";
 import { BlinkingBackground } from "./components/blinkingBackground";
 
 export default function App() {
-  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const { theme } = useTheme();
   const [isConnected, setIsConnected] = useState(true);
   const soundEffects = useSoundEffects();
 
@@ -26,28 +26,23 @@ export default function App() {
     });
 
     return () => unsubscribe();
-  }, []);
+  });
+  
   const style = StyleSheet.create({
     bg: {
       flex: 1,
       zIndex: -5,
       position: "relative",
-      backgroundColor: isDarkMode ? "white" : "#272727",
+      backgroundColor: theme.background,
     },
   });
 
   return (
     <>
       <StatusBar
-        backgroundColor={isDarkMode ? "white" : "#272727"}
-        barStyle={isDarkMode ? "dark-content" : "light-content"}
+        backgroundColor={theme.statusBar.background}
+        barStyle={theme.statusBar.style}
       />
-
-      {/* <ImageBackground
-        source={require("../assets/images/background.png")}
-        style={style.bg}
-        resizeMode="cover"
-      > */}
 
       <View style={style.bg}>
         <BlinkingBackground
@@ -59,7 +54,6 @@ export default function App() {
 
           {isConnected ? <Slot /> : <NotFoundPage />}
         </BlinkingBackground>
-        {/* </ImageBackground> */}
       </View>
     </>
   );

@@ -1,10 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import {
-  Pressable,
-  Text,
-  TextInput,
-  TouchableOpacity,
   View,
+  Text,
+  TouchableOpacity,
+  TextInput,
   StyleSheet,
 } from "react-native";
 import {
@@ -13,9 +12,8 @@ import {
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
 import { useTranslation } from "react-i18next";
-import { ThemeContext } from "./themeSwitcher";
-import { FadeIn, SlideUp } from "./animations";
 import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
+import { useTheme } from "../hooks/useTheme";
 
 interface ModalWindowProps {
   closeModal: () => void;
@@ -30,24 +28,15 @@ export default function ModalWindow({
   setInputValue,
   addName,
 }: ModalWindowProps) {
-  const { isDarkMode } = useContext(ThemeContext);
+  const { theme } = useTheme();
   const { t } = useTranslation();
   const { playButtonSound, playAddSound } = useSoundWithSettings();
-
-  const theme = {
-    background: isDarkMode ? "rgba(255,255,255,1)" : "rgba(39,39,39,1)",
-    border: isDarkMode ? "black" : "white",
-    text: isDarkMode ? "black" : "white",
-    modalBackground: isDarkMode
-      ? "rgba(39,39,39,0.1)"
-      : "rgba(255,255,255,0.1)",
-  };
 
   const styles = StyleSheet.create({
     modal: {
       flex: 1,
       position: "absolute",
-      backgroundColor: theme.modalBackground,
+      backgroundColor: theme.modal.overlay,
       justifyContent: "center",
       alignItems: "center",
       width: rw(100),
@@ -56,38 +45,38 @@ export default function ModalWindow({
     },
     text: {
       fontSize: rf(3),
-      color: theme.text,
+      color: theme.text.primary,
     },
     button: {
-      backgroundColor: theme.background,
+      backgroundColor: theme.button.background,
       width: rw(35),
       height: rh(7),
       justifyContent: "center",
       alignItems: "center",
-      borderColor: theme.border,
+      borderColor: theme.button.border,
       borderWidth: 3,
       borderRadius: 5,
     },
     modalWin: {
       width: rw(80),
       height: rh(40),
-      borderColor: theme.border,
+      borderColor: theme.border.primary,
       borderRadius: 9,
       borderWidth: 4,
       opacity: 1,
-      backgroundColor: theme.background,
+      backgroundColor: theme.modal.background,
       justifyContent: "space-evenly",
       alignItems: "center",
     },
     input: {
-      borderColor: theme.border,
+      borderColor: theme.input.border,
       borderWidth: 3,
       paddingHorizontal: rw(10),
-      backgroundColor: theme.background,
+      backgroundColor: theme.input.background,
       borderRadius: 4,
       height: rh(8),
       width: rw(60),
-      color: theme.text,
+      color: theme.input.text,
     },
   });
 
@@ -104,22 +93,25 @@ export default function ModalWindow({
   };
 
   return (
-    <Pressable onPress={handleClosePress} style={styles.modal}>
-      <SlideUp>
-        <Pressable onPress={handleModalPress} style={styles.modalWin}>
-          <Text style={styles.text}>{t("modalWindow.enterName")}</Text>
-          <TextInput
-            value={inputValue}
-            onChangeText={setInputValue}
-            style={styles.input}
-            placeholder="nameless tee"
-            placeholderTextColor={theme.text}
-          />
-          <TouchableOpacity onPress={handleAddPress} style={styles.button}>
+    <TouchableOpacity style={styles.modal} onPress={handleClosePress}>
+      <TouchableOpacity style={styles.modalWin} onPress={handleModalPress}>
+        <Text style={styles.text}>{t("modalWindow.addFriend")}</Text>
+        <TextInput
+          style={styles.input}
+          value={inputValue}
+          onChangeText={setInputValue}
+          placeholder={t("modalWindow.enterName")}
+          placeholderTextColor={theme.text.secondary}
+        />
+        <View style={{ flexDirection: "row", gap: rw(5) }}>
+          <TouchableOpacity style={styles.button} onPress={handleClosePress}>
+            <Text style={styles.text}>{t("modalWindow.cancel")}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={handleAddPress}>
             <Text style={styles.text}>{t("modalWindow.add")}</Text>
           </TouchableOpacity>
-        </Pressable>
-      </SlideUp>
-    </Pressable>
+        </View>
+      </TouchableOpacity>
+    </TouchableOpacity>
   );
 }

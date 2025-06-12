@@ -21,6 +21,7 @@ import { useTranslation } from "react-i18next";
 import { RandomSlide, ExplosionAnimation } from "./animations";
 import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
 import LoadSvg from "./loadSvg";
+import { useTheme } from "../hooks/useTheme";
 
 interface PlayerData {
   skin_name: string;
@@ -62,7 +63,7 @@ const PlayerItem = React.memo(
     index,
     shouldAnimate = false,
   }: PlayerItemProps) => {
-    const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+    const { theme } = useTheme();
     const [playerData, setPlayerData] = useState<PlayerData | null>(null);
     const [loading, setLoading] = useState(true);
     const [playersObj, setPlayersObj] = useState<PlayerOnlineData | null>(null);
@@ -75,13 +76,6 @@ const PlayerItem = React.memo(
     const [key] = useState(() => `${player}_${Date.now()}`);
     const { playButtonSound, playDeleteSound } = useSoundWithSettings();
 
-    const theme = {
-      background: isDarkMode
-        ? "rgba(255, 255, 255, 0.4)"
-        : "rgba(39,39,39,0.4)",
-      text: isDarkMode ? "black" : "white",
-      border: isDarkMode ? "black" : "white",
-    };
     const styles = StyleSheet.create({
       listContainer: {
         alignItems: "center",
@@ -94,17 +88,17 @@ const PlayerItem = React.memo(
       },
       cardText: {
         fontSize: rf(2),
-        color: theme.text,
+        color: theme.text.primary,
         fontWeight: "600",
       },
       cardInside: {
-        borderColor: theme.border,
+        borderColor: theme.card.border,
         borderWidth: 2,
         flexDirection: "row",
         padding: rw(8),
         alignItems: "center",
         borderRadius: rw(4),
-        backgroundColor: theme.background,
+        backgroundColor: theme.card.background,
         height: "100%",
         width: rw(89),
         justifyContent: "space-between",
@@ -118,9 +112,9 @@ const PlayerItem = React.memo(
         gap: rh(1),
         textAlign: "center",
       },
-      Offline: { fontSize: rf(2), color: "red" },
-      Online: { fontSize: rf(2), color: "green" },
-      AFK: { fontSize: rf(2), color: "blue" },
+      Offline: { fontSize: rf(2), color: theme.status.offline },
+      Online: { fontSize: rf(2), color: theme.status.online },
+      AFK: { fontSize: rf(2), color: theme.status.afk },
       teeContainer: {
         width: rw(15),
         height: rw(15),
@@ -235,7 +229,7 @@ const PlayerItem = React.memo(
     const renderTee = () => (
       <View style={styles.teeContainer} ref={teeRef}>
         {loading ? (
-          <ActivityIndicator size="small" color={theme.text} />
+          <ActivityIndicator size="small" color={theme.text.primary} />
         ) : (
           <Tee
             width={rw(4.8)}
@@ -288,7 +282,7 @@ const PlayerItem = React.memo(
           <View style={styles.explosionContainer}>
             <ExplosionAnimation
               onComplete={handleExplosionComplete}
-              color={isDarkMode ? "#ffffff" : "#000000"}
+              color={theme.primary}
               size={rw(10)}
             />
           </View>

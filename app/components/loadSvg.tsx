@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 import { StyleSheet } from "react-native";
-import { ThemeContext } from "./themeSwitcher";
+import { useTheme } from "../hooks/useTheme";
 
 // Импортируем все SVG
 import SunLight from "../../assets/svg/sun-light.svg";
@@ -22,22 +22,26 @@ interface LoadSvgProps {
 }
 
 export default function LoadSvg({ name, style }: LoadSvgProps) {
-  const { isDarkMode } = useContext(ThemeContext);
+  const { theme } = useTheme();
 
   const getSvgComponent = () => {
+    // Определяем, какая тема светлая, а какая темная
+    // Светлые темы имеют белый фон
+    const isLightTheme = theme.background === "#ffffff";
+    
     switch (name) {
       case "sun":
-        return isDarkMode ? SunDark : SunLight;
+        return isLightTheme ? SunDark : SunLight;
       case "cross":
-        return isDarkMode ? CrossDark : CrossLight;
+        return isLightTheme ? CrossDark : CrossLight;
       case "plus":
-        return isDarkMode ? PlusDark : PlusLight;
+        return isLightTheme ? PlusDark : PlusLight;
       case "trash":
-        return isDarkMode ? TrashDark : TrashLight;
+        return isLightTheme ? TrashDark : TrashLight;
       case "burger":
-        return isDarkMode ? BurgeDark : BurgerLight;
+        return isLightTheme ? BurgeDark : BurgerLight;
       case "checked":
-        return isDarkMode ? CheckedDark : CheckedLight;
+        return isLightTheme ? CheckedDark : CheckedLight;
       default:
         return null;
     }

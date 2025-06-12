@@ -1,26 +1,26 @@
-import React, { useContext } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import React from "react";
+import { View, StyleSheet } from "react-native";
 import {
   responsiveWidth as rw,
 } from "react-native-responsive-dimensions";
-import { ThemeContext } from "./themeSwitcher";
 import LoadSvg from "./loadSvg";
+import { useTheme } from "../hooks/useTheme";
 
 interface CheckboxProps {
   checked: boolean;
 }
 
 export default function Checkbox({ checked }: CheckboxProps) {
-  const { isDarkMode } = useContext(ThemeContext);
+  const { theme } = useTheme();
 
   const styles = StyleSheet.create({
     checkbox: {
       height: rw(10),
       width: rw(10),
-      borderColor: isDarkMode ? "black" : "white",
+      borderColor: theme.checkbox.border,
       borderRadius: 12,
       borderWidth: 2,
-      backgroundColor: isDarkMode ? "white" : "#272727",
+      backgroundColor: theme.checkbox.background,
       justifyContent: "center",
       alignItems: "center",
     },

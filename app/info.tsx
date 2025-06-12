@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { Link, useNavigation, useRouter } from "expo-router";
@@ -15,7 +15,6 @@ import GameCategoryPie from "./components/gameCategoriesPie";
 import GameModePie from "./components/gamemodesPie";
 import TotalPlayed from "./components/totalPlayed";
 import TeeContainer from "./components/teeContainer";
-import { ThemeContext } from "./components/themeSwitcher";
 import {
   FadeIn,
   SlideLeftToRight,
@@ -24,6 +23,7 @@ import {
 } from "./animations";
 import { useSoundWithSettings } from "./hooks/useSoundWithSettings";
 import LoadSvg from "./components/loadSvg";
+import { useTheme } from "./hooks/useTheme";
 
 interface RouteParams {
   item: string;
@@ -85,7 +85,7 @@ const API_URL = "http://ddstats.tw/player/json";
 const LOADING_TEXT = "Loading...";
 
 export default function Info() {
-  const { isDarkMode } = useContext(ThemeContext);
+  const { theme } = useTheme();
   const router = useRouter();
   const route = useRoute();
   const slideRef = useRef<SlideOutRef>(null);
@@ -139,7 +139,6 @@ export default function Info() {
 
         setError(null);
       } catch (err) {
-        throw new Error();
         setError(
           err instanceof Error ? err : new Error("Failed to fetch player data")
         );
@@ -172,7 +171,7 @@ export default function Info() {
       <Spinner
         visible={true}
         textContent={LOADING_TEXT}
-        textStyle={styles.loadingText}
+        textStyle={{ color: theme.text.primary }}
       />
     </View>
   );

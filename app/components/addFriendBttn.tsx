@@ -1,3 +1,4 @@
+import React, { useContext } from "react";
 import { TouchableOpacity, View } from "react-native";
 import {
   responsiveHeight as rh,
@@ -5,14 +6,22 @@ import {
 } from "react-native-responsive-dimensions";
 import { StyleSheet } from "react-native";
 import { ThemeContext } from "./themeSwitcher";
-import { useContext } from "react";
 import PlusDark from "../../assets/svg/plus-dark.svg";
 import PlusLight from "../../assets/svg/plus-light.svg";
 import { SlideUp } from "./animations";
+import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
+
 type Props = { openModal: () => void };
 
 export default function AddFrBttn({ openModal }: Props) {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const { playButtonSound } = useSoundWithSettings();
+
+  const handlePress = () => {
+    playButtonSound();
+    openModal();
+  };
+
   const style = StyleSheet.create({
     box: {
       backgroundColor: isDarkMode ? "white" : "#272727",
@@ -47,7 +56,7 @@ export default function AddFrBttn({ openModal }: Props) {
     <>
       <View style={style.fakeBox}>
         <SlideUp>
-          <View style={style.box} onTouchStart={openModal}>
+          <View style={style.box} onTouchStart={handlePress}>
             <TouchableOpacity>
               {isDarkMode ? (
                 <PlusDark style={style.plus}></PlusDark>

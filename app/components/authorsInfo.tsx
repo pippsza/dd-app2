@@ -5,16 +5,30 @@ import {
   responsiveWidth as rw,
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
+import { StyleSheet } from "react-native";
+import { ThemeContext } from "./themeSwitcher";
+import { useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
+
 export default function AuthorsInfo() {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const { playButtonSound } = useSoundWithSettings();
+  
   const authorsInfo = (player: any, role: any) => {
+    playButtonSound();
     let online = { status: null };
     online.status = role;
 
     navigation.navigate("info", { item: player, onlineData: online });
   };
+
+  const handleLinkPress = () => {
+    playButtonSound();
+  };
+  
   const style = StyleSheet.create({
     name: {
       textAlign: "center",
@@ -73,7 +87,7 @@ export default function AuthorsInfo() {
                 style={style.text}
                 asChild
               >
-                <TouchableOpacity>
+                <TouchableOpacity onPress={handleLinkPress}>
                   <Text style={style.text}>{t("authorsInfo.github")}</Text>
                 </TouchableOpacity>
               </Link>
@@ -82,7 +96,7 @@ export default function AuthorsInfo() {
                 style={style.text}
                 asChild
               >
-                <TouchableOpacity>
+                <TouchableOpacity onPress={handleLinkPress}>
                   <Text style={style.text}>{t("authorsInfo.telegram")}</Text>
                 </TouchableOpacity>
               </Link>
@@ -105,12 +119,12 @@ export default function AuthorsInfo() {
                 style={style.text}
                 asChild
               >
-                <TouchableOpacity>
+                <TouchableOpacity onPress={handleLinkPress}>
                   <Text style={style.text}>{t("authorsInfo.youtube")}</Text>
                 </TouchableOpacity>
               </Link>
               <Link href="https://t.me/SilverPaww" style={style.text} asChild>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={handleLinkPress}>
                   <Text style={style.text}>{t("authorsInfo.telegram")}</Text>
                 </TouchableOpacity>
               </Link>
@@ -121,7 +135,3 @@ export default function AuthorsInfo() {
     </>
   );
 }
-import { StyleSheet } from "react-native";
-import { ThemeContext } from "./themeSwitcher";
-import { useContext } from "react";
-import { useTranslation } from "react-i18next";

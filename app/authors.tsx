@@ -15,10 +15,14 @@ import {
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "./components/languageProvide";
 import { FadeWrapper } from "./animations";
+import { useSoundWithSettings } from "./hooks/useSoundWithSettings";
+
 export default function Authors() {
   const { t } = useTranslation();
   const { language, setLanguage } = useLanguage();
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const { playButtonSound } = useSoundWithSettings();
+  
   const style = StyleSheet.create({
     container: { flex: 1, padding: rw(2) },
     svgContainer: {
@@ -49,6 +53,7 @@ export default function Authors() {
     navigation.navigate("index");
   };
   const handleClosePress = () => {
+    playButtonSound();
     if (fadeRef.current) {
       fadeRef.current.fadeOut();
     }

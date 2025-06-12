@@ -10,6 +10,8 @@ import {
 import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
 import { SlideUp } from "./animations";
+import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
+
 interface Player {
   name: string;
   data: {
@@ -39,8 +41,10 @@ export default function FilterButton({
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const { t } = useTranslation();
   const { isDarkMode } = useContext(ThemeContext);
+  const { playButtonSound } = useSoundWithSettings();
 
   const handleFilter = (filter: string) => {
+    playButtonSound();
     setCurrentFilter(filter);
     setShowFilterMenu(false);
 
@@ -53,6 +57,11 @@ export default function FilterButton({
           );
 
     setFilteredNames(filtered);
+  };
+
+  const handleMenuToggle = () => {
+    playButtonSound();
+    setShowFilterMenu(!showFilterMenu);
   };
 
   const getDisplayFilter = (filter: string) => {
@@ -122,7 +131,7 @@ export default function FilterButton({
         <SlideUp duration={1200}>
           <TouchableOpacity
             style={style.container}
-            onPress={() => setShowFilterMenu(!showFilterMenu)}
+            onPress={handleMenuToggle}
           >
             <View>
               <Text style={style.text}>

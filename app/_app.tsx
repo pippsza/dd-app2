@@ -7,12 +7,14 @@ import { useContext, useEffect, useState } from "react";
 import NetInfo from "@react-native-community/netinfo";
 import { StyleSheet } from "react-native";
 import { ThemeContext } from "./components/themeSwitcher";
+import { useSoundEffects } from "./utils/soundEffects";
 
 import { BlinkingBackground } from "./components/blinkingBackground";
 
 export default function App() {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const [isConnected, setIsConnected] = useState(true);
+  const soundEffects = useSoundEffects();
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {

@@ -21,6 +21,7 @@ import TrashLight from "../../assets/svg/trash-light.svg";
 import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
 import { RandomSlide, ExplosionAnimation } from "./animations";
+import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
 
 interface PlayerData {
   skin_name: string;
@@ -73,6 +74,7 @@ const PlayerItem = React.memo(
     const { t } = useTranslation();
     const navigation = useNavigation();
     const [key] = useState(() => `${player}_${Date.now()}`);
+    const { playButtonSound, playDeleteSound } = useSoundWithSettings();
 
     const theme = {
       background: isDarkMode
@@ -181,6 +183,7 @@ const PlayerItem = React.memo(
     const handleDelete = async () => {
       if (isDeleting) return;
       
+      playDeleteSound();
       setIsDeleting(true);
       if (teeRef.current) {
         teeRef.current.measure((x, y, width, height, pageX, pageY) => {
@@ -210,6 +213,7 @@ const PlayerItem = React.memo(
     };
 
     const handleNavigation = () => {
+      playButtonSound();
       // @ts-ignore - expo-router types are not properly set up
       navigation.navigate("info", {
         item: player,

@@ -17,6 +17,7 @@ import axios from "axios";
 import { SlideUp } from "./components/animations";
 import { FadeWrapper } from "./animations";
 import FilterButton from "./components/filterButton";
+import { useSoundWithSettings } from "./hooks/useSoundWithSettings";
 
 interface Player {
   name: string;
@@ -47,6 +48,8 @@ export default React.memo(function Main() {
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const [currentFilter, setCurrentFilter] = useState<string>("all");
+  const { playSuccessSound, playErrorSound } = useSoundWithSettings();
+  
   let params = { error: false };
   if (route.params != undefined) {
     params = route.params;
@@ -120,10 +123,12 @@ export default React.memo(function Main() {
     const trimmed = inputValue.trim();
 
     if (trimmed.length === 0) {
+      playErrorSound();
       Toast.show({ type: "info", text1: t("toasts.emptyName") });
       return;
     }
     if (trimmed.length > 16) {
+      playErrorSound();
       Toast.show({
         type: "info",
         text1: t("toasts.nameTooLong"),
@@ -131,6 +136,7 @@ export default React.memo(function Main() {
       return;
     }
     if (names.some((friend: any) => friend.name === trimmed)) {
+      playErrorSound();
       Toast.show({
         type: "info",
         text1: t("toasts.alreadyFriend"),
@@ -152,7 +158,9 @@ export default React.memo(function Main() {
       updateFilteredNames(newNames);
       setInputValue("");
       closeModal();
+      playSuccessSound();
     } catch (error) {
+      playErrorSound();
       Toast.show({ type: "error", text1: t("toasts.playerNotFound") });
     }
   };

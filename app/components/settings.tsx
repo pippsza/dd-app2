@@ -13,20 +13,38 @@ import { useTranslation } from "react-i18next";
 import { useLanguage } from "./languageProvide";
 import { useSettings } from "./settingsProvider";
 import Checkbox from "./checkbox";
+import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
 
 export default function Settings() {
   const { t } = useTranslation();
   const { language, setLanguage } = useLanguage();
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const { settings, toggleSounds, toggleNotifications } = useSettings();
+  const { playButtonSound } = useSoundWithSettings();
   
   const availableLanguages = ["en", "ru", "es", "pt", "zh", "ua"];
   
   const changeLanguage = () => {
+    playButtonSound();
     const currentIndex = availableLanguages.indexOf(language);
     const nextIndex = (currentIndex + 1) % availableLanguages.length;
     const nextLang = availableLanguages[nextIndex];
     setLanguage(nextLang);
+  };
+
+  const handleThemeToggle = () => {
+    playButtonSound();
+    toggleTheme();
+  };
+
+  const handleSoundsToggle = () => {
+    playButtonSound();
+    toggleSounds();
+  };
+
+  const handleNotificationsToggle = () => {
+    playButtonSound();
+    toggleNotifications();
   };
 
   const style = StyleSheet.create({
@@ -69,7 +87,7 @@ export default function Settings() {
             </View>
           </TouchableOpacity>
           
-          <TouchableOpacity onPress={toggleTheme} style={style.option}>
+          <TouchableOpacity onPress={handleThemeToggle} style={style.option}>
             <Text style={style.text}>{t("settings.theme")}</Text>
             {isDarkMode ? (
               <SunDark style={style.svg}></SunDark>
@@ -78,21 +96,20 @@ export default function Settings() {
             )}
           </TouchableOpacity>
           
-          <View style={style.option}>
+          <TouchableOpacity onPress={handleNotificationsToggle}  style={style.option}>
             <Text style={style.text}>{t("settings.notifications")}</Text>
             <Checkbox 
               checked={settings.notificationsEnabled} 
-              onPress={toggleNotifications} 
+        
             />
-          </View>
+          </TouchableOpacity>
           
-          <View style={style.option}>
+          <TouchableOpacity    onPress={handleSoundsToggle}   style={style.option}>
             <Text style={style.text}>{t("settings.sounds")}</Text>
             <Checkbox 
-              checked={settings.soundsEnabled} 
-              onPress={toggleSounds} 
+              checked={settings.soundsEnabled}            
             />
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
     </>

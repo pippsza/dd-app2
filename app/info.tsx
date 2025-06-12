@@ -26,6 +26,7 @@ import {
   SlideRightToLeft,
   SlideOutUp,
 } from "./animations";
+import { useSoundWithSettings } from "./hooks/useSoundWithSettings";
 
 interface RouteParams {
   item: string;
@@ -92,6 +93,7 @@ export default function Info() {
   const route = useRoute();
   const slideRef = useRef<SlideOutRef>(null);
   const { t } = useTranslation();
+  const { playButtonSound } = useSoundWithSettings();
 
   const [player, setPlayer] = useState<PlayerData | null>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -158,6 +160,7 @@ export default function Info() {
   }, [playerName, router, t]);
 
   const handleClosePress = () => {
+    playButtonSound();
     if (slideRef.current) {
       slideRef.current.slideOut();
     }

@@ -15,6 +15,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { ThemeContext } from "./themeSwitcher";
 import { FadeIn, SlideUp } from "./animations";
+import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
 
 interface ModalWindowProps {
   closeModal: () => void;
@@ -31,6 +32,7 @@ export default function ModalWindow({
 }: ModalWindowProps) {
   const { isDarkMode } = useContext(ThemeContext);
   const { t } = useTranslation();
+  const { playButtonSound, playAddSound } = useSoundWithSettings();
 
   const theme = {
     background: isDarkMode ? "rgba(255,255,255,1)" : "rgba(39,39,39,1)",
@@ -91,8 +93,18 @@ export default function ModalWindow({
 
   const handleModalPress = (e: any) => e.stopPropagation();
 
+  const handleAddPress = () => {
+    playAddSound();
+    addName();
+  };
+
+  const handleClosePress = () => {
+    playButtonSound();
+    closeModal();
+  };
+
   return (
-    <Pressable onPress={closeModal} style={styles.modal}>
+    <Pressable onPress={handleClosePress} style={styles.modal}>
       <SlideUp>
         <Pressable onPress={handleModalPress} style={styles.modalWin}>
           <Text style={styles.text}>{t("modalWindow.enterName")}</Text>
@@ -103,7 +115,7 @@ export default function ModalWindow({
             placeholder="nameless tee"
             placeholderTextColor={theme.text}
           />
-          <TouchableOpacity onPress={addName} style={styles.button}>
+          <TouchableOpacity onPress={handleAddPress} style={styles.button}>
             <Text style={styles.text}>{t("modalWindow.add")}</Text>
           </TouchableOpacity>
         </Pressable>

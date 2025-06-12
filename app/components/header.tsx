@@ -11,6 +11,7 @@ import BurgeDark from "../../assets/svg/burger-dark.svg";
 import BurgerLight from "../../assets/svg/burger-light.svg";
 import SunLight from "../../assets/svg/sun-light.svg";
 import { SlideDown } from "./animations";
+import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
 
 interface HeaderProps {
   onClose: () => void;
@@ -18,10 +19,21 @@ interface HeaderProps {
 
 export default function Header({ onClose }: HeaderProps) {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const { playButtonSound } = useSoundWithSettings();
+
+  const handleThemeToggle = () => {
+    playButtonSound();
+    toggleTheme();
+  };
+
+  const handleMenuToggle = () => {
+    playButtonSound();
+    onClose();
+  };
 
   const renderThemeButton = () => (
     <SlideDown duration={700}>
-      <TouchableOpacity onPress={toggleTheme}>
+      <TouchableOpacity onPress={handleThemeToggle}>
         {isDarkMode ? (
           <SunDark style={styles.svg} />
         ) : (
@@ -33,7 +45,7 @@ export default function Header({ onClose }: HeaderProps) {
 
   const renderMenuButton = () => (
     <SlideDown duration={1000}>
-      <TouchableOpacity onPress={onClose}>
+      <TouchableOpacity onPress={handleMenuToggle}>
         {isDarkMode ? (
           <BurgeDark style={styles.svg} />
         ) : (

@@ -4,15 +4,13 @@ import {
   responsiveWidth as rw,
 } from "react-native-responsive-dimensions";
 import { ThemeContext } from "./themeSwitcher";
-import CheckedDark from "../../assets/svg/checked-dark.svg";
-import CheckedLight from "../../assets/svg/checked-light.svg";
+import LoadSvg from "./loadSvg";
 
 interface CheckboxProps {
   checked: boolean;
-  onPress: () => void;
 }
 
-export default function Checkbox({ checked, onPress }: CheckboxProps) {
+export default function Checkbox({ checked }: CheckboxProps) {
   const { isDarkMode } = useContext(ThemeContext);
 
   const styles = StyleSheet.create({
@@ -33,14 +31,8 @@ export default function Checkbox({ checked, onPress }: CheckboxProps) {
   });
 
   return (
-    <TouchableOpacity style={styles.checkbox} onPress={onPress}>
-      {checked && (
-        isDarkMode ? (
-          <CheckedDark style={styles.checkmark} />
-        ) : (
-          <CheckedLight style={styles.checkmark} />
-        )
-      )}
-    </TouchableOpacity>
+    <View style={styles.checkbox}>
+      {checked && <LoadSvg name="checked" style={styles.checkmark} />}
+    </View>
   );
 } 

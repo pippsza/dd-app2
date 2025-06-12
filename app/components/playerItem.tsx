@@ -7,7 +7,6 @@ import {
   ActivityIndicator,
   Animated,
 } from "react-native";
-import TrashDark from "../../assets/svg/trash-dark.svg";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
@@ -17,11 +16,11 @@ import Tee from "./tee";
 import axios from "axios";
 import { useNavigation } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import TrashLight from "../../assets/svg/trash-light.svg";
 import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
 import { RandomSlide, ExplosionAnimation } from "./animations";
 import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
+import LoadSvg from "./loadSvg";
 
 interface PlayerData {
   skin_name: string;
@@ -257,15 +256,10 @@ const PlayerItem = React.memo(
 
     const renderDeleteButton = () => (
       <TouchableOpacity onPress={handleDelete} disabled={isDeleting}>
-        {isDarkMode ? (
-          <TrashDark
-            style={[styles.svg, isDeleting && styles.disabledButton]}
-          />
-        ) : (
-          <TrashLight
-            style={[styles.svg, isDeleting && styles.disabledButton]}
-          />
-        )}
+        <LoadSvg 
+          name="trash" 
+          style={[styles.svg, isDeleting && styles.disabledButton]} 
+        />
       </TouchableOpacity>
     );
 

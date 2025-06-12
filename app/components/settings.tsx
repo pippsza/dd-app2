@@ -5,8 +5,6 @@ import {
   responsiveWidth as rw,
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
-import SunLight from "../../assets/svg/sun-light.svg";
-import SunDark from "../../assets/svg/sun-dark.svg";
 import { StyleSheet } from "react-native";
 import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
@@ -14,6 +12,7 @@ import { useLanguage } from "./languageProvide";
 import { useSettings } from "./settingsProvider";
 import Checkbox from "./checkbox";
 import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
+import LoadSvg from "./loadSvg";
 
 export default function Settings() {
   const { t } = useTranslation();
@@ -89,18 +88,13 @@ export default function Settings() {
           
           <TouchableOpacity onPress={handleThemeToggle} style={style.option}>
             <Text style={style.text}>{t("settings.theme")}</Text>
-            {isDarkMode ? (
-              <SunDark style={style.svg}></SunDark>
-            ) : (
-              <SunLight style={style.svg}></SunLight>
-            )}
+            <LoadSvg name="sun" style={style.svg} />
           </TouchableOpacity>
           
           <TouchableOpacity onPress={handleNotificationsToggle}  style={style.option}>
             <Text style={style.text}>{t("settings.notifications")}</Text>
             <Checkbox 
               checked={settings.notificationsEnabled} 
-        
             />
           </TouchableOpacity>
           

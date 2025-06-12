@@ -6,10 +6,9 @@ import {
 } from "react-native-responsive-dimensions";
 import { StyleSheet } from "react-native";
 import { ThemeContext } from "./themeSwitcher";
-import PlusDark from "../../assets/svg/plus-dark.svg";
-import PlusLight from "../../assets/svg/plus-light.svg";
 import { SlideUp } from "./animations";
 import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
+import LoadSvg from "./loadSvg";
 
 type Props = { openModal: () => void };
 
@@ -58,11 +57,7 @@ export default function AddFrBttn({ openModal }: Props) {
         <SlideUp>
           <View style={style.box} onTouchStart={handlePress}>
             <TouchableOpacity>
-              {isDarkMode ? (
-                <PlusDark style={style.plus}></PlusDark>
-              ) : (
-                <PlusLight style={style.plus}></PlusLight>
-              )}
+              <LoadSvg name="plus" style={style.plus} />
             </TouchableOpacity>
           </View>
         </SlideUp>

@@ -11,10 +11,6 @@ import Spinner from "react-native-loading-spinner-overlay";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { useTranslation } from "react-i18next";
-import CrossDark from "../assets/svg/cross-dark.svg";
-import CrossLight from "../assets/svg/cross-light.svg";
-import MoreDark from "../assets/svg/more-dark.svg";
-import MoreLight from "../assets/svg/more-light.svg";
 import GameCategoryPie from "./components/gameCategoriesPie";
 import GameModePie from "./components/gamemodesPie";
 import TotalPlayed from "./components/totalPlayed";
@@ -27,6 +23,7 @@ import {
   SlideOutUp,
 } from "./animations";
 import { useSoundWithSettings } from "./hooks/useSoundWithSettings";
+import LoadSvg from "./components/loadSvg";
 
 interface RouteParams {
   item: string;
@@ -184,11 +181,7 @@ export default function Info() {
     <SlideOutUp ref={slideRef} onSlideOutComplete={handleClose} duration={300}>
       <View style={styles.mainContainer}>
         <TouchableOpacity onPress={handleClosePress} style={styles.closeButton}>
-          {isDarkMode ? (
-            <CrossDark style={styles.svg} />
-          ) : (
-            <CrossLight style={styles.svg} />
-          )}
+          <LoadSvg name="cross" style={styles.svg} />
         </TouchableOpacity>
 
         {player && (

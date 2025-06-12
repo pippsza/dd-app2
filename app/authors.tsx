@@ -2,8 +2,6 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { Link, useNavigation } from "expo-router";
 import Settings from "./components/settings";
 import AuthorsInfo from "./components/authorsInfo";
-import CrossDark from "../assets/svg/cross-dark.svg";
-import CrossLight from "../assets/svg/cross-light.svg";
 import { StyleSheet } from "react-native";
 import { useContext, useRef } from "react";
 import { ThemeContext } from "./components/themeSwitcher";
@@ -16,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { useLanguage } from "./components/languageProvide";
 import { FadeWrapper } from "./animations";
 import { useSoundWithSettings } from "./hooks/useSoundWithSettings";
+import LoadSvg from "./components/loadSvg";
 
 export default function Authors() {
   const { t } = useTranslation();
@@ -67,11 +66,7 @@ export default function Authors() {
               style={style.svgContainer}
               onPress={handleClosePress}
             >
-              {isDarkMode ? (
-                <CrossDark style={style.svg}></CrossDark>
-              ) : (
-                <CrossLight style={style.svg}></CrossLight>
-              )}
+              <LoadSvg name="cross" style={style.svg} />
             </TouchableOpacity>
 
             <AuthorsInfo></AuthorsInfo>

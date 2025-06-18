@@ -21,6 +21,7 @@ import {
   SlideRightToLeft,
   SlideOutUp,
 } from "./animations";
+import { AnimatedButton } from "./components/animations";
 import { useSoundWithSettings } from "./hooks/useSoundWithSettings";
 import LoadSvg from "./components/loadSvg";
 import { useTheme } from "./hooks/useTheme";
@@ -179,9 +180,13 @@ export default function Info() {
   const renderContent = () => (
     <SlideOutUp ref={slideRef} onSlideOutComplete={handleClose} duration={300}>
       <View style={styles.mainContainer}>
-        <TouchableOpacity onPress={handleClosePress} style={styles.closeButton}>
+        <AnimatedButton 
+          animationType="shake" 
+          onPress={handleClosePress}
+          style={styles.closeButton}
+        >
           <LoadSvg name="cross" style={styles.svg} />
-        </TouchableOpacity>
+        </AnimatedButton>
 
         {player && (
           <>

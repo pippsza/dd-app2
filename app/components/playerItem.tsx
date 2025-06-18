@@ -18,7 +18,7 @@ import { useNavigation } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ThemeContext } from "./themeSwitcher";
 import { useTranslation } from "react-i18next";
-import { RandomSlide, ExplosionAnimation } from "./animations";
+import { RandomSlide, ExplosionAnimation, AnimatedButton } from "./animations";
 import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
 import LoadSvg from "./loadSvg";
 import { useTheme } from "../hooks/useTheme";
@@ -249,12 +249,16 @@ const PlayerItem = React.memo(
     );
 
     const renderDeleteButton = () => (
-      <TouchableOpacity onPress={handleDelete} disabled={isDeleting}>
+      <AnimatedButton 
+        animationType="shake" 
+        onPress={handleDelete}
+        style={isDeleting ? styles.disabledButton : undefined}
+      >
         <LoadSvg 
           name="trash" 
           style={[styles.svg, isDeleting && styles.disabledButton]} 
         />
-      </TouchableOpacity>
+      </AnimatedButton>
     );
 
     return (

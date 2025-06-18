@@ -14,7 +14,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
 import { useTheme } from "../hooks/useTheme";
-import { ModalAnimation } from "./animations";
+import { ModalAnimation, AnimatedButton } from "./animations";
 
 interface ModalWindowProps {
   closeModal: () => void;
@@ -120,12 +120,20 @@ export default function ModalWindow({
             placeholderTextColor={theme.text.secondary}
           />
           <View style={{ flexDirection: "row", gap: rw(5) }}>
-            <TouchableOpacity style={styles.button} onPress={handleClosePress}>
+            <AnimatedButton 
+              animationType="scale" 
+              onPress={handleClosePress}
+              style={styles.button}
+            >
               <Text style={styles.text}>{t("modalWindow.cancel")}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleAddPress}>
+            </AnimatedButton>
+            <AnimatedButton 
+              animationType="bounce" 
+              onPress={handleAddPress}
+              style={styles.button}
+            >
               <Text style={styles.text}>{t("modalWindow.add")}</Text>
-            </TouchableOpacity>
+            </AnimatedButton>
           </View>
         </TouchableOpacity>
       </ModalAnimation>

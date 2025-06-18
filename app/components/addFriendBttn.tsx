@@ -5,7 +5,7 @@ import {
   responsiveWidth as rw,
 } from "react-native-responsive-dimensions";
 import { StyleSheet } from "react-native";
-import { SlideUp } from "./animations";
+import { SlideUp, AnimatedButton } from "./animations";
 import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
 import LoadSvg from "./loadSvg";
 import { useTheme } from "../hooks/useTheme";
@@ -70,9 +70,13 @@ export default function AddFrBttn({ openModal }: Props) {
       <View style={style.fakeBox}>
         <SlideUp>
           <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
-            <TouchableOpacity style={style.box} onPress={handlePress}>
+            <AnimatedButton 
+              animationType="bounce" 
+              onPress={handlePress}
+              style={style.box}
+            >
               <LoadSvg name="plus" style={style.plus} />
-            </TouchableOpacity>
+            </AnimatedButton>
           </Animated.View>
         </SlideUp>
       </View>

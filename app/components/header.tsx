@@ -6,7 +6,7 @@ import {
 } from "react-native-responsive-dimensions";
 import { useNavigation } from "expo-router";
 import { ThemeContext } from "./themeSwitcher";
-import { SlideDown } from "./animations";
+import { SlideDown, AnimatedButton } from "./animations";
 import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
 import LoadSvg from "./loadSvg";
 
@@ -91,18 +91,24 @@ export default function Header({ onClose }: HeaderProps) {
           }
         ] 
       }}>
-        <TouchableOpacity onPress={handleThemeToggle}>
+        <AnimatedButton 
+          animationType="rotate" 
+          onPress={handleThemeToggle}
+        >
           <LoadSvg name="sun" style={styles.svg} />
-        </TouchableOpacity>
+        </AnimatedButton>
       </Animated.View>
     </SlideDown>
   );
 
   const renderMenuButton = () => (
     <SlideDown duration={1000}>
-      <TouchableOpacity onPress={handleMenuToggle}>
+      <AnimatedButton 
+        animationType="scale" 
+        onPress={handleMenuToggle}
+      >
         <LoadSvg name="burger" style={styles.svg} />
-      </TouchableOpacity>
+      </AnimatedButton>
     </SlideDown>
   );
 

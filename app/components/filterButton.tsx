@@ -7,7 +7,7 @@ import {
   responsiveFontSize as rf,
 } from "react-native-responsive-dimensions";
 import { useTranslation } from "react-i18next";
-import { SlideUp } from "./animations";
+import { SlideUp, AnimatedButton } from "./animations";
 import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
 import { useTheme } from "../hooks/useTheme";
 
@@ -99,7 +99,7 @@ export default function FilterButton({
     filterContainer: {
       position: "absolute",
       bottom: rh(5),
-      right: rw(-12.4),
+      right: rw(-1.6),
       backgroundColor: theme.primary,
       borderWidth: 4,
       borderColor: theme.border.primary,
@@ -126,9 +126,10 @@ export default function FilterButton({
     <Fragment>
       <View style={style.invContainer}>
         <SlideUp duration={1200}>
-          <TouchableOpacity
-            style={style.container}
+          <AnimatedButton
+            animationType="pulse"
             onPress={handleMenuToggle}
+            style={style.container}
           >
             <View>
               <Text style={style.text}>
@@ -139,23 +140,24 @@ export default function FilterButton({
               <SlideUp duration={260}>
                 <View style={style.filterContainer}>
                   {filters.map((filter) => (
-                    <TouchableOpacity
+                    <AnimatedButton
                       key={filter}
+                      animationType="scale"
+                      onPress={() => handleFilter(filter)}
                       style={[
                         style.filterButton,
                         currentFilter === filter && style.activeFilter,
                       ]}
-                      onPress={() => handleFilter(filter)}
                     >
                       <Text style={style.filterButtonText}>
                         {getDisplayFilter(filter)}
                       </Text>
-                    </TouchableOpacity>
+                    </AnimatedButton>
                   ))}
                 </View>
               </SlideUp>
             )}
-          </TouchableOpacity>
+          </AnimatedButton>
         </SlideUp>
       </View>
     </Fragment>

@@ -1,9 +1,9 @@
+import React, { useRef } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Link, useNavigation } from "expo-router";
 import Settings from "./components/settings";
 import AuthorsInfo from "./components/authorsInfo";
 import { StyleSheet } from "react-native";
-import { useRef } from "react";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
@@ -12,6 +12,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "./components/languageProvide";
 import { FadeWrapper } from "./animations";
+import { AnimatedButton } from "./components/animations";
 import { useSoundWithSettings } from "./hooks/useSoundWithSettings";
 import LoadSvg from "./components/loadSvg";
 import { useTheme } from "./hooks/useTheme";
@@ -46,9 +47,10 @@ export default function Authors() {
       top: 0,
     },
   });
-  const fadeRef = useRef();
+  const fadeRef = useRef<any>(null);
   const navigation = useNavigation();
   const onClose = () => {
+    // @ts-ignore - expo-router types are not properly set up
     navigation.navigate("index");
   };
   const handleClosePress = () => {
@@ -62,12 +64,13 @@ export default function Authors() {
       <FadeWrapper ref={fadeRef} onFadeOutComplete={onClose}>
         <View style={style.box}>
           <View style={style.container}>
-            <TouchableOpacity
-              style={style.svgContainer}
+            <AnimatedButton
+              animationType="shake"
               onPress={handleClosePress}
+              style={style.svgContainer}
             >
               <LoadSvg name="cross" style={style.svg} />
-            </TouchableOpacity>
+            </AnimatedButton>
 
             <AuthorsInfo></AuthorsInfo>
             <Settings></Settings>

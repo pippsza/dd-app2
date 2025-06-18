@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, ReactNode } from "react";
-import { Animated, Dimensions, Easing, StyleProp, ViewStyle, View } from "react-native";
+import React, { useEffect, useRef, ReactNode, forwardRef } from "react";
+import { Animated, Dimensions, Easing, StyleProp, ViewStyle, View, TouchableOpacity } from "react-native";
 
 const { width, height } = Dimensions.get("window");
 
@@ -31,6 +31,14 @@ interface ExplosionAnimationProps {
   onComplete?: () => void;
   color?: string;
   size?: number;
+}
+
+interface AnimatedButtonProps {
+  children: ReactNode;
+  onPress: () => void;
+  animationType?: 'scale' | 'bounce' | 'shake' | 'wiggle' | 'pulse' | 'rotate';
+  style?: any;
+  disabled?: boolean;
 }
 
 export function SlideUp({ children, duration = ANIMATION_DURATION, style }: AnimationProps) {
@@ -438,3 +446,147 @@ export function ModalAnimation({
     </Animated.View>
   );
 }
+
+export const AnimatedButton = forwardRef<View, AnimatedButtonProps>(({ 
+  children, 
+  onPress, 
+  animationType = 'scale',
+  style,
+  disabled = false 
+}, ref) => {
+  const scaleValue = useRef(new Animated.Value(1)).current;
+  const rotateValue = useRef(new Animated.Value(0)).current;
+
+  const handlePress = () => {
+    if (disabled) return;
+
+    switch (animationType) {
+      case 'scale':
+        Animated.sequence([
+          Animated.timing(scaleValue, {
+            toValue: 0.95,
+            duration: 100,
+            useNativeDriver: true,
+          }),
+          Animated.timing(scaleValue, {
+            toValue: 1,
+            duration: 100,
+            useNativeDriver: true,
+          }),
+        ]).start();
+        break;
+      
+      case 'bounce':
+        Animated.sequence([
+          Animated.timing(scaleValue, {
+            toValue: 1.1,
+            duration: 150,
+            useNativeDriver: true,
+          }),
+          Animated.timing(scaleValue, {
+            toValue: 0.9,
+            duration: 150,
+            useNativeDriver: true,
+          }),
+          Animated.timing(scaleValue, {
+            toValue: 1,
+            duration: 150,
+            useNativeDriver: true,
+          }),
+        ]).start();
+        break;
+      
+      case 'shake':
+        Animated.sequence([
+          Animated.timing(rotateValue, {
+            toValue: -5,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          Animated.timing(rotateValue, {
+            toValue: 5,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          Animated.timing(rotateValue, {
+            toValue: -5,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          Animated.timing(rotateValue, {
+            toValue: 0,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+        ]).start();
+        break;
+      
+      case 'wiggle':
+        Animated.sequence([
+          Animated.timing(rotateValue, {
+            toValue: -3,
+            duration: 100,
+            useNativeDriver: true,
+          }),
+          Animated.timing(rotateValue, {
+            toValue: 3,
+            duration: 100,
+            useNativeDriver: true,
+          }),
+          Animated.timing(rotateValue, {
+            toValue: 0,
+            duration: 100,
+            useNativeDriver: true,
+          }),
+        ]).start();
+        break;
+      
+      case 'pulse':
+        Animated.sequence([
+          Animated.timing(scaleValue, {
+            toValue: 1.05,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+          Animated.timing(scaleValue, {
+            toValue: 1,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+        ]).start();
+        break;
+      
+      case 'rotate':
+        Animated.timing(rotateValue, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }).start(() => {
+          rotateValue.setValue(0);
+        });
+        break;
+    }
+
+    onPress();
+  };
+
+  const animatedStyle = {
+    transform: [
+      { scale: scaleValue },
+      { 
+        rotate: rotateValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: ['0deg', '360deg']
+        })
+      }
+    ]
+  };
+
+  return (
+    <Animated.View ref={ref} style={[style, animatedStyle]}>
+      <TouchableOpacity onPress={handlePress} disabled={disabled}>
+        {children}
+      </TouchableOpacity>
+    </Animated.View>
+  );
+});

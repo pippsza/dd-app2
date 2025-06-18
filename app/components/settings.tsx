@@ -21,6 +21,9 @@ export default function Settings() {
   const { playButtonSound } = useSoundWithSettings();
   const themeButtonScale = useRef(new Animated.Value(1)).current;
   const themeButtonRotation = useRef(new Animated.Value(0)).current;
+  const languageButtonScale = useRef(new Animated.Value(1)).current;
+  const notificationsButtonScale = useRef(new Animated.Value(1)).current;
+  const soundsButtonScale = useRef(new Animated.Value(1)).current;
   
   const availableLanguages = ["en", "ru", "es", "pt", "zh", "ua"];
   const currentLanguageIndex = availableLanguages.indexOf(language);
@@ -29,21 +32,46 @@ export default function Settings() {
   
   const changeLanguage = () => {
     playButtonSound();
+    
+    // Анимация bounce
+    Animated.sequence([
+      Animated.timing(languageButtonScale, {
+        toValue: 1.1,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(languageButtonScale, {
+        toValue: 0.9,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(languageButtonScale, {
+        toValue: 1,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+    ]).start();
+    
     setLanguage(nextLanguage);
   };
 
   const handleThemeToggle = () => {
     playButtonSound();
     
-    // Анимация нажатия кнопки
+    // Анимация wiggle
     Animated.sequence([
       Animated.timing(themeButtonScale, {
-        toValue: 0.8,
+        toValue: -3,
         duration: 100,
         useNativeDriver: true,
       }),
       Animated.timing(themeButtonScale, {
-        toValue: 1,
+        toValue: 3,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(themeButtonScale, {
+        toValue: 0,
         duration: 100,
         useNativeDriver: true,
       }),
@@ -64,11 +92,51 @@ export default function Settings() {
 
   const handleSoundsToggle = () => {
     playButtonSound();
+    
+    // Анимация shake
+    Animated.sequence([
+      Animated.timing(soundsButtonScale, {
+        toValue: -5,
+        duration: 50,
+        useNativeDriver: true,
+      }),
+      Animated.timing(soundsButtonScale, {
+        toValue: 5,
+        duration: 50,
+        useNativeDriver: true,
+      }),
+      Animated.timing(soundsButtonScale, {
+        toValue: -5,
+        duration: 50,
+        useNativeDriver: true,
+      }),
+      Animated.timing(soundsButtonScale, {
+        toValue: 0,
+        duration: 50,
+        useNativeDriver: true,
+      }),
+    ]).start();
+    
     toggleSounds();
   };
 
   const handleNotificationsToggle = () => {
     playButtonSound();
+    
+    // Анимация pulse
+    Animated.sequence([
+      Animated.timing(notificationsButtonScale, {
+        toValue: 1.05,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(notificationsButtonScale, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start();
+    
     toggleNotifications();
   };
 
@@ -105,43 +173,68 @@ export default function Settings() {
         <Text style={style.head}>{t("settings.settings")}</Text>
 
         <View style={style.container}>
-          <TouchableOpacity style={style.option} onPress={changeLanguage}>
-            <Text style={style.text}>{t("settings.language")}</Text>
-            <View>
-              <Text style={style.text}>{t("settings.lang")}</Text>
-            </View>
-          </TouchableOpacity>
+          <Animated.View style={{ 
+            transform: [{ scale: languageButtonScale }] 
+          }}>
+            <TouchableOpacity style={style.option} onPress={changeLanguage}>
+              <Text style={style.text}>{t("settings.language")}</Text>
+              <View>
+                <Text style={style.text}>{t("settings.lang")}</Text>
+              </View>
+            </TouchableOpacity>
+          </Animated.View>
           
-          <TouchableOpacity onPress={handleThemeToggle} style={style.option}>
-            <Text style={style.text}>{t("settings.theme")}</Text>
-            <Animated.View style={{ 
-              transform: [
-                { scale: themeButtonScale },
-                { 
-                  rotate: themeButtonRotation.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: ['0deg', '360deg']
-                  })
-                }
-              ] 
-            }}>
-              <LoadSvg name="sun" style={style.svg} />
-            </Animated.View>
-          </TouchableOpacity>
+          <Animated.View style={{ 
+            transform: [
+              { rotate: themeButtonScale.interpolate({
+                inputRange: [-3, 3],
+                outputRange: ['-3deg', '3deg']
+              })}
+            ] 
+          }}>
+            <TouchableOpacity onPress={handleThemeToggle} style={style.option}>
+              <Text style={style.text}>{t("settings.theme")}</Text>
+              <Animated.View style={{ 
+                transform: [
+                  { 
+                    rotate: themeButtonRotation.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ['0deg', '360deg']
+                    })
+                  }
+                ] 
+              }}>
+                <LoadSvg name="sun" style={style.svg} />
+              </Animated.View>
+            </TouchableOpacity>
+          </Animated.View>
           
-          <TouchableOpacity onPress={handleNotificationsToggle}  style={style.option}>
-            <Text style={style.text}>{t("settings.notifications")}</Text>
-            <Checkbox 
-              checked={settings.notificationsEnabled} 
-            />
-          </TouchableOpacity>
+          <Animated.View style={{ 
+            transform: [{ scale: notificationsButtonScale }] 
+          }}>
+            <TouchableOpacity onPress={handleNotificationsToggle}  style={style.option}>
+              <Text style={style.text}>{t("settings.notifications")}</Text>
+              <Checkbox 
+                checked={settings.notificationsEnabled} 
+              />
+            </TouchableOpacity>
+          </Animated.View>
           
-          <TouchableOpacity    onPress={handleSoundsToggle}   style={style.option}>
-            <Text style={style.text}>{t("settings.sounds")}</Text>
-            <Checkbox 
-              checked={settings.soundsEnabled}            
-            />
-          </TouchableOpacity>
+          <Animated.View style={{ 
+            transform: [
+              { rotate: soundsButtonScale.interpolate({
+                inputRange: [-5, 5],
+                outputRange: ['-5deg', '5deg']
+              })}
+            ] 
+          }}>
+            <TouchableOpacity    onPress={handleSoundsToggle}   style={style.option}>
+              <Text style={style.text}>{t("settings.sounds")}</Text>
+              <Checkbox 
+                checked={settings.soundsEnabled}            
+              />
+            </TouchableOpacity>
+          </Animated.View>
         </View>
       </View>
     </>

@@ -288,3 +288,77 @@ export function ExplosionAnimation({
     </View>
   );
 }
+
+// Анимация перехода между темами
+interface ThemeTransitionProps {
+  children: ReactNode;
+  isTransitioning: boolean;
+  onTransitionComplete?: () => void;
+  duration?: number;
+  style?: any;
+}
+
+export function ThemeTransition({ 
+  children, 
+  isTransitioning, 
+  onTransitionComplete, 
+  duration = 400,
+  style 
+}: ThemeTransitionProps) {
+  const opacity = useRef(new Animated.Value(1)).current;
+  const scale = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (isTransitioning) {
+      // Анимация исчезновения
+      const fadeOut = Animated.timing(opacity, {
+        toValue: 0.3,
+        duration: duration * 0.4,
+        useNativeDriver: true,
+        easing: Easing.out(Easing.cubic),
+      });
+
+      const scaleDown = Animated.timing(scale, {
+        toValue: 0.95,
+        duration: duration * 0.4,
+        useNativeDriver: true,
+        easing: Easing.out(Easing.cubic),
+      });
+
+      Animated.parallel([fadeOut, scaleDown]).start(() => {
+        // Анимация появления
+        const fadeIn = Animated.timing(opacity, {
+          toValue: 1,
+          duration: duration * 0.6,
+          useNativeDriver: true,
+          easing: Easing.out(Easing.cubic),
+        });
+
+        const scaleUp = Animated.timing(scale, {
+          toValue: 1,
+          duration: duration * 0.6,
+          useNativeDriver: true,
+          easing: Easing.out(Easing.cubic),
+        });
+
+        Animated.parallel([fadeIn, scaleUp]).start(() => {
+          onTransitionComplete?.();
+        });
+      });
+    }
+  }, [isTransitioning, duration, onTransitionComplete]);
+
+  return (
+    <Animated.View 
+      style={[
+        style,
+        {
+          opacity,
+          transform: [{ scale }],
+        }
+      ]}
+    >
+      {children}
+    </Animated.View>
+  );
+}

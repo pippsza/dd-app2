@@ -7,12 +7,14 @@ type ThemeContextType = {
   currentTheme: ThemeType;
   toggleTheme: () => void;
   isDarkMode: boolean; // для обратной совместимости
+  isTransitioning: boolean;
 };
 
 export const ThemeContext = createContext<ThemeContextType>({
   currentTheme: 'light',
   toggleTheme: () => {},
   isDarkMode: false,
+  isTransitioning: false,
 });
 
 type Props = { children: ReactNode };
@@ -40,6 +42,7 @@ const AVAILABLE_THEMES: ThemeType[] = [
 export const ThemeProvider = ({ children }: Props) => {
   const [currentTheme, setCurrentTheme] = useState<ThemeType>('light');
   const [loading, setLoading] = useState(true);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     const loadTheme = async () => {
@@ -59,14 +62,22 @@ export const ThemeProvider = ({ children }: Props) => {
 
   const toggleTheme = async () => {
     try {
+      setIsTransitioning(true);
+      
       const currentIndex = AVAILABLE_THEMES.indexOf(currentTheme);
       const nextIndex = (currentIndex + 1) % AVAILABLE_THEMES.length;
       const nextTheme = AVAILABLE_THEMES[nextIndex];
       
-      setCurrentTheme(nextTheme);
+      // Небольшая задержка для анимации
+      setTimeout(() => {
+        setCurrentTheme(nextTheme);
+        setIsTransitioning(false);
+      }, 200);
+      
       await AsyncStorage.setItem(THEME_KEY, nextTheme);
     } catch (e) {
       console.error("Error saving theme:", e);
+      setIsTransitioning(false);
     }
   };
 
@@ -78,7 +89,7 @@ export const ThemeProvider = ({ children }: Props) => {
   }
 
   return (
-    <ThemeContext.Provider value={{ currentTheme, toggleTheme, isDarkMode }}>
+    <ThemeContext.Provider value={{ currentTheme, toggleTheme, isDarkMode, isTransitioning }}>
       {children}
     </ThemeContext.Provider>
   );

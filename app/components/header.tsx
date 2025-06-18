@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { useContext, useRef, useEffect } from "react";
+import { View, TouchableOpacity, StyleSheet, Animated } from "react-native";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
@@ -17,9 +17,59 @@ interface HeaderProps {
 export default function Header({ onClose }: HeaderProps) {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const { playButtonSound } = useSoundWithSettings();
+  const themeButtonScale = useRef(new Animated.Value(1)).current;
+  const themeButtonRotation = useRef(new Animated.Value(0)).current;
+  const themeButtonPulse = useRef(new Animated.Value(1)).current;
+
+  // Анимация пульсации для показа активной темы
+  useEffect(() => {
+    const pulseAnimation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(themeButtonPulse, {
+          toValue: 1.1,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(themeButtonPulse, {
+          toValue: 1,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    
+    pulseAnimation.start();
+    
+    return () => pulseAnimation.stop();
+  }, []);
 
   const handleThemeToggle = () => {
     playButtonSound();
+    
+    // Анимация нажатия кнопки
+    Animated.sequence([
+      Animated.timing(themeButtonScale, {
+        toValue: 0.8,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(themeButtonScale, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+    
+    // Анимация вращения иконки
+    Animated.timing(themeButtonRotation, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      // Сбрасываем значение для следующего вращения
+      themeButtonRotation.setValue(0);
+    });
+    
     toggleTheme();
   };
 
@@ -30,9 +80,21 @@ export default function Header({ onClose }: HeaderProps) {
 
   const renderThemeButton = () => (
     <SlideDown duration={700}>
-      <TouchableOpacity onPress={handleThemeToggle}>
-        <LoadSvg name="sun" style={styles.svg} />
-      </TouchableOpacity>
+      <Animated.View style={{ 
+        transform: [
+          { scale: Animated.multiply(themeButtonScale, themeButtonPulse) },
+          { 
+            rotate: themeButtonRotation.interpolate({
+              inputRange: [0, 1],
+              outputRange: ['0deg', '360deg']
+            })
+          }
+        ] 
+      }}>
+        <TouchableOpacity onPress={handleThemeToggle}>
+          <LoadSvg name="sun" style={styles.svg} />
+        </TouchableOpacity>
+      </Animated.View>
     </SlideDown>
   );
 

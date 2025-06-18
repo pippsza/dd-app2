@@ -17,8 +17,10 @@
     "youtube": "Ютуб"
   },
   "modalWindow": {
+    "addFriend": "Додати друга",
     "enterName": "Введіть ім'я друга:",
-    "add": "Додати"
+    "add": "Додати",
+    "cancel": "Скасувати"
   },
   "playerItem": {
     "offline": "Не в мережі",

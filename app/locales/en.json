@@ -17,8 +17,10 @@
     "youtube": "Youtube"
   },
   "modalWindow": {
+    "addFriend": "Add Friend",
     "enterName": "Enter friend name:",
-    "add": "Add"
+    "add": "Add",
+    "cancel": "Cancel"
   },
   "playerItem": {
     "offline": "Offline",

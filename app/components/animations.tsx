@@ -362,3 +362,79 @@ export function ThemeTransition({
     </Animated.View>
   );
 }
+
+// Анимация для модального окна
+interface ModalAnimationProps {
+  children: ReactNode;
+  isVisible: boolean;
+  onAnimationComplete?: () => void;
+  duration?: number;
+  style?: any;
+}
+
+export function ModalAnimation({ 
+  children, 
+  isVisible, 
+  onAnimationComplete, 
+  duration = 300,
+  style 
+}: ModalAnimationProps) {
+  const opacity = useRef(new Animated.Value(0)).current;
+  const scale = useRef(new Animated.Value(0.8)).current;
+
+  useEffect(() => {
+    if (isVisible) {
+      // Анимация появления
+      Animated.parallel([
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration,
+          useNativeDriver: true,
+          easing: Easing.out(Easing.cubic),
+        }),
+        Animated.timing(scale, {
+          toValue: 1,
+          duration,
+          useNativeDriver: true,
+          easing: Easing.out(Easing.cubic),
+        }),
+      ]).start(() => {
+        onAnimationComplete?.();
+      });
+    } else {
+      // Анимация исчезновения
+      Animated.parallel([
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration: duration * 0.7,
+          useNativeDriver: true,
+          easing: Easing.in(Easing.cubic),
+        }),
+        Animated.timing(scale, {
+          toValue: 0.8,
+          duration: duration * 0.7,
+          useNativeDriver: true,
+          easing: Easing.in(Easing.cubic),
+        }),
+      ]).start();
+    }
+  }, [isVisible, duration, onAnimationComplete]);
+
+  if (!isVisible) {
+    return null;
+  }
+
+  return (
+    <Animated.View 
+      style={[
+        style,
+        {
+          opacity,
+          transform: [{ scale }],
+        }
+      ]}
+    >
+      {children}
+    </Animated.View>
+  );
+}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
 import { useTheme } from "../hooks/useTheme";
+import { ModalAnimation } from "./animations";
 
 interface ModalWindowProps {
   closeModal: () => void;
@@ -31,6 +32,20 @@ export default function ModalWindow({
   const { theme } = useTheme();
   const { t } = useTranslation();
   const { playButtonSound, playAddSound } = useSoundWithSettings();
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Запускаем анимацию появления при монтировании
+    setIsVisible(true);
+  }, []);
+
+  const handleClose = () => {
+    setIsVisible(false);
+    // Небольшая задержка для завершения анимации исчезновения
+    setTimeout(() => {
+      closeModal();
+    }, 200);
+  };
 
   const styles = StyleSheet.create({
     modal: {
@@ -89,29 +104,31 @@ export default function ModalWindow({
 
   const handleClosePress = () => {
     playButtonSound();
-    closeModal();
+    handleClose();
   };
 
   return (
     <TouchableOpacity style={styles.modal} onPress={handleClosePress}>
-      <TouchableOpacity style={styles.modalWin} onPress={handleModalPress}>
-        <Text style={styles.text}>{t("modalWindow.addFriend")}</Text>
-        <TextInput
-          style={styles.input}
-          value={inputValue}
-          onChangeText={setInputValue}
-          placeholder={t("modalWindow.enterName")}
-          placeholderTextColor={theme.text.secondary}
-        />
-        <View style={{ flexDirection: "row", gap: rw(5) }}>
-          <TouchableOpacity style={styles.button} onPress={handleClosePress}>
-            <Text style={styles.text}>{t("modalWindow.cancel")}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={handleAddPress}>
-            <Text style={styles.text}>{t("modalWindow.add")}</Text>
-          </TouchableOpacity>
-        </View>
-      </TouchableOpacity>
+      <ModalAnimation isVisible={isVisible} duration={300}>
+        <TouchableOpacity style={styles.modalWin} onPress={handleModalPress}>
+          <Text style={styles.text}>{t("modalWindow.addFriend")}</Text>
+          <TextInput
+            style={styles.input}
+            value={inputValue}
+            onChangeText={setInputValue}
+            placeholder={t("modalWindow.enterName")}
+            placeholderTextColor={theme.text.secondary}
+          />
+          <View style={{ flexDirection: "row", gap: rw(5) }}>
+            <TouchableOpacity style={styles.button} onPress={handleClosePress}>
+              <Text style={styles.text}>{t("modalWindow.cancel")}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={handleAddPress}>
+              <Text style={styles.text}>{t("modalWindow.add")}</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </ModalAnimation>
     </TouchableOpacity>
   );
 }

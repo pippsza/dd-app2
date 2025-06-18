@@ -17,8 +17,10 @@
     "youtube": "Youtube"
   },
   "modalWindow": {
+    "addFriend": "添加朋友",
     "enterName": "输入朋友名字：",
-    "add": "添加"
+    "add": "添加",
+    "cancel": "取消"
   },
   "playerItem": {
     "offline": "离线",

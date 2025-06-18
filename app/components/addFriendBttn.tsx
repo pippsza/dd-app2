@@ -1,5 +1,5 @@
-import React from "react";
-import { TouchableOpacity, View } from "react-native";
+import React, { useRef } from "react";
+import { TouchableOpacity, View, Animated } from "react-native";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
@@ -15,9 +15,25 @@ type Props = { openModal: () => void };
 export default function AddFrBttn({ openModal }: Props) {
   const { theme } = useTheme();
   const { playButtonSound } = useSoundWithSettings();
+  const buttonScale = useRef(new Animated.Value(1)).current;
 
   const handlePress = () => {
     playButtonSound();
+    
+    // Анимация нажатия кнопки
+    Animated.sequence([
+      Animated.timing(buttonScale, {
+        toValue: 0.9,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(buttonScale, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+    
     openModal();
   };
 
@@ -53,11 +69,11 @@ export default function AddFrBttn({ openModal }: Props) {
     <>
       <View style={style.fakeBox}>
         <SlideUp>
-          <View style={style.box} onTouchStart={handlePress}>
-            <TouchableOpacity>
+          <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
+            <TouchableOpacity style={style.box} onPress={handlePress}>
               <LoadSvg name="plus" style={style.plus} />
             </TouchableOpacity>
-          </View>
+          </Animated.View>
         </SlideUp>
       </View>
     </>

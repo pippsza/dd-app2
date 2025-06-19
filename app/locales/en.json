@@ -89,5 +89,9 @@
     "cancel": "Cancel",
     "reset": "Reset",
     "ok": "OK"
+  },
+  "notFound": {
+    "title": "Page not found or no internet connection",
+    "desc": "Sorry, we couldn't find the page you were looking for or you are offline. Try checking your internet connection or return to the main screen."
   }
 }

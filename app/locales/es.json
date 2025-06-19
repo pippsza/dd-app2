@@ -89,5 +89,9 @@
     "cancel": "Cancelar",
     "reset": "Restablecer",
     "ok": "OK"
+  },
+  "notFound": {
+    "title": "Página no encontrada o sin conexión a internet",
+    "desc": "Lo sentimos, no pudimos encontrar la página que buscabas o estás sin conexión. Intenta revisar tu conexión a internet o vuelve a la pantalla principal."
   }
 }

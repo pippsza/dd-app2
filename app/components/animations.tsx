@@ -583,8 +583,8 @@ export const AnimatedButton = forwardRef<View, AnimatedButtonProps>(({
   };
 
   return (
-    <Animated.View ref={ref} style={[style, animatedStyle]}>
-      <TouchableOpacity onPress={handlePress} disabled={disabled}>
+    <Animated.View ref={ref} style={animatedStyle}>
+      <TouchableOpacity onPress={handlePress} disabled={disabled} style={style} activeOpacity={0.7}>
         {children}
       </TouchableOpacity>
     </Animated.View>

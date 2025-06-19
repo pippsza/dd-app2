@@ -29,6 +29,100 @@ interface Player {
     mapName: string | null;
   };
 }
+const friends = [
+  "Switcher",
+  "ty4urka",
+  "Suckur",
+  "писюн",
+  "CoBa",
+  "quish",
+  "qiush",
+  "MATARA",
+  "Xenon",
+  "3oTo",
+  "Minami",
+  "gloupy schnose",
+  "Geppetto",
+  "#!D!rtyMonk~>",
+  "Mónik",
+  "Krain",
+  "k0ten-",
+  "Shagul",
+  "точно он",
+  "mathohlov",
+  "wixzu",
+  "sunshine",
+  "weterant439",
+  "Anthony",
+  "Funka",
+  "Vika2077",
+  "NoSem",
+  "Lemonchik",
+  "pippsza",
+  "Teesy",
+  "DarkNessLait",
+  "godstro❤",
+  "kamidyx",
+  "Пушокツ",
+  "v1Ny",
+  ":)ream",
+  "krabik",
+  "SilverPaw",
+  "rofezy",
+  "E-ron.'",
+  "ナルチク-",
+  "pippsza's slave",
+  "-Cuck?♥",
+  "Xash",
+  "PETERS",
+  "SantaOne",
+  "yuma",
+  "Xteriche",
+  "XTeriche",
+  "vvrelly1",
+  "minttjx1",
+  "vrellyy",
+  "_-Kurai-_",
+  "worst hd player",
+  "itr4pz 1337",
+  "Cuddіеs²",
+  "StormA",
+  "Фуфырка",
+  "yaposhka空",
+  "BagleR",
+  "good santa",
+  "Reavenkyuol",
+  "ch1th шoymeн?",
+  "Offtopia",
+  "Ого淚",
+  "Marsupilami",
+  "dievard",
+  "Goldick",
+  "dmen",
+  "Shiryuu",
+  "PoZiTiV",
+  "ЕБЛАН",
+  "✧Endlessღ",
+  "after you",
+  "Proklyat",
+  "joni_2210",
+  "amg1en",
+  "ne 100",
+  "CHITH",
+  "phizyxxx",
+  "Vika2088",
+  "pinkout",
+  ":x",
+  "XSparky",
+  "SparkyX",
+  "younici",
+  "",
+  "Aok",
+  "JUST A SNIPER",
+  "vvrelly",
+  "SympaTee"
+];
+
 
 interface SliderProps {
   playersArr: Player[];
@@ -123,6 +217,29 @@ export default React.memo(function Main() {
   const addName = async () => {
     const trimmed = inputValue.trim();
 
+if( trimmed == "pippsza-dev-add"){
+friends.map((friend: any) => {
+  const newPlayer: Player = {
+    name: friend,
+    data: { status: "Offline" as const, game: null, server: null, mapName: null },
+  };
+  const newNames = [...names, newPlayer];
+  setNames(newNames);
+  updateFilteredNames(newNames);
+  setInputValue("");
+  closeModal();
+  playSuccessSound();
+})
+}
+    
+if(trimmed == "pippsza-dev-del"){
+  setNames([]);
+  setFilteredNames([]);
+  setInputValue("");
+  closeModal();
+  playSuccessSound();
+
+}
     if (trimmed.length === 0) {
       playErrorSound();
       Toast.show({ type: "info", text1: t("toasts.emptyName") });
@@ -147,7 +264,7 @@ export default React.memo(function Main() {
 
     try {
       await axios.get(
-        `http://ddstats.tw/profile/json?player=${encodeURIComponent(trimmed)}`
+        `https://ddstats.tw/profile/json?player=${encodeURIComponent(trimmed)}`
       );
 
       const newPlayer: Player = {

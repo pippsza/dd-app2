@@ -50,7 +50,7 @@ interface PlayerItemProps {
 }
 
 const ITEM_HEIGHT = rh(11.83);
-const API_URL = "http://ddstats.tw/profile/json";
+const API_URL = "https://ddstats.tw/profile/json";
 const ANIMATION_DURATION = 500;
 const STORAGE_KEY = "friendsNames";
 

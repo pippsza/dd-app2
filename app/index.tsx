@@ -7,6 +7,7 @@ import Header from "./components/header";
 import ModalWindow from "./components/modalWindow";
 import AddFrBttn from "./components/addFriendBttn";
 import Slider from "./components/slider";
+import NotificationManager from "./components/notificationManager";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
@@ -264,6 +265,8 @@ export default React.memo(function Main() {
             currentFilter={currentFilter}
             setCurrentFilter={setCurrentFilter}
           />
+          
+          <NotificationManager players={names} />
         </View>
       </View>
     </FadeWrapper>

@@ -57,5 +57,37 @@
     "alreadyFriend": "¡Este jugador ya es tu amigo!",
     "playerNotFound": "Jugador no encontrado",
     "unexpectedError": "Ups, algo salió mal :("
+  },
+  "notifications": {
+    "settings": "Configuración de notificaciones",
+    "general": "General",
+    "types": "Tipos de notificaciones",
+    "info": "Información",
+    "enableNotifications": "Habilitar notificaciones",
+    "enableNotificationsDesc": "Habilitar notificaciones de actividad de amigos",
+    "instantNotifications": "Notificaciones instantáneas",
+    "instantNotificationsDesc": "Recibir notificaciones cuando los amigos se conecten",
+    "persistentNotifications": "Notificaciones persistentes",
+    "persistentNotificationsDesc": "Mantener una notificación persistente mostrando amigos en línea",
+    "infoText": "Las notificaciones instantáneas se mostrarán cuando los amigos se conecten. Las notificaciones persistentes permanecerán en el panel de notificaciones y se actualizarán regularmente.",
+    "appNotificationsDisabled": "Las notificaciones de la aplicación están deshabilitadas en la configuración del sistema",
+    "settingsSaved": "Configuración guardada",
+    "settingsSavedMessage": "Tu configuración de notificaciones se ha guardado exitosamente.",
+    "resetTitle": "Restablecer configuración",
+    "resetMessage": "¿Estás seguro de que quieres restablecer toda la configuración de notificaciones por defecto?",
+    "friendOnline": "¡Amigo en línea!",
+    "friendOnlineMessage": "{{playerName}} está en línea en {{mapName}}",
+    "friendsOnline": "Amigos en línea",
+    "friendsOnlineMessage": "{{playerNames}} están en línea",
+    "singleFriendOnline": "{{playerName}} está en línea",
+    "multipleFriendsOnline": "{{playerNames}} y {{count}} más están en línea",
+    "statusOnline": "En línea - Los amigos activarán notificaciones",
+    "statusOffline": "Desconectado - No se enviarán notificaciones"
+  },
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "reset": "Restablecer",
+    "ok": "OK"
   }
 }

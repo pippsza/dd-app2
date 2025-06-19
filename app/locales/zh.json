@@ -57,5 +57,37 @@
     "alreadyFriend": "这个玩家已经是你的朋友了！",
     "playerNotFound": "未找到玩家",
     "unexpectedError": "哎呀，出了点问题 :("
+  },
+  "notifications": {
+    "settings": "通知设置",
+    "general": "常规",
+    "types": "通知类型",
+    "info": "信息",
+    "enableNotifications": "启用通知",
+    "enableNotificationsDesc": "启用朋友活动通知",
+    "instantNotifications": "即时通知",
+    "instantNotificationsDesc": "朋友上线时接收通知",
+    "persistentNotifications": "持续通知",
+    "persistentNotificationsDesc": "保持持续通知显示在线朋友",
+    "infoText": "朋友上线时会显示即时通知。持续通知将保留在通知面板中并定期更新。",
+    "appNotificationsDisabled": "应用通知在系统设置中被禁用",
+    "settingsSaved": "设置已保存",
+    "settingsSavedMessage": "您的通知设置已成功保存。",
+    "resetTitle": "重置设置",
+    "resetMessage": "您确定要重置所有通知设置为默认值吗？",
+    "friendOnline": "朋友上线！",
+    "friendOnlineMessage": "{{playerName}} 在 {{mapName}} 上线",
+    "friendsOnline": "在线朋友",
+    "friendsOnlineMessage": "{{playerNames}} 在线",
+    "singleFriendOnline": "{{playerName}} 在线",
+    "multipleFriendsOnline": "{{playerNames}} 和另外 {{count}} 人在线",
+    "statusOnline": "在线 - 朋友会触发通知",
+    "statusOffline": "离线 - 不会发送通知"
+  },
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "reset": "重置",
+    "ok": "确定"
   }
 }

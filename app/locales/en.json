@@ -57,5 +57,37 @@
     "alreadyFriend": "This player is already your friend!",
     "playerNotFound": "Player doesn't exist",
     "unexpectedError": "Oops, something went wrong :("
+  },
+  "notifications": {
+    "settings": "Notification Settings",
+    "general": "General",
+    "types": "Notification Types",
+    "info": "Information",
+    "enableNotifications": "Enable Notifications",
+    "enableNotificationsDesc": "Enable friend activity notifications",
+    "instantNotifications": "Instant Notifications",
+    "instantNotificationsDesc": "Get notified when friends come online",
+    "persistentNotifications": "Persistent Notifications",
+    "persistentNotificationsDesc": "Keep a persistent notification showing online friends",
+    "infoText": "Instant notifications will show when friends come online. Persistent notifications will stay in the notification panel and update regularly.",
+    "appNotificationsDisabled": "App notifications are disabled in system settings",
+    "settingsSaved": "Settings Saved",
+    "settingsSavedMessage": "Your notification settings have been saved successfully.",
+    "resetTitle": "Reset Settings",
+    "resetMessage": "Are you sure you want to reset all notification settings to default?",
+    "friendOnline": "Friend Online!",
+    "friendOnlineMessage": "{{playerName}} is online on {{mapName}}",
+    "friendsOnline": "Friends Online",
+    "friendsOnlineMessage": "{{playerNames}} are online",
+    "singleFriendOnline": "{{playerName}} is online",
+    "multipleFriendsOnline": "{{playerNames}} and {{count}} more are online",
+    "statusOnline": "Online - Friends will trigger notifications",
+    "statusOffline": "Offline - No notifications will be sent"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "reset": "Reset",
+    "ok": "OK"
   }
 }

@@ -82,7 +82,7 @@ interface SlideOutRef {
   slideIn: () => void;
 }
 const HOURS_URL = "https://ddnet.org/players/?json2=";
-const API_URL = "http://ddstats.tw/player/json";
+const API_URL = "https://ddstats.tw/player/json";
 const LOADING_TEXT = "Loading...";
 
 export default function Info() {

@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
-import { Text, TouchableOpacity, View, StyleSheet, Animated } from "react-native";
+import React, { useRef, useState } from "react";
+import { Text, TouchableOpacity, View, StyleSheet, Animated, Modal } from "react-native";
 import {
   responsiveHeight as rh,
   responsiveWidth as rw,
@@ -12,6 +12,7 @@ import Checkbox from "./checkbox";
 import { useSoundWithSettings } from "../hooks/useSoundWithSettings";
 import LoadSvg from "./loadSvg";
 import { useTheme } from "../hooks/useTheme";
+import NotificationSettings from "./notificationSettings";
 
 export default function Settings() {
   const { t, i18n } = useTranslation();
@@ -19,11 +20,13 @@ export default function Settings() {
   const { theme, toggleTheme } = useTheme();
   const { settings, toggleSounds, toggleNotifications } = useSettings();
   const { playButtonSound } = useSoundWithSettings();
+  const [showNotificationSettings, setShowNotificationSettings] = useState(false);
   const themeButtonScale = useRef(new Animated.Value(1)).current;
   const themeButtonRotation = useRef(new Animated.Value(0)).current;
   const languageButtonScale = useRef(new Animated.Value(1)).current;
   const notificationsButtonScale = useRef(new Animated.Value(1)).current;
   const soundsButtonScale = useRef(new Animated.Value(1)).current;
+  const notificationSettingsButtonScale = useRef(new Animated.Value(1)).current;
   
   const availableLanguages = ["en", "ru", "es", "pt", "zh", "ua"];
   const currentLanguageIndex = availableLanguages.indexOf(language);
@@ -141,7 +144,7 @@ export default function Settings() {
   };
 
   const style = StyleSheet.create({
-    box: { justifyContent: "flex-start", flex: 1, width: rw(100) },
+    box: { justifyContent: "flex-start", width: rw(100) },
     container: {
       justifyContent: "center",
       alignItems: "center",
@@ -165,6 +168,22 @@ export default function Settings() {
       alignItems: "center",
     },
     svg: { width: rw(10), height: rw(10) },
+    notificationSettingsButton: {
+      width: rw(70),
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: rh(1),
+      paddingHorizontal: rw(2),
+      backgroundColor: theme.surface,
+      borderRadius: 10,
+      marginTop: rh(2),
+    },
+    notificationSettingsText: {
+      fontSize: rf(2.5),
+      color: theme.text.secondary,
+      fontStyle: 'italic',
+    },
   });
 
   return (
@@ -235,8 +254,33 @@ export default function Settings() {
               />
             </TouchableOpacity>
           </Animated.View>
+
+          {/* Кнопка настроек уведомлений */}
+          {settings.notificationsEnabled && (
+            <Animated.View style={{ 
+              transform: [{ scale: notificationSettingsButtonScale }] 
+            }}>
+              <TouchableOpacity 
+                style={style.notificationSettingsButton} 
+                onPress={() => setShowNotificationSettings(true)}
+              >
+                <Text style={style.notificationSettingsText}>Notification Settings</Text>
+                <Text style={style.notificationSettingsText}>⚙️</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          )}
         </View>
       </View>
+
+      {/* Модальное окно настроек уведомлений */}
+      <Modal
+        visible={showNotificationSettings}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setShowNotificationSettings(false)}
+      >
+        <NotificationSettings onClose={() => setShowNotificationSettings(false)} />
+      </Modal>
     </>
   );
 }

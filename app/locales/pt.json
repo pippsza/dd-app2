@@ -57,5 +57,37 @@
     "alreadyFriend": "Este jogador já é seu amigo!",
     "playerNotFound": "Jogador não encontrado",
     "unexpectedError": "Ops, algo deu errado :("
+  },
+  "notifications": {
+    "settings": "Configurações de notificações",
+    "general": "Geral",
+    "types": "Tipos de notificações",
+    "info": "Informações",
+    "enableNotifications": "Habilitar notificações",
+    "enableNotificationsDesc": "Habilitar notificações de atividade de amigos",
+    "instantNotifications": "Notificações instantâneas",
+    "instantNotificationsDesc": "Receber notificações quando amigos ficarem online",
+    "persistentNotifications": "Notificações persistentes",
+    "persistentNotificationsDesc": "Manter uma notificação persistente mostrando amigos online",
+    "infoText": "Notificações instantâneas serão mostradas quando amigos ficarem online. Notificações persistentes permanecerão no painel de notificações e serão atualizadas regularmente.",
+    "appNotificationsDisabled": "Notificações do aplicativo estão desabilitadas nas configurações do sistema",
+    "settingsSaved": "Configurações salvas",
+    "settingsSavedMessage": "Suas configurações de notificações foram salvas com sucesso.",
+    "resetTitle": "Redefinir configurações",
+    "resetMessage": "Tem certeza de que deseja redefinir todas as configurações de notificações para o padrão?",
+    "friendOnline": "Amigo online!",
+    "friendOnlineMessage": "{{playerName}} está online em {{mapName}}",
+    "friendsOnline": "Amigos online",
+    "friendsOnlineMessage": "{{playerNames}} estão online",
+    "singleFriendOnline": "{{playerName}} está online",
+    "multipleFriendsOnline": "{{playerNames}} e mais {{count}} estão online",
+    "statusOnline": "Online - Amigos ativarão notificações",
+    "statusOffline": "Offline - Notificações não serão enviadas"
+  },
+  "common": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "reset": "Redefinir",
+    "ok": "OK"
   }
 }

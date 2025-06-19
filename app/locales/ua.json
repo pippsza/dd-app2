@@ -57,5 +57,37 @@
     "alreadyFriend": "Цей гравець вже у вас в друзях!",
     "playerNotFound": "Гравця не знайдено",
     "unexpectedError": "Упс, щось пішло не так :("
+  },
+  "notifications": {
+    "settings": "Налаштування сповіщень",
+    "general": "Загальні",
+    "types": "Типи сповіщень",
+    "info": "Інформація",
+    "enableNotifications": "Увімкнути сповіщення",
+    "enableNotificationsDesc": "Увімкнути сповіщення про активність друзів",
+    "instantNotifications": "Миттєві сповіщення",
+    "instantNotificationsDesc": "Отримувати сповіщення коли друзі заходять в мережу",
+    "persistentNotifications": "Постійні сповіщення",
+    "persistentNotificationsDesc": "Тримати постійне сповіщення показуюче друзів в мережі",
+    "infoText": "Миттєві сповіщення будуть показуватися коли друзі заходять в мережу. Постійні сповіщення будуть залишатися в панелі сповіщень і оновлюватися регулярно.",
+    "appNotificationsDisabled": "Сповіщення додатку відключені в системних налаштуваннях",
+    "settingsSaved": "Налаштування збережено",
+    "settingsSavedMessage": "Ваші налаштування сповіщень були успішно збережені.",
+    "resetTitle": "Скинути налаштування",
+    "resetMessage": "Ви впевнені що хочете скинути всі налаштування сповіщень за замовчуванням?",
+    "friendOnline": "Друг в мережі!",
+    "friendOnlineMessage": "{{playerName}} в мережі на {{mapName}}",
+    "friendsOnline": "Друзі в мережі",
+    "friendsOnlineMessage": "{{playerNames}} в мережі",
+    "singleFriendOnline": "{{playerName}} в мережі",
+    "multipleFriendsOnline": "{{playerNames}} і ще {{count}} в мережі",
+    "statusOnline": "В мережі - Друзі будуть викликати сповіщення",
+    "statusOffline": "Не в мережі - Сповіщення не будуть відправлятися"
+  },
+  "common": {
+    "save": "Зберегти",
+    "cancel": "Скасувати",
+    "reset": "Скинути",
+    "ok": "ОК"
   }
 }

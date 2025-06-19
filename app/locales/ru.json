@@ -57,5 +57,37 @@
     "alreadyFriend": "Этот игрок уже у вас в друзьях!",
     "playerNotFound": "Игрок не найден",
     "unexpectedError": "Упс, что-то пошло не так :("
+  },
+  "notifications": {
+    "settings": "Настройки уведомлений",
+    "general": "Общие",
+    "types": "Типы уведомлений",
+    "info": "Информация",
+    "enableNotifications": "Включить уведомления",
+    "enableNotificationsDesc": "Включить уведомления об активности друзей",
+    "instantNotifications": "Мгновенные уведомления",
+    "instantNotificationsDesc": "Получать уведомления когда друзья заходят в сеть",
+    "persistentNotifications": "Постоянные уведомления",
+    "persistentNotificationsDesc": "Держать постоянное уведомление показывающее друзей в сети",
+    "infoText": "Мгновенные уведомления будут показываться когда друзья заходят в сеть. Постоянные уведомления будут оставаться в панели уведомлений и обновляться регулярно.",
+    "appNotificationsDisabled": "Уведомления приложения отключены в системных настройках",
+    "settingsSaved": "Настройки сохранены",
+    "settingsSavedMessage": "Ваши настройки уведомлений были успешно сохранены.",
+    "resetTitle": "Сбросить настройки",
+    "resetMessage": "Вы уверены что хотите сбросить все настройки уведомлений по умолчанию?",
+    "friendOnline": "Друг в сети!",
+    "friendOnlineMessage": "{{playerName}} в сети на {{mapName}}",
+    "friendsOnline": "Друзья в сети",
+    "friendsOnlineMessage": "{{playerNames}} в сети",
+    "singleFriendOnline": "{{playerName}} в сети",
+    "multipleFriendsOnline": "{{playerNames}} и ещё {{count}} в сети",
+    "statusOnline": "В сети - Друзья будут вызывать уведомления",
+    "statusOffline": "Не в сети - Уведомления не будут отправляться"
+  },
+  "common": {
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "reset": "Сбросить",
+    "ok": "ОК"
   }
 }

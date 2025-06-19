@@ -99,7 +99,7 @@ export default function FilterButton({
     filterContainer: {
       position: "absolute",
       bottom: rh(5),
-      right: rw(-1.6),
+      right: rw(-12.5),
       backgroundColor: theme.primary,
       borderWidth: 4,
       borderColor: theme.border.primary,

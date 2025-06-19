@@ -22,12 +22,19 @@ export default function Authors() {
   const { language, setLanguage } = useLanguage();
   const { theme } = useTheme();
   const { playButtonSound } = useSoundWithSettings();
-  
+
   const style = StyleSheet.create({
-    container: { flex: 1, padding: rw(2) },
+    container: { flex: 1, padding: rw(2), position: "relative" },
     svgContainer: {
-      position: "relative",
+      position: "absolute",
+      top: 0,
+      right: 0,
       zIndex: 99,
+      // backgroundColor: "red",
+      // width: rw(10),
+      // height: rw(10),
+      justifyContent: "center",
+      alignItems: "center",
     },
     box: {
       flex: 1,
@@ -42,9 +49,6 @@ export default function Authors() {
     svg: {
       width: rw(14),
       height: rw(14),
-      position: "absolute",
-      right: 0,
-      top: 0,
     },
   });
   const fadeRef = useRef<any>(null);
@@ -64,20 +68,31 @@ export default function Authors() {
       <FadeWrapper ref={fadeRef} onFadeOutComplete={onClose}>
         <View style={style.box}>
           <View style={style.container}>
-            <AnimatedButton
-              animationType="shake"
-              onPress={handleClosePress}
-              style={style.svgContainer}
-            >
-              <LoadSvg name="cross" style={style.svg} />
-            </AnimatedButton>
+            <View style={style.svgContainer}>
+              <AnimatedButton
+                animationType="shake"
+                onPress={handleClosePress}
+                // style={style.svgContainer}
+              >
+                <LoadSvg name="cross" style={style.svg} />
+              </AnimatedButton>
+            </View>
 
             <AuthorsInfo></AuthorsInfo>
             <Settings></Settings>
           </View>
           <Text style={style.text}>{t("mainSettings")}</Text>
         </View>
-        <Text style={{ textAlign: "right", fontSize: rf(1.2), paddingRight: rh(1), color: theme.text.primary }}>v.1.0.1</Text>
+        <Text
+          style={{
+            textAlign: "right",
+            fontSize: rf(1.2),
+            paddingRight: rh(1),
+            color: theme.text.primary,
+          }}
+        >
+          v.1.0.1
+        </Text>
       </FadeWrapper>
     </>
   );

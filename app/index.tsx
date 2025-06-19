@@ -120,9 +120,8 @@ const friends = [
   "Aok",
   "JUST A SNIPER",
   "vvrelly",
-  "SympaTee"
+  "SympaTee",
 ];
-
 
 interface SliderProps {
   playersArr: Player[];
@@ -144,7 +143,7 @@ export default React.memo(function Main() {
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const [currentFilter, setCurrentFilter] = useState<string>("all");
   const { playSuccessSound, playErrorSound } = useSoundWithSettings();
-  
+
   let params = { error: false };
   if (route.params != undefined) {
     params = route.params;
@@ -193,21 +192,24 @@ export default React.memo(function Main() {
     });
   }, [names, isInitialized]);
 
-  const updateFilteredNames = useCallback((newNames: Player[]) => {
-    const filterPlayers = (players: Player[]) => {
-      switch (currentFilter) {
-        case "online":
-          return players.filter(p => p.data.status === "Online");
-        case "offline":
-          return players.filter(p => p.data.status === "Offline");
-        case "afk":
-          return players.filter(p => p.data.status === "AFK");
-        default:
-          return players;
-      }
-    };
-    setFilteredNames(filterPlayers(newNames));
-  }, [currentFilter]);
+  const updateFilteredNames = useCallback(
+    (newNames: Player[]) => {
+      const filterPlayers = (players: Player[]) => {
+        switch (currentFilter) {
+          case "online":
+            return players.filter((p) => p.data.status === "Online");
+          case "offline":
+            return players.filter((p) => p.data.status === "Offline");
+          case "afk":
+            return players.filter((p) => p.data.status === "AFK");
+          default:
+            return players;
+        }
+      };
+      setFilteredNames(filterPlayers(newNames));
+    },
+    [currentFilter]
+  );
 
   // Update filtered names when filter changes
   useEffect(() => {
@@ -217,29 +219,35 @@ export default React.memo(function Main() {
   const addName = async () => {
     const trimmed = inputValue.trim();
 
-if( trimmed == "pippsza-dev-add"){
-friends.map((friend: any) => {
-  const newPlayer: Player = {
-    name: friend,
-    data: { status: "Offline" as const, game: null, server: null, mapName: null },
-  };
-  const newNames = [...names, newPlayer];
-  setNames(newNames);
-  updateFilteredNames(newNames);
-  setInputValue("");
-  closeModal();
-  playSuccessSound();
-})
-}
-    
-if(trimmed == "pippsza-dev-del"){
-  setNames([]);
-  setFilteredNames([]);
-  setInputValue("");
-  closeModal();
-  playSuccessSound();
+    if (trimmed == "pippsza-dev-add") {
+      let tempPlayers: Player[] = [];
+      friends.map((friend: any) => {
+        const newPlayer: Player = {
+          name: friend,
+          data: {
+            status: "Offline" as const,
+            game: null,
+            server: null,
+            mapName: null,
+          },
+        };
+        tempPlayers.push(newPlayer);
+      });
+      const newNames = [...names, ...tempPlayers];
+      setNames(newNames);
+      updateFilteredNames(newNames);
+      setInputValue("");
+      closeModal();
+      playSuccessSound();
+    }
 
-}
+    if (trimmed == "pippsza-dev-del") {
+      setNames([]);
+      setFilteredNames([]);
+      setInputValue("");
+      closeModal();
+      playSuccessSound();
+    }
     if (trimmed.length === 0) {
       playErrorSound();
       Toast.show({ type: "info", text1: t("toasts.emptyName") });
@@ -269,7 +277,12 @@ if(trimmed == "pippsza-dev-del"){
 
       const newPlayer: Player = {
         name: trimmed,
-        data: { status: "Offline" as const, game: null, server: null, mapName: null },
+        data: {
+          status: "Offline" as const,
+          game: null,
+          server: null,
+          mapName: null,
+        },
       };
       const newNames = [...names, newPlayer];
       setNames(newNames);
@@ -382,7 +395,7 @@ if(trimmed == "pippsza-dev-del"){
             currentFilter={currentFilter}
             setCurrentFilter={setCurrentFilter}
           />
-          
+
           <NotificationManager players={names} />
         </View>
       </View>
